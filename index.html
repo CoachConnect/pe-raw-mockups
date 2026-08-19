@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Accessible Web Page</title>
+</head>
+<body>
+    <header>
+        <nav aria-label="Main Navigation">
+            <ul>
+                <li><a href="#main-content">Skip to main content</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <h1>Main Page Title</h1>
+        <p>This page uses clean, semantic HTML structure to maximize compatibility with assistive tech.</p>
+        
+        <section id="about">
+            <h2>About Us</h2>
+            <p>Content goes here in clear, plain language.</p>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Form</h2>
+            <form action="#" method="post">
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="msg">Message:</label>
+                    <textarea id="msg" name="msg" required></textarea>
+                </div>
+                <div>
+                    <button type="submit">Send Message</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Simple HTML Site</p>
+    </footer>
+</body>
+</html>
