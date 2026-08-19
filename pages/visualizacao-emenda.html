@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido 12345 — Detalhes da Solicitação</title>
+<style>
+:root {
+  --c-primary: #1677ff;
+  --c-primary-hover: #4096ff;
+  --c-text: #1f1f1f;
+  --c-text-secondary: #595959;
+  --c-text-muted: #8c8c8c;
+  --c-border: #d9d9d9;
+  --c-border-light: #f0f0f0;
+  --c-bg: #f5f5f5;
+  --c-card-bg: #ffffff;
+  --c-danger: #ff4d4f;
+  --c-success: #52c41a;
+  --c-warning: #faad14;
+  --radius: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.skip-link {
+  position: absolute; left: -9999px; top: 8px;
+  background: var(--c-primary); color: #fff; padding: 10px 16px;
+  border-radius: var(--radius); z-index: 10;
+}
+.skip-link:focus { left: 16px; }
+
+/* ---------- Cabeçalho do pedido ---------- */
+.pagehead {
+  background: var(--c-card-bg);
+  border-bottom: 1px solid var(--c-border);
+}
+.pagehead__inner { max-width: 1200px; margin: 0 auto; padding: 20px 24px; }
+.breadcrumb { font-size: 12px; color: var(--c-text-secondary); margin-bottom: 12px; }
+.breadcrumb a { color: var(--c-text-secondary); text-decoration: none; }
+.breadcrumb a:hover { color: var(--c-primary); text-decoration: underline; }
+.breadcrumb span[aria-current] { color: var(--c-text); }
+
+.pagehead__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.pagehead__idblock { min-width: 0; }
+.pagehead__eyebrow { font-size: 12px; color: var(--c-text-secondary); display: block; }
+.pagehead__title { font-size: 22px; font-weight: 600; margin: 2px 0 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pagehead__number { font-family: var(--font-mono); letter-spacing: .5px; }
+.btn-copy {
+  border: 1px solid var(--c-border); background: #fff; color: var(--c-text-secondary);
+  border-radius: 6px; padding: 2px 8px; font-size: 11px; cursor: pointer;
+}
+.btn-copy:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.pagehead__subtitle { font-size: 14px; color: var(--c-text-secondary); margin: 6px 0 0; }
+.pagehead__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+  background: #e6f4ff; color: #0958d9; border: 1px solid #91caff;
+}
+.status-badge--success { background: #f6ffed; color: #389e0d; border-color: #b7eb8f; }
+.status-badge--warning { background: #fffbe6; color: #ad6800; border-color: #ffe58f; }
+
+.meta-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px 32px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--c-border-light);
+}
+.meta-item__label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--c-text-muted); display: block; }
+.meta-item__value { font-size: 14px; font-weight: 500; margin-top: 2px; }
+
+/* ---------- Layout ---------- */
+.layout { display: flex; max-width: 1200px; margin: 0 auto; gap: 24px; padding: 24px; align-items: flex-start; }
+.content { flex: 1; min-width: 0; }
+
+.sidenav {
+  position: sticky; top: 24px;
+  width: 240px; flex-shrink: 0;
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 8px;
+}
+.sidenav__title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--c-text-muted); padding: 8px 12px 6px;
+}
+.sidenav__link {
+  display: block; padding: 8px 12px; border-radius: 6px;
+  color: var(--c-text-secondary); text-decoration: none; font-size: 13px;
+  border-left: 2px solid transparent;
+}
+.sidenav__link:hover { background: #fafafa; color: var(--c-text); }
+.sidenav__link.is-active { background: #f0f7ff; color: var(--c-primary); font-weight: 600; border-left-color: var(--c-primary); }
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card__head { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--c-border-light); display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.card__title { font-size: 16px; font-weight: 600; margin: 0; }
+.card__note { font-size: 12px; color: var(--c-text-muted); }
+
+/* ---------- Painel financeiro ---------- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 12px; }
+.stat { background: #fff; padding: 14px 16px; border: 1px solid var(--c-border-light); border-radius: var(--radius); }
+.stat__label { font-size: 12px; color: var(--c-text-secondary); display: block; }
+.stat__value { font-size: 20px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.stat__hint { font-size: 11px; color: var(--c-text-muted); margin-top: 2px; display: block; }
+.stat--total { background: #f0f7ff; border-color: #91caff; }
+.stat--positive .stat__value { color: #389e0d; }
+.stat--negative .stat__value { color: var(--c-danger); }
+
+.alert {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 16px; border-radius: var(--radius); font-size: 13px;
+  margin-top: 16px;
+}
+.alert--warning { background: #fffbe6; border: 1px solid #ffe58f; color: #613400; }
+.alert--info { background: #e6f4ff; border: 1px solid #91caff; color: #003eb3; }
+.alert__icon { flex-shrink: 0; font-weight: 700; }
+
+/* ---------- Grade de dados (dl) ---------- */
+.datagrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 32px; margin: 0; }
+.data { min-width: 0; }
+.data--full { grid-column: 1 / -1; }
+.data__label { font-size: 12px; color: var(--c-text-secondary); margin: 0 0 2px; }
+.data__value { margin: 0; font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.data__value--long { font-weight: 400; max-width: 72ch; white-space: pre-wrap; }
+.data__value--money { font-variant-numeric: tabular-nums; }
+.data__value--empty { color: var(--c-text-muted); font-weight: 400; font-style: italic; }
+.data__hint { font-size: 12px; color: var(--c-text-muted); margin: 2px 0 0; }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 500;
+  border: 1px solid var(--c-border); background: #fafafa; color: var(--c-text-secondary);
+}
+.tag--yes { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; }
+.tag--no { background: #fafafa; border-color: var(--c-border); color: var(--c-text-muted); }
+
+/* ---------- Tabela de reservas ---------- */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+caption { text-align: left; font-size: 12px; color: var(--c-text-muted); padding-bottom: 8px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--c-border-light); }
+thead th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--c-text-secondary); font-weight: 600; background: #fafafa; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tfoot td { font-weight: 600; border-top: 2px solid var(--c-border); border-bottom: none; }
+.mono { font-family: var(--font-mono); }
+
+/* ---------- Histórico ---------- */
+.timeline { list-style: none; margin: 0; padding: 0 0 0 8px; }
+.timeline__item { position: relative; padding: 0 0 20px 24px; border-left: 2px solid var(--c-border-light); }
+.timeline__item:last-child { padding-bottom: 0; border-left-color: transparent; }
+.timeline__item::before {
+  content: ""; position: absolute; left: -7px; top: 3px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--c-border);
+}
+.timeline__item--done::before { background: var(--c-success); border-color: var(--c-success); }
+.timeline__item--current::before { background: var(--c-primary); border-color: var(--c-primary); box-shadow: 0 0 0 3px #e6f4ff; }
+.timeline__title { font-size: 13px; font-weight: 600; }
+.timeline__meta { font-size: 12px; color: var(--c-text-secondary); }
+
+/* ---------- Botões ---------- */
+.btn {
+  border: 1px solid var(--c-border); border-radius: var(--radius);
+  padding: 8px 16px; font-size: 14px; font-weight: 500;
+  cursor: pointer; background: #fff; color: var(--c-text);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.btn--primary { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+.btn--primary:hover { background: var(--c-primary-hover); color: #fff; }
+
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--c-text); color: #fff;
+  padding: 10px 16px; border-radius: var(--radius);
+  font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.footnote { max-width: 1200px; margin: 0 auto; padding: 0 24px 32px; font-size: 12px; color: var(--c-text-muted); }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 900px) {
+  .layout { flex-direction: column; padding: 16px; }
+  .sidenav { position: static; width: 100%; display: flex; gap: 4px; overflow-x: auto; }
+  .sidenav__title { display: none; }
+  .sidenav__link { white-space: nowrap; border-left: none; }
+  .datagrid { grid-template-columns: 1fr; }
+  .pagehead__actions { width: 100%; }
+  .pagehead__actions .btn { flex: 1; justify-content: center; }
+}
+
+/* ---------- Impressão ---------- */
+@media print {
+  body { background: #fff; font-size: 11pt; }
+  .sidenav, .pagehead__actions, .breadcrumb, .skip-link, .toast, .btn-copy, .source-banner { display: none !important; }
+  .layout { display: block; padding: 0; max-width: none; }
+  .pagehead { border-bottom: 2px solid #000; }
+  .pagehead__inner, .footnote { padding: 0 0 12px; max-width: none; }
+  .card { border: none; border-top: 1px solid #999; border-radius: 0; padding: 12px 0; margin: 0; break-inside: avoid; }
+  .stats { border: 1px solid #999; }
+  .stat { break-inside: avoid; }
+  a[href]::after { content: ""; }
+}
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+  <header class="pagehead">
+    <div class="pagehead__inner">
+      <nav class="breadcrumb" aria-label="Trilha de navegação">
+        <a href="#">Solicitações de Emenda</a> ›
+        <span aria-current="page">Pedido nº <span id="crumbNumber">—</span></span>
+      </nav>
+
+      <div class="pagehead__top">
+        <div class="pagehead__idblock">
+          <span class="pagehead__eyebrow">Solicitação de Emenda</span>
+          <h1 class="pagehead__title">
+            <span>Pedido nº <span class="pagehead__number" id="headNumber">—</span></span>
+            <button type="button" class="btn-copy" id="btnCopyNumber">Copiar</button>
+            <span class="status-badge" id="statusBadge">—</span>
+          </h1>
+          <p class="pagehead__subtitle" id="headSubtitle">—</p>
+        </div>
+
+        <div class="pagehead__actions">
+          <a class="btn" href="solicitacao-emenda-multiform.html">Editar solicitação</a>
+          <button type="button" class="btn btn--primary" id="btnPrint">Imprimir / PDF</button>
+        </div>
+      </div>
+
+      <div class="meta-strip">
+        <div class="meta-item">
+          <span class="meta-item__label">Enviado em</span>
+          <div class="meta-item__value" id="metaSubmittedAt">—</div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Solicitante</span>
+          <div class="meta-item__value" id="metaRequester">—</div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Unidade solicitante</span>
+          <div class="meta-item__value" id="metaRequestingUnit">—</div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Valor total</span>
+          <div class="meta-item__value" id="metaTotal">—</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidenav" aria-label="Seções do pedido">
+      <div class="sidenav__title">Neste pedido</div>
+      <a class="sidenav__link" href="#sec-financeiro" data-section="sec-financeiro">Resumo financeiro</a>
+      <a class="sidenav__link" href="#sec-dados" data-section="sec-dados">Dados da Solicitação</a>
+      <a class="sidenav__link" href="#sec-artista" data-section="sec-artista">Artista / Pessoa Jurídica</a>
+      <a class="sidenav__link" href="#sec-cronograma" data-section="sec-cronograma">Local e Cronograma</a>
+      <a class="sidenav__link" href="#sec-reserva" data-section="sec-reserva">Alocação de Reserva</a>
+      <a class="sidenav__link" href="#sec-despesas" data-section="sec-despesas">Despesas Extraordinárias</a>
+      <a class="sidenav__link" href="#sec-historico" data-section="sec-historico">Histórico</a>
+    </nav>
+
+    <main class="content" id="conteudo">
+      <div id="sourceBanner" class="alert alert--info source-banner" style="margin: 0 0 16px;" hidden>
+        <span class="alert__icon" aria-hidden="true">i</span>
+        <span id="sourceBannerText"></span>
+      </div>
+
+      <section id="sec-financeiro" class="card" aria-labelledby="t-financeiro">
+        <div class="card__head">
+          <h2 class="card__title" id="t-financeiro">Resumo financeiro</h2>
+          <span class="card__note">Valores em reais (R$)</span>
+        </div>
+        <div class="stats" id="statsGrid"></div>
+        <div id="balanceAlert"></div>
+      </section>
+
+      <section id="sec-dados" class="card" aria-labelledby="t-dados">
+        <div class="card__head"><h2 class="card__title" id="t-dados">Dados da Solicitação</h2></div>
+        <dl class="datagrid" id="gridDados"></dl>
+      </section>
+
+      <section id="sec-artista" class="card" aria-labelledby="t-artista">
+        <div class="card__head"><h2 class="card__title" id="t-artista">Artista / Pessoa Jurídica</h2></div>
+        <dl class="datagrid" id="gridArtista"></dl>
+      </section>
+
+      <section id="sec-cronograma" class="card" aria-labelledby="t-cronograma">
+        <div class="card__head"><h2 class="card__title" id="t-cronograma">Local e Cronograma</h2></div>
+        <dl class="datagrid" id="gridCronograma"></dl>
+      </section>
+
+      <section id="sec-reserva" class="card" aria-labelledby="t-reserva">
+        <div class="card__head"><h2 class="card__title" id="t-reserva">Alocação de Reserva</h2></div>
+        <dl class="datagrid" id="gridReserva"></dl>
+        <div class="table-wrap" style="margin-top: 20px;">
+          <table id="reserveTable">
+            <caption>Números de reserva vinculados ao pedido</caption>
+            <thead>
+              <tr>
+                <th scope="col" style="width:48px">#</th>
+                <th scope="col">Número da reserva</th>
+                <th scope="col" class="num">Valor</th>
+              </tr>
+            </thead>
+            <tbody id="reserveTableBody"></tbody>
+            <tfoot id="reserveTableFoot"></tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section id="sec-despesas" class="card" aria-labelledby="t-despesas">
+        <div class="card__head"><h2 class="card__title" id="t-despesas">Despesas Extraordinárias</h2></div>
+        <dl class="datagrid" id="gridDespesas"></dl>
+      </section>
+
+      <section id="sec-historico" class="card" aria-labelledby="t-historico">
+        <div class="card__head"><h2 class="card__title" id="t-historico">Histórico</h2></div>
+        <ol class="timeline" id="timeline"></ol>
+      </section>
+    </main>
+  </div>
+
+  <p class="footnote">Tela somente leitura — nenhum dado pode ser alterado aqui. Use “Editar solicitação” para voltar ao formulário.</p>
+
+  <div id="toast" class="toast" hidden></div>
+
+<script>
+  const DRAFT_KEY = 'emenda-draft-v2';
+  const REQUEST_NUMBER = '12345';
+
+  /* ---------------- dicionários (mesmas opções do formulário) ---------------- */
+  const OPTIONS = {
+    eventManagementId: { '1': 'Secretaria Municipal de Cultura', '2': 'Subprefeitura Sé', '3': 'Subprefeitura Vila Mariana' },
+    requestingUnitId: { '1': 'Gabinete do Vereador A', '2': 'Gabinete do Vereador B' },
+    artistType: { individual: 'Pessoa física', group: 'Grupo/Coletivo', legalEntity: 'Pessoa jurídica' },
+    placeId: { '1': 'Teatro Municipal', '2': 'Centro Cultural São Paulo', '3': 'Praça das Artes' },
+    recurrence: { none: 'Não se repete', daily: 'Diariamente', weekly: 'Semanalmente', monthly: 'Mensalmente' },
+    reserveAllocationId: { '1': 'Reserva 2026/001 — Cultura', '2': 'Reserva 2026/014 — Eventos' },
+  };
+
+  /* ---------------- dados de exemplo (fallback) ---------------- */
+  const MOCK = {
+    fields: {
+      eventManagementId: '1',
+      requestingUnitId: '2',
+      justification: 'Apresentação de dança contemporânea gratuita e aberta ao público, integrando o calendário cultural da região central. A emenda custeia o cachê do grupo e a montagem técnica do espetáculo.',
+      artistName: 'Cia. de Dança Movimento',
+      artistType: 'group',
+      placeId: '1',
+      isAllDayEvent: false,
+      startDate: '2026-09-10',
+      endDate: '2026-09-12',
+      startTime: '19:00',
+      endTime: '21:00',
+      duration: '120',
+      recurrence: 'daily',
+      amount: '15000',
+      hasTicketOffice: false,
+      conflictDatesEnabled: false,
+      reserveAllocationId: '1',
+      hasExtraordinaryExpenses: true,
+      extraordinaryExpensesValue: '3200',
+      extraordinaryExpensesDetailsJustification: 'Locação de equipamento de som e iluminação cênica não disponível no equipamento público, além de transporte de cenário.',
+    },
+    reserveRows: [
+      { number: 'RES-2026-0032', amount: '12000' },
+      { number: 'RES-2026-0033', amount: '6200' },
+    ],
+    savedAt: '2026-08-14T13:42:00.000Z',
+  };
+
+  /* ---------------- carregamento ---------------- */
+  function loadRequest() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return { data: MOCK, source: 'mock' };
+      const draft = JSON.parse(raw);
+      if (!draft || typeof draft.fields !== 'object') return { data: MOCK, source: 'mock' };
+      return { data: { fields: draft.fields, reserveRows: draft.reserveRows || [], savedAt: draft.savedAt }, source: 'draft' };
+    } catch (error) {
+      return { data: MOCK, source: 'mock' };
+    }
+  }
+
+  const { data: request, source } = loadRequest();
+  const F = request.fields;
+
+  /* ---------------- formatadores ---------------- */
+  const EMPTY = null; // valor ausente → renderizado como "Não informado"
+
+  const text = (value) => {
+    const trimmed = value == null ? '' : String(value).trim();
+    return trimmed === '' ? EMPTY : trimmed;
+  };
+  const option = (dict, value) => {
+    const key = text(value);
+    return key === EMPTY ? EMPTY : (OPTIONS[dict][key] || key);
+  };
+  const toNumber = (value) => {
+    const raw = text(value);
+    if (raw === EMPTY) return null;
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+  const brl = (value) => (value == null
+    ? EMPTY
+    : value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
+
+  /** Formata AAAA-MM-DD sem passar por Date() para não sofrer deslocamento de fuso. */
+  function formatDate(value) {
+    const raw = text(value);
+    if (raw === EMPTY) return EMPTY;
+    const parts = raw.split('-');
+    if (parts.length !== 3) return raw;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  function formatDateLong(value) {
+    const raw = text(value);
+    if (raw === EMPTY) return EMPTY;
+    const [year, month, day] = raw.split('-').map(Number);
+    if (!year || !month || !day) return raw;
+    return new Date(year, month - 1, day)
+      .toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  }
+  function formatDateTime(iso) {
+    if (!iso) return EMPTY;
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return EMPTY;
+    return date.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function formatDuration(value) {
+    const minutes = toNumber(value);
+    if (minutes == null || minutes <= 0) return EMPTY;
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    return `${minutes} min (${hours}h${rest ? String(rest).padStart(2, '0') : ''})`;
+  }
+  const isOn = (value) => value === true || value === 'true';
+
+  /* ---------------- valores derivados ---------------- */
+  const cache = toNumber(F.amount);
+  const hasExpenses = isOn(F.hasExtraordinaryExpenses);
+  const expenses = hasExpenses ? toNumber(F.extraordinaryExpensesValue) : 0;
+  const total = (cache || 0) + (expenses || 0);
+  const reserveRows = (request.reserveRows || []).filter((row) => (row.number || '').trim() || (row.amount || '').trim());
+  const allocated = reserveRows.reduce((sum, row) => sum + (toNumber(row.amount) || 0), 0);
+  const balance = allocated - total;
+
+  /* ---------------- renderização ---------------- */
+  const el = (id) => document.getElementById(id);
+  function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = value;
+    return div.innerHTML;
+  }
+
+  /** Toda célula vazia vira "Não informado": nunca deixa o usuário em dúvida se faltou dado ou faltou carregar. */
+  function valueHtml(value, modifier) {
+    if (value === EMPTY || value === undefined) {
+      return '<dd class="data__value data__value--empty">Não informado</dd>';
+    }
+    return `<dd class="data__value ${modifier || ''}">${escapeHtml(value)}</dd>`;
+  }
+
+  function renderGrid(targetId, items) {
+    el(targetId).innerHTML = items.map((item) => {
+      if (item.html) {
+        return `<div class="data ${item.full ? 'data--full' : ''}">
+          <dt class="data__label">${escapeHtml(item.label)}</dt>
+          <dd class="data__value">${item.html}</dd>
+          ${item.hint ? `<p class="data__hint">${escapeHtml(item.hint)}</p>` : ''}
+        </div>`;
+      }
+      return `<div class="data ${item.full ? 'data--full' : ''}">
+        <dt class="data__label">${escapeHtml(item.label)}</dt>
+        ${valueHtml(item.value, item.modifier)}
+        ${item.hint ? `<p class="data__hint">${escapeHtml(item.hint)}</p>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  const boolTag = (value, yes, no) => isOn(value)
+    ? `<span class="tag tag--yes">✓ ${yes}</span>`
+    : `<span class="tag tag--no">${no}</span>`;
+
+  /* Cabeçalho */
+  el('crumbNumber').textContent = REQUEST_NUMBER;
+  el('headNumber').textContent = REQUEST_NUMBER;
+  document.title = `Pedido ${REQUEST_NUMBER} — Detalhes da Solicitação`;
+
+  const artistLabel = text(F.artistName) || 'Artista não informado';
+  const placeLabel = option('placeId', F.placeId) || 'local não informado';
+  el('headSubtitle').textContent = `${artistLabel} · ${placeLabel} · ${formatDate(F.startDate) || 'data não informada'}`;
+
+  const statusBadge = el('statusBadge');
+  if (source === 'draft') {
+    statusBadge.textContent = 'Rascunho';
+    statusBadge.className = 'status-badge status-badge--warning';
+  } else {
+    statusBadge.textContent = 'Enviado';
+    statusBadge.className = 'status-badge';
+  }
+
+  el('metaSubmittedAt').textContent = formatDateTime(request.savedAt) || 'Não informado';
+  el('metaRequester').textContent = 'Alexandre H. Siroma';
+  el('metaRequestingUnit').textContent = option('requestingUnitId', F.requestingUnitId) || 'Não informado';
+  el('metaTotal').textContent = brl(total);
+
+  /* Banner de origem dos dados */
+  const banner = el('sourceBanner');
+  el('sourceBannerText').textContent = source === 'draft'
+    ? 'Exibindo o rascunho salvo neste navegador pelo formulário de solicitação.'
+    : 'Nenhum rascunho salvo encontrado — exibindo dados de exemplo do pedido nº 12345.';
+  banner.hidden = false;
+
+  /* Resumo financeiro */
+  el('statsGrid').innerHTML = `
+    <div class="stat">
+      <span class="stat__label">Cachê do artista</span>
+      <div class="stat__value">${escapeHtml(brl(cache) || 'Não informado')}</div>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Despesas extraordinárias</span>
+      <div class="stat__value">${escapeHtml(hasExpenses ? (brl(expenses) || 'Não informado') : brl(0))}</div>
+      <span class="stat__hint">${hasExpenses ? 'Declaradas no pedido' : 'Nenhuma despesa declarada'}</span>
+    </div>
+    <div class="stat stat--total">
+      <span class="stat__label">Total da solicitação</span>
+      <div class="stat__value">${escapeHtml(brl(total))}</div>
+      <span class="stat__hint">Cachê + despesas</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Alocado em reservas</span>
+      <div class="stat__value">${escapeHtml(brl(allocated))}</div>
+      <span class="stat__hint">${reserveRows.length} ${reserveRows.length === 1 ? 'número de reserva' : 'números de reserva'}</span>
+    </div>
+    <div class="stat ${balance < 0 ? 'stat--negative' : (balance > 0 ? 'stat--positive' : '')}">
+      <span class="stat__label">Saldo</span>
+      <div class="stat__value">${escapeHtml(brl(balance))}</div>
+      <span class="stat__hint">Alocado − total</span>
+    </div>`;
+
+  el('balanceAlert').innerHTML = balance < 0
+    ? `<div class="alert alert--warning"><span class="alert__icon" aria-hidden="true">!</span>
+        <span>As reservas alocadas cobrem ${escapeHtml(brl(allocated))} de um total de ${escapeHtml(brl(total))}.
+        Faltam <strong>${escapeHtml(brl(Math.abs(balance)))}</strong> para cobrir a solicitação.</span></div>`
+    : '';
+
+  /* Blocos — mesma ordem do formulário, para o usuário reconhecer o que preencheu */
+  renderGrid('gridDados', [
+    { label: 'Unidade gestora do evento', value: option('eventManagementId', F.eventManagementId) },
+    { label: 'Unidade solicitante', value: option('requestingUnitId', F.requestingUnitId) },
+    { label: 'Justificativa', value: text(F.justification), modifier: 'data__value--long', full: true },
+  ]);
+
+  renderGrid('gridArtista', [
+    { label: 'Nome do artista/grupo/coletivo', value: text(F.artistName) },
+    { label: 'Tipo de artista', value: option('artistType', F.artistType) },
+  ]);
+
+  function formatTimeRange() {
+    const start = text(F.startTime);
+    const end = text(F.endTime);
+    if (start === EMPTY && end === EMPTY) return EMPTY;
+    return `${start === EMPTY ? '—' : start} às ${end === EMPTY ? '—' : end}`;
+  }
+
+  const allDay = isOn(F.isAllDayEvent);
+  renderGrid('gridCronograma', [
+    { label: 'Local', value: option('placeId', F.placeId) },
+    { label: 'Recorrência', value: option('recurrence', F.recurrence) },
+    { label: 'Data de início', value: formatDate(F.startDate), hint: formatDateLong(F.startDate) || undefined },
+    { label: 'Data de término', value: formatDate(F.endDate), hint: formatDateLong(F.endDate) || undefined },
+    allDay
+      ? { label: 'Horário', html: '<span class="tag tag--yes">✓ Evento dia inteiro</span>' }
+      : { label: 'Horário', value: formatTimeRange() },
+    { label: 'Duração', value: formatDuration(F.duration) },
+    { label: 'Valor de cachê', value: brl(cache), modifier: 'data__value--money' },
+    { label: 'Bilheteria', html: boolTag(F.hasTicketOffice, 'Evento com bilheteria', 'Sem bilheteria') },
+    { label: 'Conflito de datas', html: boolTag(F.conflictDatesEnabled, 'Conflito permitido', 'Não permitido') },
+  ]);
+
+  renderGrid('gridReserva', [
+    { label: 'Reserva orçamentária', value: option('reserveAllocationId', F.reserveAllocationId) },
+    { label: 'Total alocado', value: brl(allocated), modifier: 'data__value--money' },
+  ]);
+
+  el('reserveTableBody').innerHTML = reserveRows.length === 0
+    ? '<tr><td colspan="3" style="color:var(--c-text-muted);font-style:italic">Nenhum número de reserva informado.</td></tr>'
+    : reserveRows.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td class="mono">${escapeHtml(text(row.number) || '—')}</td>
+          <td class="num">${escapeHtml(brl(toNumber(row.amount)) || 'Não informado')}</td>
+        </tr>`).join('');
+
+  el('reserveTableFoot').innerHTML = reserveRows.length === 0 ? '' : `
+    <tr>
+      <td colspan="2">Total alocado</td>
+      <td class="num">${escapeHtml(brl(allocated))}</td>
+    </tr>`;
+
+  renderGrid('gridDespesas', hasExpenses
+    ? [
+        { label: 'Possui despesas extraordinárias', html: '<span class="tag tag--yes">✓ Sim</span>' },
+        { label: 'Valor das despesas', value: brl(expenses), modifier: 'data__value--money' },
+        { label: 'Justificativa das despesas', value: text(F.extraordinaryExpensesDetailsJustification), modifier: 'data__value--long', full: true },
+      ]
+    : [
+        { label: 'Possui despesas extraordinárias', html: '<span class="tag tag--no">Não</span>', full: true, hint: 'O pedido não declara custos além do cachê.' },
+      ]);
+
+  /* Histórico */
+  const HISTORY = [
+    { title: 'Rascunho criado', meta: 'Alexandre H. Siroma', at: request.savedAt, state: 'done' },
+    { title: source === 'draft' ? 'Aguardando envio' : 'Solicitação enviada', meta: 'Alexandre H. Siroma', at: request.savedAt, state: 'current' },
+    { title: 'Análise da unidade gestora', meta: 'Pendente', at: null, state: 'todo' },
+  ];
+  el('timeline').innerHTML = HISTORY.map((item) => `
+    <li class="timeline__item timeline__item--${item.state}">
+      <div class="timeline__title">${escapeHtml(item.title)}</div>
+      <div class="timeline__meta">${escapeHtml(item.meta)}${item.at ? ` · ${escapeHtml(formatDateTime(item.at) || '')}` : ''}</div>
+    </li>`).join('');
+
+  /* ---------------- interações ---------------- */
+  let toastTimer = null;
+  function showToast(message) {
+    const toastEl = el('toast');
+    toastEl.textContent = message;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2500);
+  }
+
+  el('btnPrint').addEventListener('click', () => window.print());
+
+  el('btnCopyNumber').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(REQUEST_NUMBER);
+      showToast(`Número ${REQUEST_NUMBER} copiado.`);
+    } catch (error) {
+      showToast(`Não foi possível copiar. Número do pedido: ${REQUEST_NUMBER}`);
+    }
+  });
+
+  const navLinks = Array.from(document.querySelectorAll('.sidenav__link'));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        const active = link.dataset.section === entry.target.id;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  navLinks.forEach((link) => {
+    const sectionEl = el(link.dataset.section);
+    if (sectionEl) observer.observe(sectionEl);
+  });
+</script>
+</body>
+</html>

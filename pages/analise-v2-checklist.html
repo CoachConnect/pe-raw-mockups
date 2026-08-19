@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V2 · Conferência — Pedido 11159</title>
+<style>
+:root{
+  --c-primary:#1677ff; --c-primary-bg:#e6f4ff; --c-primary-border:#91caff;
+  --c-text:#1f1f1f; --c-text-2:#595959; --c-text-3:#8c8c8c;
+  --c-border:#d9d9d9; --c-border-2:#f0f0f0; --c-bg:#f5f5f5; --c-card:#fff;
+  --c-danger:#ff4d4f; --c-danger-bg:#fff2f0; --c-danger-border:#ffccc7; --c-danger-text:#cf1322;
+  --c-warn:#faad14; --c-warn-bg:#fffbe6; --c-warn-border:#ffe58f; --c-warn-text:#ad6800;
+  --c-ok:#52c41a; --c-ok-bg:#f6ffed; --c-ok-border:#b7eb8f; --c-ok-text:#389e0d;
+  --radius:8px; --appbar-h:52px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--font);font-size:14px;line-height:1.5;color:var(--c-text);background:var(--c-bg);overflow:hidden}
+h1,h2,h3{margin:0;font-weight:600}
+button{font-family:inherit}
+
+.btn{border:1px solid var(--c-border);background:#fff;color:var(--c-text);border-radius:6px;padding:6px 14px;font-size:13px;font-weight:500;cursor:pointer}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn--primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn--primary:hover{background:#4096ff;border-color:#4096ff;color:#fff}
+.btn--ok{background:var(--c-ok-bg);border-color:var(--c-ok-border);color:var(--c-ok-text)}
+.btn--ok:hover{background:#d9f7be;border-color:var(--c-ok);color:var(--c-ok-text)}
+.btn--danger{border-color:var(--c-danger-border);color:var(--c-danger-text)}
+.btn--danger:hover{background:var(--c-danger-bg);border-color:var(--c-danger);color:var(--c-danger-text)}
+.btn--sm{padding:3px 10px;font-size:12px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:1px 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap;
+  background:#fafafa;color:var(--c-text-2);border:1px solid var(--c-border)}
+.pill--ok{background:var(--c-ok-bg);color:var(--c-ok-text);border-color:var(--c-ok-border)}
+.pill--warn{background:var(--c-warn-bg);color:var(--c-warn-text);border-color:var(--c-warn-border)}
+.pill--danger{background:var(--c-danger-bg);color:var(--c-danger-text);border-color:var(--c-danger-border)}
+.pill--info{background:var(--c-primary-bg);color:#0958d9;border-color:var(--c-primary-border)}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-rows:var(--appbar-h) 1fr;height:100%}
+.appbar{background:#fff;border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:14px;padding:0 16px}
+.appbar__num{font-family:var(--mono);font-weight:600;letter-spacing:.4px}
+.appbar__name{color:var(--c-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40ch}
+.appbar__spacer{flex:1}
+.kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--c-border);border-bottom-width:2px;border-radius:4px;padding:0 5px;color:var(--c-text-3);background:#fafafa}
+
+.panes{display:grid;grid-template-columns:330px minmax(0,1fr) 340px;min-height:0}
+@media (max-width:1180px){.panes{grid-template-columns:300px minmax(0,1fr)} .pane--draft{display:none}}
+.pane{min-height:0;display:flex;flex-direction:column;background:#fff}
+.pane--list{border-right:1px solid var(--c-border)}
+.pane--detail{background:var(--c-bg)}
+.pane--draft{border-left:1px solid var(--c-border)}
+.pane__head{padding:12px 14px;border-bottom:1px solid var(--c-border-2);display:flex;align-items:center;gap:10px;flex:none}
+.pane__head h2{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text-3)}
+.pane__body{overflow:auto;flex:1;min-height:0}
+.pane__foot{padding:12px 14px;border-top:1px solid var(--c-border);flex:none;background:#fff}
+
+/* ---------- progresso ---------- */
+.progress{padding:12px 14px;border-bottom:1px solid var(--c-border-2)}
+.progress__top{display:flex;justify-content:space-between;font-size:12px;color:var(--c-text-2);margin-bottom:6px}
+.progress__bar{height:6px;border-radius:999px;background:var(--c-border-2);overflow:hidden;display:flex}
+.progress__seg{height:100%}
+.progress__seg--ok{background:var(--c-ok)} .progress__seg--warn{background:var(--c-warn)} .progress__seg--danger{background:var(--c-danger)}
+.progress__legend{display:flex;gap:12px;margin-top:8px;font-size:11.5px;color:var(--c-text-3)}
+.progress__legend span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+.lg-ok::before{background:var(--c-ok)} .lg-warn::before{background:var(--c-warn)} .lg-danger::before{background:var(--c-danger)} .lg-todo::before{background:var(--c-border)}
+
+/* ---------- checklist ---------- */
+.group{border-bottom:1px solid var(--c-border-2)}
+.group__head{display:flex;align-items:center;gap:8px;padding:9px 14px;background:#fafafa;font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.5px;color:var(--c-text-3);font-weight:600;position:sticky;top:0;z-index:1}
+.group__head .pill{margin-left:auto;text-transform:none;letter-spacing:0}
+.item{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:10px 14px;background:transparent;border:0;
+  border-left:3px solid transparent;cursor:pointer;font-size:13.5px;color:var(--c-text)}
+.item:hover{background:#fafafa}
+.item.is-current{background:var(--c-primary-bg);border-left-color:var(--c-primary)}
+.item__state{width:18px;height:18px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;
+  border:1.5px solid var(--c-border);color:transparent;margin-top:1px}
+.item[data-state="ok"] .item__state{background:var(--c-ok);border-color:var(--c-ok);color:#fff}
+.item[data-state="warn"] .item__state{background:var(--c-warn);border-color:var(--c-warn);color:#fff}
+.item[data-state="danger"] .item__state{background:var(--c-danger);border-color:var(--c-danger);color:#fff}
+.item__txt{flex:1;min-width:0}
+.item__sub{display:block;font-size:12px;color:var(--c-text-3);margin-top:1px}
+.item[data-state="danger"] .item__sub{color:var(--c-danger-text)}
+.item[data-state="warn"] .item__sub{color:var(--c-warn-text)}
+
+/* ---------- detalhe ---------- */
+.detail{padding:18px 22px;max-width:940px}
+.detail__head{display:flex;align-items:flex-start;gap:14px;margin-bottom:4px}
+.detail__title{font-size:19px}
+.detail__crumb{font-size:12px;color:var(--c-text-3);margin-bottom:2px}
+.detail__spacer{flex:1}
+.detail__actions{display:flex;gap:8px;flex:none}
+.panel{background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);padding:16px 18px;margin-top:14px}
+.panel__title{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text-3);font-weight:600;margin-bottom:12px}
+
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 24px;margin:0}
+.kv div{min-width:0}.kv dt{font-size:12px;color:var(--c-text-3);margin:0 0 1px}
+.kv dd{margin:0;word-break:break-word}
+.kv dd.mono{font-family:var(--mono);font-size:13px}
+.kv dd .miss{color:var(--c-danger-text);font-weight:600}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--c-text-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--c-border)}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--c-border-2);vertical-align:top}
+.tbl tbody tr:hover{background:#fafafa}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto}
+.row-alert{background:var(--c-danger-bg)}
+.row-warn{background:var(--c-warn-bg)}
+
+.alert{display:flex;gap:10px;padding:11px 13px;border-radius:var(--radius);font-size:13px;border:1px solid;margin-top:14px}
+.alert--warn{background:var(--c-warn-bg);border-color:var(--c-warn-border);color:var(--c-warn-text)}
+.alert--danger{background:var(--c-danger-bg);border-color:var(--c-danger-border);color:var(--c-danger-text)}
+.alert--info{background:var(--c-primary-bg);border-color:var(--c-primary-border);color:#0958d9}
+.alert b:first-child{display:block}
+
+.doclist{border:1px solid var(--c-border-2);border-radius:6px}
+.doc{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--c-border-2)}
+.doc:last-child{border-bottom:0}
+.doc__ico{width:26px;height:26px;border-radius:5px;background:#fff1f0;color:#cf1322;display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
+.doc__name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc__meta{font-size:12px;color:var(--c-text-3);flex:none}
+
+/* ---------- rascunho de devolução ---------- */
+.finding{border:1px solid var(--c-danger-border);background:var(--c-danger-bg);border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.finding__where{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--c-danger-text);font-weight:700}
+.finding__what{font-size:13px;margin-top:3px}
+.finding__rm{border:0;background:transparent;color:var(--c-text-3);cursor:pointer;font-size:12px;padding:0;margin-top:6px}
+.finding__rm:hover{color:var(--c-danger-text)}
+.note{width:100%;border:1px solid var(--c-border);border-radius:6px;padding:9px 10px;font-family:inherit;font-size:13px;resize:vertical;min-height:70px}
+.hint{font-size:12px;color:var(--c-text-3);margin-top:8px}
+.hidden{display:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="appbar">
+    <button class="btn btn--sm" type="button">← Voltar</button>
+    <strong class="appbar__num">#11159</strong>
+    <span class="appbar__name">LAGUZ · Espetáculo de Circo — Suspiros e Burbujas</span>
+    <span class="pill pill--warn">Em homologação</span>
+    <span class="appbar__spacer"></span>
+    <span class="hint">Navegar <span class="kbd">J</span> <span class="kbd">K</span> · Conforme <span class="kbd">C</span> · Pendência <span class="kbd">P</span></span>
+    <button class="btn btn--sm" type="button">Dossiê completo</button>
+  </header>
+
+  <div class="panes">
+
+    <!-- ------- PANE 1: roteiro de conferência ------- -->
+    <section class="pane pane--list" aria-label="Roteiro de conferência">
+      <div class="progress">
+        <div class="progress__top"><span><b>7 de 12</b> itens conferidos</span><span>58%</span></div>
+        <div class="progress__bar">
+          <div class="progress__seg progress__seg--ok" style="width:42%"></div>
+          <div class="progress__seg progress__seg--warn" style="width:8%"></div>
+          <div class="progress__seg progress__seg--danger" style="width:25%"></div>
+        </div>
+        <div class="progress__legend">
+          <span class="lg-ok">5 conformes</span><span class="lg-warn">1 ressalva</span><span class="lg-danger">3 pendências</span><span class="lg-todo">3 a conferir</span>
+        </div>
+      </div>
+
+      <div class="pane__body">
+        <div class="group">
+          <div class="group__head">Objeto <span class="pill pill--ok">ok</span></div>
+          <button class="item" data-state="ok" data-target="d-evento"><span class="item__state">✓</span><span class="item__txt">Evento e apresentação<span class="item__sub">15/04/2026 · Centro Cultural Grajaú</span></span></button>
+          <button class="item" data-state="ok" data-target="d-fotos"><span class="item__state">✓</span><span class="item__txt">Fotos e créditos<span class="item__sub">4 fotos · créditos preenchidos</span></span></button>
+        </div>
+
+        <div class="group">
+          <div class="group__head">Artista <span class="pill pill--danger">1 pendência</span></div>
+          <button class="item is-current" data-state="danger" data-target="d-ficha"><span class="item__state">!</span><span class="item__txt">Ficha técnica dos integrantes<span class="item__sub">Reabertura de 23/02 ainda não conferida</span></span></button>
+          <button class="item" data-state="ok" data-target="d-lider"><span class="item__state">✓</span><span class="item__txt">Dados do líder do grupo<span class="item__sub">Romina Noelia Sanchez</span></span></button>
+          <button class="item" data-state="ok" data-target="d-docart"><span class="item__state">✓</span><span class="item__txt">Documentos do artista<span class="item__sub">5 de 5 enviados</span></span></button>
+        </div>
+
+        <div class="group">
+          <div class="group__head">Proponente <span class="pill pill--warn">ressalva</span></div>
+          <button class="item" data-state="ok" data-target="d-pj"><span class="item__state">✓</span><span class="item__txt">Dados da empresa e representante<span class="item__sub">CNPJ 25.434.409/0001-47</span></span></button>
+          <button class="item" data-state="ok" data-target="d-banco"><span class="item__state">✓</span><span class="item__txt">Dados bancários<span class="item__sub">Inter 077 · ag. 001 · cc. 32622210</span></span></button>
+          <button class="item" data-state="warn" data-target="d-certidoes"><span class="item__state">▲</span><span class="item__txt">Certidões e impedimentos<span class="item__sub">9 de 13 vencem em 19 dias</span></span></button>
+        </div>
+
+        <div class="group">
+          <div class="group__head">Contrato <span class="pill pill--danger">2 pendências</span></div>
+          <button class="item" data-state="danger" data-target="d-sei"><span class="item__state">!</span><span class="item__txt">Processo SEI<span class="item__sub">Campo obrigatório não preenchido</span></span></button>
+          <button class="item" data-state="" data-target="d-dotacao"><span class="item__state">·</span><span class="item__txt">Dotação e valor<span class="item__sub">A conferir · R$ 5.500,00</span></span></button>
+          <button class="item" data-state="danger" data-target="d-parcela"><span class="item__state">!</span><span class="item__txt">Processos de pagamento<span class="item__sub">Vencimento inválido: 31/12/1969</span></span></button>
+        </div>
+
+        <div class="group">
+          <div class="group__head">Documentos</div>
+          <button class="item" data-state="" data-target="d-assinaveis"><span class="item__state">·</span><span class="item__txt">Assinaturas do contrato<span class="item__sub">A conferir · 3 de 4 assinados</span></span></button>
+          <button class="item" data-state="" data-target="d-justif"><span class="item__state">·</span><span class="item__txt">Justificativas<span class="item__sub">A conferir · 3 textos</span></span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ------- PANE 2: detalhe do item selecionado ------- -->
+    <section class="pane pane--detail" aria-live="polite">
+      <div class="pane__body">
+
+        <!-- item ativo -->
+        <article class="detail" id="d-ficha">
+          <div class="detail__head">
+            <div>
+              <div class="detail__crumb">Artista › LAGUZ (coletivo)</div>
+              <h1 class="detail__title">Ficha técnica dos integrantes</h1>
+            </div>
+            <div class="detail__spacer"></div>
+            <div class="detail__actions">
+              <button class="btn btn--ok btn--sm" type="button">✓ Marcar conforme <span class="kbd">C</span></button>
+              <button class="btn btn--danger btn--sm" type="button">! Apontar pendência <span class="kbd">P</span></button>
+            </div>
+          </div>
+
+          <div class="alert alert--danger">
+            <span aria-hidden="true">●</span>
+            <span><b>Motivo da reabertura de 23/02/2026 — ainda não conferido</b>
+              Fabrícia Cibelle Barros da Silva: “No campo Ficha técnica do artista / membros do grupo — cadastrar o RG do Felipe Abreu Pereira”.
+              O solicitante reenviou em 23/02. Confira se o dado apontado foi de fato corrigido.</span>
+          </div>
+
+          <div class="panel">
+            <div class="panel__title">Integrantes declarados</div>
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead><tr><th>Nome</th><th>Nome artístico</th><th>Nacionalidade</th><th>CPF/CIN</th><th>RG / RNM</th><th class="num">Idade</th><th>Função</th></tr></thead>
+                <tbody>
+                  <tr><td>Romina Noelia Sanchez</td><td>Burbuja</td><td>Argentina</td><td class="mono">622.759.073-86</td><td class="mono">V601351-9</td><td class="num">42</td><td>Palhaça, acordeonista, acrobata</td></tr>
+                  <tr class="row-warn"><td>Felipe Abreu Pereira</td><td>Suspiros</td><td>Brasileira</td><td class="mono">035.469.383-21</td>
+                    <td class="mono">200.300.914-7 <span class="pill pill--info">alterado em 23/02</span></td><td class="num">37</td><td>Palhaço, malabarista, acrobata</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert alert--info">
+              <span aria-hidden="true">ℹ</span>
+              <span><b>Comparação com a versão anterior</b>RG de Felipe Abreu Pereira: <s>vazio</s> → <b>200.300.914-7</b>. Nenhum outro campo da ficha mudou.</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel__title">Comprovantes vinculados</div>
+            <div class="doclist">
+              <div class="doc"><span class="doc__ico">PDF</span><span class="doc__name">RG/CPF, CNH ou RNE do líder do grupo</span><span class="doc__meta">19/02/2026</span><button class="btn btn--sm" type="button">Abrir</button></div>
+              <div class="doc"><span class="doc__ico">PDF</span><span class="doc__name">Ficha técnica (documento gerado)</span><span class="doc__meta">assinado 24/02/2026</span><button class="btn btn--sm" type="button">Abrir</button></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- exemplos de outros itens (ocultos; o protótipo alterna ao clicar) -->
+        <article class="detail hidden" id="d-certidoes">
+          <div class="detail__head">
+            <div><div class="detail__crumb">Proponente › Regularidade</div><h1 class="detail__title">Certidões e impedimentos</h1></div>
+            <div class="detail__spacer"></div>
+            <div class="detail__actions">
+              <button class="btn btn--ok btn--sm" type="button">✓ Conforme com ressalva</button>
+              <button class="btn btn--danger btn--sm" type="button">! Apontar pendência</button>
+            </div>
+          </div>
+          <div class="alert alert--warn"><span aria-hidden="true">▲</span>
+            <span><b>9 certidões vencem em 19 dias (17/03/2026)</b>Referência: 26/02/2026. Precisam estar vigentes na data da assinatura, não na data da análise.</span></div>
+          <div class="panel">
+            <div class="panel__title">13 certidões · ordenadas por prazo</div>
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead><tr><th>Certidão</th><th>Órgão</th><th>Válida até</th><th class="num">Prazo</th><th>Arquivo</th><th></th></tr></thead>
+                <tbody>
+                  <tr class="row-warn"><td><b>CNPJ</b></td><td>Receita Federal</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>CNPJ Romina.pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>FGTS</b></td><td>Caixa</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>Consulta Regularidade.pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>CCM</b></td><td>Prefeitura</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>Emissao_FDC.pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>CADIN</b></td><td>Município</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>Comprovante (19).pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>TCE · apenados</b></td><td>TCE</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>Certidão Apenados (6).pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>E-Sanções</b></td><td>Estado</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>E-Sanções.pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>CNJ</b></td><td>CNJ</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>CNJ.pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>CEIS</b></td><td>CGU</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>Consulta de Sanções.pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr class="row-warn"><td><b>Listagem de apenados</b></td><td>Coord. Bens e Serviços</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 d</span></td><td>3-listagem-empresas.pdf</td><td><button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+                  <tr><td><b>CND</b></td><td>Receita Federal</td><td>07/07/2026</td><td class="num"><span class="pill pill--ok">131 d</span></td><td>CND Romina.pdf</td><td><button class="btn btn--sm" type="button">Abrir</button></td></tr>
+                  <tr><td><b>CTM</b></td><td>Prefeitura</td><td>07/07/2026</td><td class="num"><span class="pill pill--ok">131 d</span></td><td>Relatorio_CertidaoNegativa.pdf</td><td><button class="btn btn--sm" type="button">Abrir</button></td></tr>
+                  <tr><td><b>CNDT</b></td><td>TST</td><td>18/08/2026</td><td class="num"><span class="pill pill--ok">173 d</span></td><td>CNDT - 1808.pdf</td><td><button class="btn btn--sm" type="button">Abrir</button></td></tr>
+                  <tr><td><b>TCU</b></td><td>TCU</td><td>17/03/2027</td><td class="num"><span class="pill pill--ok">1 ano</span></td><td>Certidão negativa (7).pdf</td><td><button class="btn btn--sm" type="button">Abrir</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail hidden" id="d-parcela">
+          <div class="detail__head">
+            <div><div class="detail__crumb">Contrato › Pagamento</div><h1 class="detail__title">Processos de pagamento</h1></div>
+            <div class="detail__spacer"></div>
+            <div class="detail__actions">
+              <button class="btn btn--ok btn--sm" type="button">✓ Marcar conforme</button>
+              <button class="btn btn--danger btn--sm" type="button">! Apontar pendência</button>
+            </div>
+          </div>
+          <div class="alert alert--danger"><span aria-hidden="true">●</span>
+            <span><b>Vencimento gravado como 31/12/1969</b>Data nula (epoch). O vencimento deveria ser o 30º dia após a entrega da documentação correta.</span></div>
+          <div class="panel">
+            <div class="panel__title">Parcelas</div>
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead><tr><th>Parcela</th><th class="num">Valor</th><th>Vencimento</th><th>Situação</th><th>Nota fiscal</th><th></th></tr></thead>
+                <tbody><tr class="row-alert"><td>Parcela única</td><td class="num">R$ 5.500,00</td><td><b>31/12/1969</b> — inválido</td><td><span class="pill pill--warn">Pendente</span></td><td>—</td><td><button class="btn btn--sm btn--danger" type="button">Corrigir data</button></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel__title">Origem do recurso</div>
+            <dl class="kv">
+              <div><dt>Nome da reserva</dt><dd>Programação de Atividades Culturais de Centros Culturais e Teatros</dd></div>
+              <div><dt>Nº da dotação</dt><dd class="mono">25.10.13.392.3001.6.391.33903900.00.1.500.9001.1</dd></div>
+              <div><dt>Valor do contrato</dt><dd><b>R$ 5.500,00</b></dd></div>
+              <div><dt>Forma de pagamento</dt><dd>Parcela única · 30 dias</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="detail hidden" id="d-sei">
+          <div class="detail__head">
+            <div><div class="detail__crumb">Contrato › Dados complementares</div><h1 class="detail__title">Processo SEI</h1></div>
+            <div class="detail__spacer"></div>
+            <div class="detail__actions"><button class="btn btn--primary btn--sm" type="button">Informar processo</button></div>
+          </div>
+          <div class="alert alert--danger"><span aria-hidden="true">●</span>
+            <span><b>Campo obrigatório vazio</b>Sem o número do processo SEI o pedido não pode ser homologado nem seguir para assinatura.</span></div>
+          <div class="panel">
+            <dl class="kv">
+              <div><dt>Processo SEI *</dt><dd><span class="miss">Não informado</span></dd></div>
+              <div><dt>Status de acompanhamento</dt><dd>Documentação assinada enviada</dd></div>
+              <div><dt>Fundamento legal</dt><dd>Portaria nº 34/SMC · art. 74, Lei 14.133/2021</dd></div>
+              <div><dt>Fiscal</dt><dd>Elizabete Alves Honorato (SMC/CCULT/CCGPC)</dd></div>
+              <div><dt>Suplente</dt><dd>Leandro Dias de Camargo (SMC/CCULT/CCPC)</dd></div>
+              <div><dt>Responsável pelo pedido</dt><dd>Fábio Penna Montanini</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="detail hidden" id="d-assinaveis">
+          <div class="detail__head">
+            <div><div class="detail__crumb">Documentos › Contrato</div><h1 class="detail__title">Assinaturas do contrato</h1></div>
+            <div class="detail__spacer"></div>
+            <div class="detail__actions">
+              <button class="btn btn--ok btn--sm" type="button">✓ Marcar conforme</button>
+              <button class="btn btn--danger btn--sm" type="button">! Apontar pendência</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel__title">4 documentos · 3 assinados</div>
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead><tr><th>Documento</th><th>Grupo</th><th>Signatário</th><th>Assinatura</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td>TESTE MARCELO STI — Dados Tarjados</td><td>Anexo</td><td>Pessoa Jurídica</td><td><span class="pill pill--ok">24/02/2026</span></td><td><button class="btn btn--sm" type="button">Abrir</button></td></tr>
+                  <tr><td>Ficha técnica</td><td>Anexo gerado</td><td>Artista</td><td><span class="pill pill--ok">24/02/2026</span></td><td><button class="btn btn--sm" type="button">Abrir</button></td></tr>
+                  <tr class="row-alert"><td>Teste FCEA1 Solicitante</td><td>Assinável externo</td><td>Representante legal</td><td><span class="pill pill--danger">Aguardando</span></td><td><button class="btn btn--sm btn--danger" type="button">Cobrar</button></td></tr>
+                  <tr><td>Termo de contratação</td><td>Documento interno</td><td>Órgão</td><td><span class="pill pill--ok">24/02/2026</span></td><td><button class="btn btn--sm" type="button">Abrir</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail hidden" id="d-evento">
+          <div class="detail__head">
+            <div><div class="detail__crumb">Objeto</div><h1 class="detail__title">Evento e apresentação</h1></div>
+            <div class="detail__spacer"></div>
+            <div class="detail__actions"><span class="pill pill--ok">Conferido em 26/02/2026 por você</span></div>
+          </div>
+          <div class="panel">
+            <dl class="kv">
+              <div><dt>Objeto</dt><dd>Espetáculo de Circo — Suspiros e Burbujas</dd></div>
+              <div><dt>Unidade requisitante</dt><dd>Centro Cultural Grajaú</dd></div>
+              <div><dt>Data e horário</dt><dd>15/04/2026 · 14:00 – 15:00</dd></div>
+              <div><dt>Duração</dt><dd>01:00</dd></div>
+              <div><dt>Tipo</dt><dd>Espetáculo de Circo · Comédia</dd></div>
+              <div><dt>Público alvo</dt><dd>Criança · Classificação LIVRE</dd></div>
+              <div><dt>Valor da apresentação</dt><dd>R$ 5.500,00</dd></div>
+              <div><dt>Reversão de bilheteria</dt><dd>Não</dd></div>
+            </dl>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ------- PANE 3: rascunho da devolução ------- -->
+    <aside class="pane pane--draft" aria-label="Rascunho da devolução">
+      <div class="pane__head">
+        <h2>Devolução em rascunho</h2>
+        <span class="pill pill--danger" style="margin-left:auto">3 apontamentos</span>
+      </div>
+      <div class="pane__body" style="padding:14px">
+        <div class="finding">
+          <div class="finding__where">Contrato › Dados complementares</div>
+          <div class="finding__what">Informar o número do processo SEI.</div>
+          <button class="finding__rm" type="button">Remover apontamento</button>
+        </div>
+        <div class="finding">
+          <div class="finding__where">Contrato › Pagamento</div>
+          <div class="finding__what">Corrigir o vencimento da parcela única (gravado como 31/12/1969).</div>
+          <button class="finding__rm" type="button">Remover apontamento</button>
+        </div>
+        <div class="finding">
+          <div class="finding__where">Documentos › Assináveis externos</div>
+          <div class="finding__what">Coletar a assinatura do representante em “Teste FCEA1 Solicitante”.</div>
+          <button class="finding__rm" type="button">Remover apontamento</button>
+        </div>
+
+        <label class="panel__title" for="obs" style="display:block;margin-top:16px">Observação ao solicitante</label>
+        <textarea class="note" id="obs" placeholder="Texto livre que acompanha a devolução…">Prezada Elizabete, os itens acima precisam ser ajustados antes da homologação. As certidões vencem em 17/03/2026 — ajustar antes disso evita reemissão.</textarea>
+        <p class="hint">O e-mail de devolução lista os apontamentos e leva o solicitante direto ao campo citado.</p>
+      </div>
+      <div class="pane__foot" style="display:flex;gap:8px">
+        <button class="btn" type="button" style="flex:1">Salvar rascunho</button>
+        <button class="btn btn--danger" type="button" style="flex:1">Devolver</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+// master-detail: alterna o painel central conforme o item do roteiro
+var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
+var first = document.getElementById('d-ficha');
+
+function select(item) {
+  items.forEach(function (i) { i.classList.toggle('is-current', i === item); });
+  var target = document.getElementById(item.dataset.target);
+  document.querySelectorAll('.detail').forEach(function (d) { d.classList.add('hidden'); });
+  (target || first).classList.remove('hidden');
+  document.querySelector('.pane--detail .pane__body').scrollTop = 0;
+}
+
+items.forEach(function (item) { item.addEventListener('click', function () { select(item); }); });
+
+// navegação por teclado J/K entre itens do roteiro
+document.addEventListener('keydown', function (e) {
+  if (e.target.matches('input, textarea')) return;
+  var key = e.key.toLowerCase();
+  if (key !== 'j' && key !== 'k') return;
+  var current = document.querySelector('.item.is-current');
+  var idx = items.indexOf(current);
+  var next = items[key === 'j' ? Math.min(idx + 1, items.length - 1) : Math.max(idx - 1, 0)];
+  select(next);
+  next.scrollIntoView({ block: 'nearest' });
+});
+</script>
+</body>
+</html>

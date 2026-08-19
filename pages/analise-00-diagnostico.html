@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico UX — Tela de análise do pedido</title>
+<style>
+:root{
+  --c-primary:#1677ff; --c-primary-bg:#e6f4ff; --c-primary-border:#91caff;
+  --c-text:#1f1f1f; --c-text-2:#595959; --c-text-3:#8c8c8c;
+  --c-border:#d9d9d9; --c-border-2:#f0f0f0; --c-bg:#f5f5f5;
+  --c-danger:#ff4d4f; --c-danger-bg:#fff2f0; --c-danger-border:#ffccc7; --c-danger-text:#cf1322;
+  --c-warn:#faad14; --c-warn-bg:#fffbe6; --c-warn-border:#ffe58f; --c-warn-text:#ad6800;
+  --c-ok:#52c41a; --c-ok-bg:#f6ffed; --c-ok-border:#b7eb8f; --c-ok-text:#389e0d;
+  --radius:10px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);font-size:15px;line-height:1.62;color:var(--c-text);background:var(--c-bg)}
+h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.25}
+a{color:var(--c-primary)}
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+
+.hero{background:#fff;border-bottom:1px solid var(--c-border)}
+.hero__inner{max-width:1060px;margin:0 auto;padding:40px 22px 32px}
+.hero .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--c-text-3);font-weight:700}
+.hero h1{font-size:32px;margin:8px 0 10px;letter-spacing:-.4px}
+.hero p{margin:0;color:var(--c-text-2);max-width:74ch}
+.hero__stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:26px}
+.stat{border-left:3px solid var(--c-primary);padding-left:12px}
+.stat b{display:block;font-size:22px;line-height:1.2}
+.stat span{font-size:12.5px;color:var(--c-text-3)}
+.stat--danger{border-left-color:var(--c-danger)} .stat--danger b{color:var(--c-danger-text)}
+.stat--warn{border-left-color:var(--c-warn)} .stat--warn b{color:var(--c-warn-text)}
+
+section{padding:38px 0}
+.sect-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--c-text-3);font-weight:700;margin-bottom:6px}
+h2.big{font-size:24px;margin-bottom:18px;letter-spacing:-.2px}
+
+/* achados */
+.finding{background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;
+  display:grid;grid-template-columns:34px 1fr;gap:14px}
+.finding__n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;
+  background:var(--c-danger-bg);color:var(--c-danger-text);border:1px solid var(--c-danger-border)}
+.finding--warn .finding__n{background:var(--c-warn-bg);color:var(--c-warn-text);border-color:var(--c-warn-border)}
+.finding--info .finding__n{background:var(--c-primary-bg);color:#0958d9;border-color:var(--c-primary-border)}
+.finding h3{font-size:16px;margin-bottom:4px}
+.finding p{margin:0 0 8px;color:var(--c-text-2);font-size:14.5px}
+.finding .where{font-size:12.5px;color:var(--c-text-3);font-family:var(--mono)}
+.finding .fix{font-size:14px;background:var(--c-ok-bg);border:1px solid var(--c-ok-border);color:#237804;
+  border-radius:6px;padding:8px 12px;margin-top:8px}
+.finding .fix b{color:var(--c-ok-text)}
+
+/* diagrama de navegação */
+.nav-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.nav-compare{grid-template-columns:1fr}}
+.nav-box{background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);padding:18px 20px}
+.nav-box h3{font-size:15px;margin-bottom:12px}
+.tree{font-family:var(--mono);font-size:12.5px;line-height:1.85;color:var(--c-text-2);white-space:pre;overflow-x:auto;margin:0}
+.tree .deep{color:var(--c-danger-text)}
+.tree .flat{color:var(--c-ok-text)}
+.nav-box .metric{margin-top:12px;font-size:13px;color:var(--c-text-3)}
+.nav-box .metric b{color:var(--c-text)}
+
+/* opções */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.opt{background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.opt__top{padding:18px 20px 14px;border-bottom:1px solid var(--c-border-2)}
+.opt__tag{font-size:11px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;color:var(--c-primary)}
+.opt h3{font-size:18px;margin:4px 0 6px}
+.opt__sub{font-size:13.5px;color:var(--c-text-2);margin:0}
+.opt__body{padding:16px 20px;flex:1}
+.opt ul{margin:0;padding-left:18px;font-size:14px;color:var(--c-text-2)}
+.opt li{margin-bottom:5px}
+.opt__foot{padding:14px 20px;border-top:1px solid var(--c-border-2);display:flex;align-items:center;gap:10px}
+.btn{display:inline-block;border:1px solid var(--c-border);background:#fff;color:var(--c-text);border-radius:6px;
+  padding:7px 14px;font-size:13.5px;font-weight:500;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn--primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn--primary:hover{background:#4096ff;border-color:#4096ff;color:#fff}
+.who{font-size:12.5px;color:var(--c-text-3);margin-left:auto;text-align:right}
+
+/* wireframes */
+.wf{display:grid;gap:3px;background:var(--c-border-2);border:1px solid var(--c-border-2);border-radius:6px;overflow:hidden;height:118px;margin-bottom:14px}
+.wf div{background:#fff;display:grid;place-items:center;font-size:10px;color:var(--c-text-3);letter-spacing:.3px}
+.wf .accent{background:var(--c-primary-bg);color:#0958d9}
+.wf .warn{background:var(--c-warn-bg);color:var(--c-warn-text)}
+.wf--v1{grid-template-columns:52px 1fr 74px;grid-template-rows:20px 1fr 18px}
+.wf--v1 .full{grid-column:1/-1}
+.wf--v2{grid-template-columns:88px 1fr 84px;grid-template-rows:20px 1fr}
+.wf--v2 .full{grid-column:1/-1}
+.wf--v3{grid-template-columns:1fr 78px;grid-template-rows:20px 26px 1fr 18px}
+.wf--v3 .full{grid-column:1/-1}
+
+/* tabela comparativa */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);overflow:hidden;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--c-border-2);vertical-align:top}
+thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text-3);background:#fafafa}
+tbody tr:last-child td{border-bottom:0}
+td.yes{color:var(--c-ok-text);font-weight:600}
+td.no{color:var(--c-text-3)}
+.tbl-wrap{overflow-x:auto}
+
+.note{background:var(--c-primary-bg);border:1px solid var(--c-primary-border);border-radius:var(--radius);padding:16px 18px;font-size:14px;color:#0958d9}
+.note b{display:block;margin-bottom:3px}
+footer{padding:28px 0 60px;color:var(--c-text-3);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero__inner">
+    <div class="eyebrow">Porta de Entrada · SMC · Pedido de contratação</div>
+    <h1>Diagnóstico da tela de análise do pedido</h1>
+    <p>Leitura das 12 capturas da tela atual do pedido&nbsp;#11159 e três alternativas de interface construídas em HTML.
+       O foco é a tarefa real de quem abre essa tela: <b>decidir se o pedido pode ser homologado</b> — hoje isso exige percorrer
+       até três níveis de abas sem nenhum indicador do que está pendente.</p>
+    <div class="hero__stats">
+      <div class="stat stat--danger"><b>3</b><span>níveis de abas aninhadas</span></div>
+      <div class="stat stat--danger"><b>12</b><span>combinações de aba para ver tudo</span></div>
+      <div class="stat stat--warn"><b>0</b><span>indicadores de pendência na navegação</span></div>
+      <div class="stat stat--warn"><b>4.412px</b><span>altura da aba mais longa</span></div>
+      <div class="stat"><b>~30%</b><span>da largura ocupada pelo histórico</span></div>
+      <div class="stat stat--danger"><b>0</b><span>ações de decisão na tela</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ---------- ACHADOS ---------- -->
+  <section>
+    <div class="sect-title">Achados</div>
+    <h2 class="big">O que trava a análise hoje</h2>
+
+    <div class="finding">
+      <div class="finding__n">1</div>
+      <div>
+        <h3>Três níveis de abas escondem o estado do pedido</h3>
+        <p class="where">Dados Gerais / Artista / Proponente / Pedido de contratação / Documentos Adicionais → Informações Gerais / Documentos / Certidões PF-PJ / Listagem e Apenados → Anexos / Assináveis Externos / Documentos Internos</p>
+        <p>São 12 combinações de aba. Nenhuma delas mostra badge, contador ou cor. O analista precisa abrir todas para descobrir que faltam três coisas — e não tem como saber se já abriu todas.</p>
+        <div class="fix"><b>Correção:</b> um único nível de navegação, cada item com contador e cor de estado; e uma seção “Pendências” que consolida tudo o que bloqueia a homologação.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding__n">2</div>
+      <div>
+        <h3>A tela de homologação não tem onde homologar</h3>
+        <p class="where">Todas as capturas · rodapé e cabeçalho</p>
+        <p>O chip vermelho “Homologação” no topo é o nome do ambiente, não um status — e visualmente parece um alerta de erro. Não existe Aprovar, Devolver ou Reabrir em lugar nenhum da tela; a única dupla de botões (Cancelar/Salvar) aparece no meio da aba “Dados Gerais”, ligada só às fotos.</p>
+        <div class="fix"><b>Correção:</b> barra de decisão fixa no rodapé, com o motivo do bloqueio escrito ao lado do botão desabilitado. E o status do pedido separado do rótulo de ambiente.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding__n">3</div>
+      <div>
+        <h3>Validade de certidão é texto puro</h3>
+        <p class="where">Proponente › Certidões PF/PJ e Listagem e Apenados · 13 certidões</p>
+        <p>“Válido até: 17/03/2026” em cinza, sem prazo restante, sem cor, sem ordenação por risco, e dividido em duas sub-abas que o analista precisa comparar de cabeça. Certidão vencida invalida a assinatura do contrato — é o dado de maior consequência da tela, exibido com o menor destaque.</p>
+        <div class="fix"><b>Correção:</b> uma tabela única com coluna “prazo restante”, ordenável, colorida por faixa, e a data de referência declarada na tela.</div>
+      </div>
+    </div>
+
+    <div class="finding finding--warn">
+      <div class="finding__n">4</div>
+      <div>
+        <h3>Sub-abas quase vazias desperdiçam a tela inteira</h3>
+        <p class="where">Artista › Gerar Documentos (1 linha) · Documentos Adicionais (vazio) · Processos de Pagamento (1 card)</p>
+        <p>Uma navegação de dois cliques para chegar a uma linha de conteúdo, com 85% do viewport em branco. O custo de navegação é maior que o conteúdo entregue.</p>
+        <div class="fix"><b>Correção:</b> conteúdo curto vira seção dentro de uma página maior, não uma aba própria.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding__n">5</div>
+      <div>
+        <h3>Dados inválidos exibidos como se fossem normais</h3>
+        <p class="where">Pedido de contratação › Processos de Pagamento · Dados complementares</p>
+        <p><b>31/12/1969</b> é data nula (epoch) renderizada como data real. <b>Processo SEI</b> tem asterisco de obrigatório e está vazio, sem qualquer marcação de erro. Ambos passariam despercebidos numa análise rápida.</p>
+        <div class="fix"><b>Correção:</b> valores inválidos e obrigatórios vazios marcados em vermelho, elevados para a lista de pendências e com ação de correção ao lado.</div>
+      </div>
+    </div>
+
+    <div class="finding finding--warn">
+      <div class="finding__n">6</div>
+      <div>
+        <h3>O histórico ocupa 30% da largura em todas as abas</h3>
+        <p class="where">Coluna direita · 8 eventos com chips de transição, repetida em 12 telas</p>
+        <p>A trilha completa fica sempre visível e empurra o conteúdo principal para ~700px numa tela de 1428px. Enquanto isso, o item realmente acionável — a reabertura pendente e sua justificativa — fica no fim da coluna, abaixo da dobra.</p>
+        <div class="fix"><b>Correção:</b> lateral com a reabertura em aberto no topo e apenas os 3 últimos eventos; trilha completa vira tabela sob demanda.</div>
+      </div>
+    </div>
+
+    <div class="finding finding--warn">
+      <div class="finding__n">7</div>
+      <div>
+        <h3>Dados cadastrais em tabelas de grade pesada</h3>
+        <p class="where">Artista › Informações Gerais · Proponente › Informações Gerais</p>
+        <p>Pares rótulo/valor renderizados como tabela com todas as bordas, colunas de larguras diferentes entre blocos e células vazias como “-”. A grade compete com o dado; colunas longas (RG ou RNM) são cortadas sem scroll visível.</p>
+        <div class="fix"><b>Correção:</b> grade de definição sem bordas, rótulo pequeno acima do valor; tabela só onde há mais de uma linha real de dados.</div>
+      </div>
+    </div>
+
+    <div class="finding finding--info">
+      <div class="finding__n">8</div>
+      <div>
+        <h3>Muros de texto sem controle de leitura</h3>
+        <p class="where">Pedido de contratação › Dados complementares · ~1.900 palavras de justificativas</p>
+        <p>Três justificativas jurídicas em sequência, sem recolher, sem resumo e sem âncora — a aba passa de 4.400px de altura, e o cabeçalho do pedido some do topo durante a rolagem.</p>
+        <div class="fix"><b>Correção:</b> texto truncado com “ler tudo”, resumo de uma linha por justificativa e cabeçalho fixo com o número do pedido.</div>
+      </div>
+    </div>
+
+    <div class="finding finding--info">
+      <div class="finding__n">9</div>
+      <div>
+        <h3>Links e ações sem rótulo próprio</h3>
+        <p class="where">7× “Clique aqui para…” · botões de kebab sem nome · ícones de olho e download soltos</p>
+        <p>Links repetidos com o mesmo texto inicial são difíceis de distinguir em leitor de tela e na varredura visual. Ações ficam escondidas em menus de três pontos sem indicação do que contêm.</p>
+        <div class="fix"><b>Correção:</b> o nome do documento é o link; ações principais visíveis (Ver, Baixar, Reemitir), kebab só para o que é raro.</div>
+      </div>
+    </div>
+
+    <div class="finding finding--info">
+      <div class="finding__n">10</div>
+      <div>
+        <h3>Detalhes de conteúdo</h3>
+        <p>“Nenhuma documento adicional” (concordância); “Nacionalidade: Artista Internacional” — o campo mistura país com categoria contratual; “há 6 meses” sem a data absoluta ao lado; nome do arquivo bruto exposto (<span class="where">Relatorio_CertidaoNegativa_2026-02-19_055609.pdf</span>) onde caberia um rótulo legível.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- NAVEGAÇÃO ---------- -->
+  <section>
+    <div class="sect-title">Estrutura</div>
+    <h2 class="big">Profundidade de navegação</h2>
+    <div class="nav-compare">
+      <div class="nav-box">
+        <h3>Hoje — 3 níveis, 12 destinos</h3>
+<pre class="tree"><span class="deep">Pedido
+├─ Dados Gerais
+├─ Artista
+│  ├─ Informações Gerais
+│  ├─ Documentos Gerais
+│  └─ Gerar Documentos
+├─ Proponente
+│  ├─ Informações Gerais
+│  ├─ Documentos Gerais
+│  ├─ Certidões PF/PJ
+│  └─ Listagem e Apenados
+├─ Pedido de contratação
+│  ├─ Dados complementares
+│  ├─ Documentos/Assináveis
+│  │  ├─ Anexos
+│  │  ├─ Assináveis Externos
+│  │  └─ Documentos Internos
+│  └─ Processos de Pagamento
+└─ Documentos Adicionais</span></pre>
+        <div class="metric">Cliques para ver todo o pedido: <b>≥ 16</b> · Estado visível na navegação: <b>nenhum</b></div>
+      </div>
+      <div class="nav-box">
+        <h3>Proposto — 1 nível, estado à vista</h3>
+<pre class="tree"><span class="flat">Pedido  ·  barra de decisão sempre visível
+├─ ● Pendências ......... 3
+├─ ○ Evento e apresentação
+├─ ▲ Artista ............ 1
+├─ ○ Proponente
+├─ ▲ Certidões ......... 13
+├─ ● Contrato e pagamento
+├─ ● Documentos ......... 9
+├─ ○ Justificativas
+└─ ○ Histórico</span></pre>
+        <div class="metric">Cliques para ver todo o pedido: <b>0</b> (rolagem) a <b>7</b> · Estado visível: <b>cor + contador por seção</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- ALTERNATIVAS ---------- -->
+  <section>
+    <div class="sect-title">Propostas</div>
+    <h2 class="big">Três alternativas de interface</h2>
+    <div class="opts">
+
+      <article class="opt">
+        <div class="opt__top">
+          <div class="wf wf--v1">
+            <div class="full accent">cabeçalho fixo + status + ações</div>
+            <div>índice</div><div>seções em rolagem única</div><div class="warn">lateral</div>
+            <div class="full accent">barra de decisão</div>
+          </div>
+          <div class="opt__tag">Alternativa 1</div>
+          <h3>Dossiê</h3>
+          <p class="opt__sub">Documento único em rolagem, com índice lateral que mostra o estado de cada seção.</p>
+        </div>
+        <div class="opt__body">
+          <ul>
+            <li>Zero abas — tudo em uma página, cada seção recolhível</li>
+            <li>Índice fixo com bolinha de estado e contador por seção</li>
+            <li>Faixa de indicadores no topo (valor, data, SEI, certidões, pendências)</li>
+            <li>Justificativas longas com “ler tudo”</li>
+            <li>Barra de decisão fixa: <i>Homologar</i> desabilitado com o motivo ao lado</li>
+            <li>Imprime como dossiê sem retrabalho</li>
+          </ul>
+        </div>
+        <div class="opt__foot">
+          <a class="btn btn--primary" href="analise-v1-dossie.html">Abrir</a>
+          <span class="who">Melhor para<br>leitura completa e conferência formal</span>
+        </div>
+      </article>
+
+      <article class="opt">
+        <div class="opt__top">
+          <div class="wf wf--v2">
+            <div class="full accent">cabeçalho + progresso</div>
+            <div class="warn">roteiro<br>12 itens</div><div>detalhe do item</div><div class="warn">rascunho<br>devolução</div>
+          </div>
+          <div class="opt__tag">Alternativa 2</div>
+          <h3>Conferência</h3>
+          <p class="opt__sub">Roteiro de itens a verificar; o analista marca conforme ou aponta pendência e a devolução se monta sozinha.</p>
+        </div>
+        <div class="opt__body">
+          <ul>
+            <li>Três painéis fixos, só o conteúdo rola</li>
+            <li>Barra de progresso: “7 de 12 conferidos”</li>
+            <li>Cada item mostra o que mudou desde a última reabertura</li>
+            <li>Apontamentos viram o rascunho da devolução no painel direito</li>
+            <li>Teclado: <b>J/K</b> navega, <b>C</b> conforme, <b>P</b> pendência</li>
+            <li>Some com o “já conferi isso?” — o estado fica gravado por item</li>
+          </ul>
+        </div>
+        <div class="opt__foot">
+          <a class="btn btn--primary" href="analise-v2-checklist.html">Abrir</a>
+          <span class="who">Melhor para<br>quem analisa muitos pedidos por dia</span>
+        </div>
+      </article>
+
+      <article class="opt">
+        <div class="opt__top">
+          <div class="wf wf--v3">
+            <div class="full accent">cabeçalho + busca ⌘K</div>
+            <div class="full warn">tiles de risco</div>
+            <div>tabelas por visão</div><div>lateral</div>
+            <div class="full accent">barra de decisão</div>
+          </div>
+          <div class="opt__tag">Alternativa 3</div>
+          <h3>Cockpit</h3>
+          <p class="opt__sub">Painel de risco no topo e visões em tabela — densa, ordenável e filtrável.</p>
+        </div>
+        <div class="opt__body">
+          <ul>
+            <li>Seis tiles de risco levam direto ao problema</li>
+            <li>Um nível de visões: Resumo, Pessoas, Certidões, Documentos, Financeiro, Contrato, Histórico</li>
+            <li>Certidões e documentos como tabela ordenável por prazo e situação</li>
+            <li>Filtros: só pendências, vencendo em 30 dias, alterado na reabertura</li>
+            <li>Busca <b>⌘K</b> encontra qualquer campo sem caçar em aba</li>
+            <li>Barra de decisão fixa no rodapé</li>
+          </ul>
+        </div>
+        <div class="opt__foot">
+          <a class="btn btn--primary" href="analise-v3-cockpit.html">Abrir</a>
+          <span class="who">Melhor para<br>triagem rápida e coordenação</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ---------- COMPARATIVO ---------- -->
+  <section>
+    <div class="sect-title">Comparativo</div>
+    <h2 class="big">O que cada alternativa resolve</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:30%">Problema</th><th>Hoje</th><th>V1 Dossiê</th><th>V2 Conferência</th><th>V3 Cockpit</th></tr></thead>
+        <tbody>
+          <tr><td>Níveis de navegação</td><td class="no">3</td><td class="yes">0 (rolagem)</td><td class="yes">1 (roteiro)</td><td class="yes">1 (visões)</td></tr>
+          <tr><td>Pendências visíveis sem clicar</td><td class="no">Não</td><td class="yes">Sim</td><td class="yes">Sim</td><td class="yes">Sim</td></tr>
+          <tr><td>Prazo das certidões</td><td class="no">Texto puro</td><td class="yes">Tabela colorida</td><td class="yes">Ordenada por prazo</td><td class="yes">Ordenável + barra</td></tr>
+          <tr><td>Ação de homologar / devolver</td><td class="no">Ausente</td><td class="yes">Barra fixa</td><td class="yes">Devolução guiada</td><td class="yes">Barra fixa</td></tr>
+          <tr><td>Progresso da análise</td><td class="no">Não existe</td><td class="no">Parcial</td><td class="yes">7 de 12</td><td class="no">Parcial</td></tr>
+          <tr><td>O que mudou na reabertura</td><td class="no">Só texto da justificativa</td><td class="yes">Destaque na linha</td><td class="yes">Comparação antes/depois</td><td class="yes">Filtro dedicado</td></tr>
+          <tr><td>Busca dentro do pedido</td><td class="no">Não</td><td class="no">Índice</td><td class="no">Roteiro</td><td class="yes">⌘K global</td></tr>
+          <tr><td>Serve para imprimir</td><td class="no">Não</td><td class="yes">Sim</td><td class="no">Não</td><td class="no">Parcial</td></tr>
+          <tr><td>Esforço de implementação</td><td>—</td><td>Baixo</td><td>Alto (estado por item)</td><td>Médio</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="note">
+      <b>Recomendação</b>
+      Adotar a <b>V1 (Dossiê)</b> como a tela de visualização do pedido — ela resolve navegação, hierarquia e decisão com o menor
+      esforço e reaproveita os componentes existentes. Em seguida, incorporar da V3 a tabela de certidões com prazo, os tiles de
+      risco e a busca ⌘K. A V2 é a evolução natural quando houver estado de conferência persistido por item no backend —
+      ela transforma a análise em fluxo, e a devolução deixa de ser texto livre.
+    </div>
+  </section>
+
+  <footer>
+    Base: 12 capturas do pedido #11159 (LAGUZ · Suspiros e Burbujas), ambiente de homologação.
+    Data de referência usada nos protótipos: 26/02/2026. Dados exibidos são os das próprias capturas.
+  </footer>
+</div>
+</body>
+</html>

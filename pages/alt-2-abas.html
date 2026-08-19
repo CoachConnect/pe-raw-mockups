@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido 12345 — Visão por domínio</title>
+<style>
+:root {
+  --c-primary: #1677ff; --c-text: #1f1f1f; --c-text-secondary: #595959; --c-text-muted: #8c8c8c;
+  --c-border: #d9d9d9; --c-border-light: #f0f0f0; --c-bg: #f5f5f5; --c-card: #fff;
+  --c-danger: #ff4d4f; --radius: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; font-family: var(--font); font-size: 14px; line-height: 1.5; color: var(--c-text); background: var(--c-bg); }
+.skip-link { position: absolute; left: -9999px; top: 8px; background: var(--c-primary); color: #fff; padding: 10px 16px; border-radius: var(--radius); z-index: 20; }
+.skip-link:focus { left: 16px; }
+
+/* Cabeçalho persistente: identidade + dinheiro + situação nunca saem da tela */
+.sticky-head { position: sticky; top: 0; z-index: 10; background: var(--c-card); border-bottom: 1px solid var(--c-border); }
+.sticky-head__inner { max-width: 1080px; margin: 0 auto; padding: 14px 24px 0; }
+.identity { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.identity__main { min-width: 0; }
+.identity__number { font-family: var(--mono); font-size: 12px; color: var(--c-text-muted); }
+.identity__title { font-size: 20px; font-weight: 600; margin: 2px 0 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.identity__sub { font-size: 13px; color: var(--c-text-secondary); margin: 3px 0 0; }
+.identity__aside { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.headline-money { text-align: right; }
+.headline-money__label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--c-text-muted); display: block; }
+.headline-money__value { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.actions { display: flex; gap: 8px; }
+
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid #91caff; background: #e6f4ff; color: #0958d9; }
+.chip--ok { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; }
+.chip--muted { background: #fafafa; border-color: var(--c-border); color: var(--c-text-muted); }
+
+.tabs { display: flex; gap: 4px; margin-top: 14px; overflow-x: auto; }
+.tab {
+  border: none; background: none; font-family: inherit; font-size: 14px; cursor: pointer;
+  padding: 10px 14px; color: var(--c-text-secondary); border-bottom: 2px solid transparent; white-space: nowrap;
+}
+.tab:hover { color: var(--c-text); }
+.tab[aria-selected="true"] { color: var(--c-primary); border-bottom-color: var(--c-primary); font-weight: 600; }
+.tab:focus-visible { outline: 2px solid var(--c-primary); outline-offset: -4px; border-radius: 4px; }
+.tab__count { font-size: 11px; color: var(--c-text-muted); margin-left: 4px; }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 24px; }
+.panel:focus { outline: none; }
+.card { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.card__title { font-size: 15px; font-weight: 600; margin: 0 0 14px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.card__link { font-size: 12px; font-weight: 500; color: var(--c-primary); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+.card__link:hover { text-decoration: underline; }
+
+/* Visão geral: cartões de resposta rápida, um por pergunta do usuário */
+.overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.qa { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 16px; }
+.qa__q { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--c-text-muted); margin: 0 0 6px; }
+.qa__a { font-size: 17px; font-weight: 600; margin: 0; line-height: 1.35; }
+.qa__hint { font-size: 12px; color: var(--c-text-secondary); margin: 4px 0 0; }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px 24px; margin: 0; }
+.fact--full { grid-column: 1 / -1; }
+.fact__label { font-size: 12px; color: var(--c-text-secondary); margin: 0 0 2px; }
+.fact__value { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+.fact__value--long { font-weight: 400; max-width: 70ch; }
+.money { font-variant-numeric: tabular-nums; }
+
+.occurrences { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.occurrence { border: 1px solid var(--c-border); border-radius: 6px; padding: 6px 10px; font-size: 12px; text-align: center; background: #fafafa; }
+.occurrence strong { display: block; font-size: 15px; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.stat { border: 1px solid var(--c-border-light); border-radius: var(--radius); padding: 12px 14px; }
+.stat--total { background: #f0f7ff; border-color: #91caff; }
+.stat__label { font-size: 12px; color: var(--c-text-secondary); }
+.stat__value { font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.is-negative { color: var(--c-danger); } .is-positive { color: #389e0d; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 9px 10px; border-bottom: 1px solid var(--c-border-light); text-align: left; }
+thead th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--c-text-secondary); background: #fafafa; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tfoot td { font-weight: 600; border-top: 2px solid var(--c-border); }
+
+.timeline { list-style: none; margin: 0; padding-left: 6px; }
+.timeline__item { position: relative; padding: 0 0 18px 22px; border-left: 2px solid var(--c-border-light); }
+.timeline__item:last-child { border-left-color: transparent; padding-bottom: 0; }
+.timeline__item::before { content: ""; position: absolute; left: -7px; top: 3px; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid var(--c-border); }
+.timeline__item--done::before { background: #52c41a; border-color: #52c41a; }
+.timeline__item--current::before { background: var(--c-primary); border-color: var(--c-primary); box-shadow: 0 0 0 3px #e6f4ff; }
+.timeline__title { font-weight: 600; font-size: 13px; }
+.timeline__meta { font-size: 12px; color: var(--c-text-secondary); }
+
+.btn { border: 1px solid var(--c-border); border-radius: var(--radius); padding: 7px 14px; font-size: 13px; font-weight: 500; background: #fff; cursor: pointer; font-family: inherit; color: var(--c-text); }
+.btn:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.btn--primary { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+.rationale { max-width: 1080px; margin: 0 auto; padding: 0 24px 32px; font-size: 12px; color: var(--c-text-muted); }
+
+@media (max-width: 720px) {
+  .identity__aside { width: 100%; justify-content: space-between; }
+  .headline-money { text-align: left; }
+}
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#painel">Ir para o conteúdo</a>
+
+  <header class="sticky-head">
+    <div class="sticky-head__inner">
+      <div class="identity">
+        <div class="identity__main">
+          <span class="identity__number">Pedido nº 12345</span>
+          <h1 class="identity__title">Cia. de Dança Movimento <span class="chip">Enviado</span></h1>
+          <p class="identity__sub">Teatro Municipal · 10/09 a 12/09/2026 · Secretaria Municipal de Cultura</p>
+        </div>
+        <div class="identity__aside">
+          <div class="headline-money">
+            <span class="headline-money__label">Total da solicitação</span>
+            <span class="headline-money__value" id="headTotal">—</span>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn">Imprimir</button>
+            <button type="button" class="btn btn--primary">Encaminhar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Domínios do pedido">
+        <button type="button" class="tab" role="tab" id="tab-geral" aria-controls="panel-geral" aria-selected="true" tabindex="0">Visão geral</button>
+        <button type="button" class="tab" role="tab" id="tab-evento" aria-controls="panel-evento" aria-selected="false" tabindex="-1">Evento<span class="tab__count" id="countOcorrencias"></span></button>
+        <button type="button" class="tab" role="tab" id="tab-financeiro" aria-controls="panel-financeiro" aria-selected="false" tabindex="-1">Financeiro<span class="tab__count" id="countReservas"></span></button>
+        <button type="button" class="tab" role="tab" id="tab-contexto" aria-controls="panel-contexto" aria-selected="false" tabindex="-1">Contexto administrativo</button>
+        <button type="button" class="tab" role="tab" id="tab-historico" aria-controls="panel-historico" aria-selected="false" tabindex="-1">Histórico</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="painel">
+    <div class="panel" role="tabpanel" id="panel-geral" aria-labelledby="tab-geral" tabindex="-1">
+      <div class="overview" id="overviewCards"></div>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-evento" aria-labelledby="tab-evento" tabindex="-1" hidden>
+      <section class="card">
+        <h2 class="card__title">Quando acontece</h2>
+        <dl class="facts" id="gridQuando"></dl>
+        <div id="occurrencesBlock"></div>
+      </section>
+      <section class="card">
+        <h2 class="card__title">Onde e como</h2>
+        <dl class="facts" id="gridOnde"></dl>
+      </section>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-financeiro" aria-labelledby="tab-financeiro" tabindex="-1" hidden>
+      <section class="card">
+        <h2 class="card__title">Composição do valor</h2>
+        <div class="stats" id="statsGrid"></div>
+      </section>
+      <section class="card">
+        <h2 class="card__title">Reservas vinculadas <span class="card__link" id="reservaLabel"></span></h2>
+        <table>
+          <thead><tr><th scope="col">Número</th><th scope="col" class="num">Valor</th></tr></thead>
+          <tbody id="reservasBody"></tbody>
+          <tfoot id="reservasFoot"></tfoot>
+        </table>
+      </section>
+      <section class="card" id="despesasCard"></section>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-contexto" aria-labelledby="tab-contexto" tabindex="-1" hidden>
+      <section class="card">
+        <h2 class="card__title">Contexto administrativo</h2>
+        <dl class="facts" id="gridContexto"></dl>
+      </section>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-historico" aria-labelledby="tab-historico" tabindex="-1" hidden>
+      <section class="card">
+        <h2 class="card__title">Tramitação</h2>
+        <ol class="timeline" id="timeline"></ol>
+      </section>
+    </div>
+  </main>
+
+  <p class="rationale"><strong>Quando usar:</strong> registro consultado várias vezes por perfis diferentes (fiscal quer o dinheiro, agenda quer as datas).
+  O cabeçalho fixo responde “que pedido é esse e quanto custa” sempre; cada aba isola um domínio, e a Visão geral responde as 5 perguntas mais frequentes sem obrigar a navegar.</p>
+
+<script>
+  const DATA = {
+    numero: '12345', status: 'Enviado', enviadoEm: '2026-08-14T13:42:00.000Z',
+    solicitante: 'Alexandre H. Siroma',
+    unidadeGestora: 'Secretaria Municipal de Cultura', unidadeSolicitante: 'Gabinete do Vereador B',
+    justificativa: 'Apresentação de dança contemporânea gratuita e aberta ao público, integrando o calendário cultural da região central. A emenda custeia o cachê do grupo e a montagem técnica do espetáculo.',
+    artista: 'Cia. de Dança Movimento', tipoArtista: 'Grupo/Coletivo',
+    local: 'Teatro Municipal', diaInteiro: false,
+    dataInicio: '2026-09-10', dataFim: '2026-09-12', horaInicio: '19:00', horaFim: '21:00',
+    duracao: 120, recorrencia: 'Diariamente', bilheteria: false, conflitoDatas: false,
+    cache: 15000,
+    despesas: { possui: true, valor: 3200, justificativa: 'Locação de equipamento de som e iluminação cênica não disponível no equipamento público, além de transporte de cenário.' },
+    reservaOrcamentaria: 'Reserva 2026/001 — Cultura',
+    reservas: [{ numero: 'RES-2026-0032', valor: 12000 }, { numero: 'RES-2026-0033', valor: 6200 }],
+    historico: [
+      { titulo: 'Rascunho criado', meta: 'Alexandre H. Siroma', at: '2026-08-14T12:10:00.000Z', estado: 'done' },
+      { titulo: 'Solicitação enviada', meta: 'Alexandre H. Siroma', at: '2026-08-14T13:42:00.000Z', estado: 'current' },
+      { titulo: 'Análise da unidade gestora', meta: 'Pendente', at: null, estado: 'todo' },
+    ],
+  };
+
+  const money = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const dmy = (iso) => { const [y, m, d] = iso.split('-'); return `${d}/${m}/${y}`; };
+  const dateTime = (iso) => new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const weekday = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', ''); };
+  const h = (value) => { const div = document.createElement('div'); div.textContent = value == null ? '' : value; return div.innerHTML; };
+  const el = (id) => document.getElementById(id);
+
+  const despesas = DATA.despesas.possui ? DATA.despesas.valor : 0;
+  const total = DATA.cache + despesas;
+  const alocado = DATA.reservas.reduce((sum, item) => sum + item.valor, 0);
+  const saldo = alocado - total;
+
+  /* Recorrência diária expandida — a data solta esconde quantas vezes o evento ocorre. */
+  function occurrences() {
+    if (DATA.recorrencia !== 'Diariamente') return [DATA.dataInicio];
+    const toDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+    const list = [];
+    const end = toDate(DATA.dataFim);
+    for (let cursor = toDate(DATA.dataInicio); cursor <= end; cursor.setDate(cursor.getDate() + 1)) {
+      list.push(`${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`);
+    }
+    return list;
+  }
+  const dates = occurrences();
+  const periodo = DATA.dataInicio === DATA.dataFim ? dmy(DATA.dataInicio) : `${dmy(DATA.dataInicio)} a ${dmy(DATA.dataFim)}`;
+  const horario = DATA.diaInteiro ? 'Dia inteiro' : `${DATA.horaInicio} às ${DATA.horaFim}`;
+
+  const facts = (items) => items.map((item) => `
+    <div class="${item.full ? 'fact--full' : ''}">
+      <dt class="fact__label">${h(item.label)}</dt>
+      <dd class="fact__value ${item.long ? 'fact__value--long' : ''}">${item.html || h(item.value)}</dd>
+    </div>`).join('');
+
+  /* Cabeçalho */
+  el('headTotal').textContent = money(total);
+  el('countOcorrencias').textContent = `(${dates.length})`;
+  el('countReservas').textContent = `(${DATA.reservas.length})`;
+
+  /* Visão geral — uma pergunta por cartão, com atalho para o domínio completo */
+  el('overviewCards').innerHTML = [
+    { q: 'Quem será contratado', a: DATA.artista, hint: DATA.tipoArtista, tab: 'contexto' },
+    { q: 'Quando', a: periodo, hint: `${dates.length} ${dates.length === 1 ? 'ocorrência' : 'ocorrências'} · ${horario}`, tab: 'evento' },
+    { q: 'Onde', a: DATA.local, hint: DATA.bilheteria ? 'Evento com bilheteria' : 'Evento sem bilheteria', tab: 'evento' },
+    { q: 'Quanto custa', a: money(total), hint: `Cachê ${money(DATA.cache)} + despesas ${money(despesas)}`, tab: 'financeiro' },
+    { q: 'Está coberto por reservas', a: saldo >= 0 ? 'Sim, integralmente' : `Não — faltam ${money(Math.abs(saldo))}`, hint: `${money(alocado)} alocados em ${DATA.reservas.length} reservas`, tab: 'financeiro' },
+    { q: 'Em que etapa está', a: DATA.status, hint: `Enviado em ${dateTime(DATA.enviadoEm)}`, tab: 'historico' },
+  ].map((item) => `
+    <article class="qa">
+      <h2 class="qa__q">${h(item.q)}</h2>
+      <p class="qa__a">${h(item.a)}</p>
+      <p class="qa__hint">${h(item.hint)}</p>
+      <button type="button" class="card__link" data-goto="${item.tab}">Ver detalhes →</button>
+    </article>`).join('');
+
+  /* Aba Evento */
+  el('gridQuando').innerHTML = facts([
+    { label: 'Período', value: periodo },
+    { label: 'Horário', value: horario },
+    { label: 'Duração por ocorrência', value: DATA.duracao ? `${DATA.duracao} min` : 'Não informado' },
+    { label: 'Recorrência', value: DATA.recorrencia },
+  ]);
+  el('occurrencesBlock').innerHTML = `
+    <p class="fact__label" style="margin-top:16px">Ocorrências previstas (${dates.length})</p>
+    <div class="occurrences">
+      ${dates.map((date) => `<div class="occurrence">${h(weekday(date))}<strong>${h(dmy(date).slice(0, 5))}</strong></div>`).join('')}
+    </div>`;
+  el('gridOnde').innerHTML = facts([
+    { label: 'Local', value: DATA.local },
+    { label: 'Bilheteria', html: DATA.bilheteria ? '<span class="chip chip--ok">Com bilheteria</span>' : '<span class="chip chip--muted">Sem bilheteria</span>' },
+    { label: 'Conflito de datas', html: DATA.conflitoDatas ? '<span class="chip chip--ok">Permitido</span>' : '<span class="chip chip--muted">Não permitido</span>' },
+  ]);
+
+  /* Aba Financeiro */
+  el('statsGrid').innerHTML = `
+    <div class="stat"><div class="stat__label">Cachê</div><div class="stat__value">${h(money(DATA.cache))}</div></div>
+    <div class="stat"><div class="stat__label">Despesas extraordinárias</div><div class="stat__value">${h(money(despesas))}</div></div>
+    <div class="stat stat--total"><div class="stat__label">Total</div><div class="stat__value">${h(money(total))}</div></div>
+    <div class="stat"><div class="stat__label">Alocado</div><div class="stat__value">${h(money(alocado))}</div></div>
+    <div class="stat"><div class="stat__label">Saldo</div><div class="stat__value ${saldo < 0 ? 'is-negative' : (saldo > 0 ? 'is-positive' : '')}">${h(money(saldo))}</div></div>`;
+  el('reservaLabel').textContent = DATA.reservaOrcamentaria;
+  el('reservasBody').innerHTML = DATA.reservas.map((reserva) =>
+    `<tr><td>${h(reserva.numero)}</td><td class="num">${h(money(reserva.valor))}</td></tr>`).join('');
+  el('reservasFoot').innerHTML = `<tr><td>Total alocado</td><td class="num">${h(money(alocado))}</td></tr>`;
+  el('despesasCard').innerHTML = DATA.despesas.possui
+    ? `<h2 class="card__title">Despesas extraordinárias</h2>
+       <dl class="facts">${facts([
+          { label: 'Valor', value: money(DATA.despesas.valor) },
+          { label: 'Justificativa', value: DATA.despesas.justificativa, long: true, full: true },
+        ])}</dl>`
+    : '<h2 class="card__title">Despesas extraordinárias</h2><p class="fact__value">Nenhuma despesa declarada além do cachê.</p>';
+
+  /* Aba Contexto */
+  el('gridContexto').innerHTML = facts([
+    { label: 'Unidade gestora do evento', value: DATA.unidadeGestora },
+    { label: 'Unidade solicitante', value: DATA.unidadeSolicitante },
+    { label: 'Artista/grupo/coletivo', value: DATA.artista },
+    { label: 'Tipo de artista', value: DATA.tipoArtista },
+    { label: 'Justificativa da solicitação', value: DATA.justificativa, long: true, full: true },
+  ]);
+
+  /* Aba Histórico */
+  el('timeline').innerHTML = DATA.historico.map((item) => `
+    <li class="timeline__item timeline__item--${item.estado}">
+      <div class="timeline__title">${h(item.titulo)}</div>
+      <div class="timeline__meta">${h(item.meta)}${item.at ? ` · ${h(dateTime(item.at))}` : ''}</div>
+    </li>`).join('');
+
+  /* Abas: padrão ARIA (setas, Home/End) + deep link por hash */
+  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+  function activate(id, { focus = true } = {}) {
+    tabs.forEach((tab) => {
+      const selected = tab.id === `tab-${id}`;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      el(tab.getAttribute('aria-controls')).hidden = !selected;
+      if (selected && focus) tab.focus();
+    });
+    location.hash = id;
+  }
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => activate(tab.id.replace('tab-', ''), { focus: false }));
+    tab.addEventListener('keydown', (event) => {
+      const index = tabs.indexOf(tab);
+      const map = { ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: tabs.length - 1 };
+      if (!(event.key in map)) return;
+      event.preventDefault();
+      const next = tabs[(map[event.key] + tabs.length) % tabs.length];
+      activate(next.id.replace('tab-', ''));
+    });
+  });
+  document.addEventListener('click', (event) => {
+    const target = event.target.closest('[data-goto]');
+    if (target) { activate(target.dataset.goto, { focus: false }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  });
+  const fromHash = location.hash.replace('#', '');
+  if (tabs.some((tab) => tab.id === `tab-${fromHash}`)) activate(fromHash, { focus: false });
+</script>
+</body>
+</html>

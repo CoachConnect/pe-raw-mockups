@@ -1,49 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
-    <title>Accessible Web Page</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockups PE — Índice</title>
+<style>
+:root{
+  --c-primary:#1677ff; --c-primary-bg:#e6f4ff; --c-primary-border:#91caff;
+  --c-text:#1f1f1f; --c-text-2:#595959; --c-text-3:#8c8c8c;
+  --c-border:#d9d9d9; --c-border-2:#f0f0f0; --c-bg:#f5f5f5; --c-card:#fff;
+  --c-ok:#52c41a; --c-ok-bg:#f6ffed; --c-ok-border:#b7eb8f; --c-ok-text:#389e0d;
+  --radius:8px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --appbar-h:56px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);font-size:14px;line-height:1.5;color:var(--c-text);background:var(--c-bg)}
+a{color:var(--c-primary)}
+h1,h2{margin:0;font-weight:600}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--c-primary);color:#fff;padding:10px 16px;border-radius:var(--radius);z-index:99}
+.skip:focus{left:16px}
+
+/* ---------- app bar ---------- */
+.appbar{position:sticky;top:0;z-index:30;height:var(--appbar-h);background:#fff;border-bottom:1px solid var(--c-border);
+  display:flex;align-items:center;gap:16px;padding:0 20px}
+.appbar__title{font-size:15px;font-weight:600;letter-spacing:.2px}
+.appbar__spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;
+  background:var(--c-primary-bg);color:#0958d9;border:1px solid var(--c-primary-border)}
+.pill--neutral{background:#fafafa;color:var(--c-text-2);border-color:var(--c-border)}
+.pill--ok{background:var(--c-ok-bg);color:var(--c-ok-text);border-color:var(--c-ok-border)}
+
+/* ---------- layout ---------- */
+.layout{max-width:1000px;margin:0 auto;padding:28px 20px 64px}
+.page__head{margin-bottom:20px}
+.page__head h1{font-size:20px}
+.page__head p{margin:6px 0 0;color:var(--c-text-2)}
+.subhead{font-size:13px;font-weight:600;color:var(--c-text-2);text-transform:uppercase;letter-spacing:.4px;margin:0 0 12px}
+
+/* ---------- cartões de link ---------- */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));list-style:none;margin:0;padding:0}
+.mock{display:flex;flex-direction:column;gap:8px;background:var(--c-card);border:1px solid var(--c-border-2);border-radius:var(--radius);
+  padding:18px;text-decoration:none;color:inherit;height:100%;transition:border-color .15s,box-shadow .15s,transform .15s}
+.mock:hover{border-color:var(--c-primary-border);box-shadow:0 4px 14px rgba(22,119,255,.12);transform:translateY(-1px)}
+.mock:focus-visible{outline:2px solid var(--c-primary);outline-offset:2px}
+.mock__head{display:flex;align-items:center;gap:12px}
+.mock__head h2{font-size:15px}
+.mock__head .pill{margin-left:auto}
+.mock__desc{margin:0;font-size:13px;color:var(--c-text-2)}
+.mock__path{font-family:var(--mono);font-size:12px;color:var(--c-text-3);word-break:break-all}
+.mock__go{margin-top:auto;padding-top:6px;font-size:13px;font-weight:600;color:var(--c-primary);display:inline-flex;align-items:center;gap:6px}
+.mock:hover .mock__go{gap:10px}
+</style>
 </head>
 <body>
-    <header>
-        <nav aria-label="Main Navigation">
-            <ul>
-                <li><a href="#main-content">Skip to main content</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+<a class="skip" href="#main-content">Ir para o conteúdo</a>
 
-    <main id="main-content">
-        <h1>Main Page Title</h1>
-        <p>This page uses clean, semantic HTML structure to maximize compatibility with assistive tech.</p>
-        
-        <section id="about">
-            <h2>About Us</h2>
-            <p>Content goes here in clear, plain language.</p>
-        </section>
+<header class="appbar">
+  <span class="appbar__title">Mockups PE</span>
+  <span class="appbar__spacer"></span>
+  <span class="pill pill--neutral">2 telas</span>
+</header>
 
-        <section id="contact">
-            <h2>Contact Form</h2>
-            <form action="#" method="post">
-                <div>
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div>
-                    <label for="msg">Message:</label>
-                    <textarea id="msg" name="msg" required></textarea>
-                </div>
-                <div>
-                    <button type="submit">Send Message</button>
-                </div>
-            </form>
-        </section>
-    </main>
+<main class="layout" id="main-content">
+  <div class="page__head">
+    <h1>Protótipos de referência</h1>
+    <p>Mockups estáticos para validação de fluxo e layout antes da implementação.</p>
+  </div>
 
-    <footer>
-        <p>&copy; 2026 Simple HTML Site</p>
-    </footer>
+  <h2 class="subhead">Telas disponíveis</h2>
+  <ul class="grid">
+    <li>
+      <a class="mock" href="pages/criacao-emenda-v2.html">
+        <span class="mock__head">
+          <h2>Criação de Emenda</h2>
+          <span class="pill">v2</span>
+        </span>
+        <p class="mock__desc">Formulário por blocos com navegação lateral e status de preenchimento por seção.</p>
+        <span class="mock__path">pages/criacao-emenda-v2.html</span>
+        <span class="mock__go">Abrir mockup <span aria-hidden="true">&rarr;</span></span>
+      </a>
+    </li>
+    <li>
+      <a class="mock" href="pages/analise-v1-dossie.html">
+        <span class="mock__head">
+          <h2>Análise — Dossiê</h2>
+          <span class="pill">v1</span>
+        </span>
+        <p class="mock__desc">Visão de análise em formato de documento, com faixa de indicadores e índice de seções.</p>
+        <span class="mock__path">pages/analise-v1-dossie.html</span>
+        <span class="mock__go">Abrir mockup <span aria-hidden="true">&rarr;</span></span>
+      </a>
+    </li>
+  </ul>
+</main>
 </body>
 </html>

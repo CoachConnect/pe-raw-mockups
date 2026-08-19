@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V3 · Cockpit — Pedido 11159</title>
+<style>
+:root{
+  --c-primary:#1677ff; --c-primary-bg:#e6f4ff; --c-primary-border:#91caff;
+  --c-text:#1f1f1f; --c-text-2:#595959; --c-text-3:#8c8c8c;
+  --c-border:#d9d9d9; --c-border-2:#f0f0f0; --c-bg:#f5f5f5; --c-card:#fff;
+  --c-danger:#ff4d4f; --c-danger-bg:#fff2f0; --c-danger-border:#ffccc7; --c-danger-text:#cf1322;
+  --c-warn:#faad14; --c-warn-bg:#fffbe6; --c-warn-border:#ffe58f; --c-warn-text:#ad6800;
+  --c-ok:#52c41a; --c-ok-bg:#f6ffed; --c-ok-border:#b7eb8f; --c-ok-text:#389e0d;
+  --radius:8px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);font-size:13.5px;line-height:1.5;color:var(--c-text);background:var(--c-bg)}
+h1,h2,h3{margin:0;font-weight:600}
+button,input,select{font-family:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.wrap{max-width:1560px;margin:0 auto;padding:0 18px}
+
+.btn{border:1px solid var(--c-border);background:#fff;color:var(--c-text);border-radius:6px;padding:5px 12px;font-size:12.5px;font-weight:500;cursor:pointer}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn--primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn--primary:hover{background:#4096ff;border-color:#4096ff;color:#fff}
+.btn--danger{border-color:var(--c-danger-border);color:var(--c-danger-text)}
+.btn--danger:hover{background:var(--c-danger-bg);border-color:var(--c-danger)}
+.btn--xs{padding:2px 8px;font-size:11.5px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:1px 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap;
+  background:#fafafa;color:var(--c-text-2);border:1px solid var(--c-border)}
+.pill--ok{background:var(--c-ok-bg);color:var(--c-ok-text);border-color:var(--c-ok-border)}
+.pill--warn{background:var(--c-warn-bg);color:var(--c-warn-text);border-color:var(--c-warn-border)}
+.pill--danger{background:var(--c-danger-bg);color:var(--c-danger-text);border-color:var(--c-danger-border)}
+.pill--info{background:var(--c-primary-bg);color:#0958d9;border-color:var(--c-primary-border)}
+
+/* ---------- topo ---------- */
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--c-border)}
+.top__row{display:flex;align-items:center;gap:14px;height:54px}
+.top__num{font-family:var(--mono);font-weight:600;font-size:15px}
+.top__name{color:var(--c-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38ch}
+.top__spacer{flex:1}
+.search{display:flex;align-items:center;gap:8px;border:1px solid var(--c-border);border-radius:999px;padding:5px 12px;width:340px;background:#fafafa}
+.search:focus-within{border-color:var(--c-primary);background:#fff}
+.search input{border:0;background:transparent;outline:0;flex:1;font-size:13px}
+.kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--c-border);border-bottom-width:2px;border-radius:4px;padding:0 5px;color:var(--c-text-3);background:#fff}
+
+/* ---------- painel de risco ---------- */
+.risk{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;padding:16px 0}
+.tile{background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);padding:12px 14px;border-top:3px solid var(--c-border);
+  display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left}
+.tile:hover{border-color:var(--c-primary);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.tile--danger{border-top-color:var(--c-danger)} .tile--warn{border-top-color:var(--c-warn)} .tile--ok{border-top-color:var(--c-ok)}
+.tile__label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text-3);font-weight:700}
+.tile__value{font-size:17px;font-weight:600;line-height:1.3}
+.tile--danger .tile__value{color:var(--c-danger-text)} .tile--warn .tile__value{color:var(--c-warn-text)}
+.tile__hint{font-size:12px;color:var(--c-text-3)}
+
+/* ---------- visões (um nível só) ---------- */
+.views{display:flex;gap:4px;background:#fff;border:1px solid var(--c-border-2);border-radius:999px;padding:4px;width:max-content;margin-bottom:14px}
+.views button{border:0;background:transparent;border-radius:999px;padding:6px 16px;font-size:13px;color:var(--c-text-2);cursor:pointer;font-weight:500}
+.views button:hover{background:#fafafa;color:var(--c-text)}
+.views button[aria-selected="true"]{background:var(--c-primary);color:#fff}
+.views .badge{margin-left:6px;font-size:11px;background:rgba(0,0,0,.08);border-radius:999px;padding:0 6px}
+.views button[aria-selected="true"] .badge{background:rgba(255,255,255,.25)}
+
+/* ---------- filtros ---------- */
+.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--c-border);background:#fff;border-radius:999px;padding:3px 12px;font-size:12.5px;color:var(--c-text-2);cursor:pointer}
+.chip:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.chip[aria-pressed="true"]{background:var(--c-primary-bg);border-color:var(--c-primary-border);color:#0958d9;font-weight:600}
+.filters__count{margin-left:auto;font-size:12px;color:var(--c-text-3)}
+
+/* ---------- grade ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start;padding-bottom:80px}
+@media (max-width:1200px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);margin-bottom:16px}
+.card__head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--c-border-2)}
+.card__head h2{font-size:14px}
+.card__head .pill{margin-left:auto}
+.card__body{padding:16px}
+.card__body--flush{padding:0}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--c-text-3);font-weight:700;
+  padding:9px 14px;border-bottom:1px solid var(--c-border);white-space:nowrap;position:sticky;top:54px;background:#fff;z-index:1}
+.tbl th[data-sort]{cursor:pointer;user-select:none}
+.tbl th[data-sort]:hover{color:var(--c-primary)}
+.tbl th[data-sort]::after{content:" ⇅";color:var(--c-border)}
+.tbl th[aria-sort="ascending"]::after{content:" ↑";color:var(--c-primary)}
+.tbl th[aria-sort="descending"]::after{content:" ↓";color:var(--c-primary)}
+.tbl td{padding:9px 14px;border-bottom:1px solid var(--c-border-2);vertical-align:middle}
+.tbl tbody tr:hover{background:#fafafa}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl .mono{font-family:var(--mono);font-size:12.5px}
+.tbl-wrap{overflow-x:auto}
+tr.row-danger{background:var(--c-danger-bg)} tr.row-danger:hover{background:#ffe7e5}
+tr.row-warn{background:var(--c-warn-bg)} tr.row-warn:hover{background:#fff4d6}
+
+.bar{height:5px;border-radius:999px;background:var(--c-border-2);overflow:hidden;width:82px;display:inline-block;vertical-align:middle;margin-right:8px}
+.bar span{display:block;height:100%}
+.bar--warn span{background:var(--c-warn)} .bar--ok span{background:var(--c-ok)} .bar--danger span{background:var(--c-danger)}
+
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px 22px;margin:0}
+.kv div{min-width:0}.kv dt{font-size:11.5px;color:var(--c-text-3);margin:0 0 1px}
+.kv dd{margin:0;word-break:break-word}
+.kv dd.mono{font-family:var(--mono);font-size:12.5px}
+.kv dd .miss{color:var(--c-danger-text);font-weight:600}
+
+.alert{display:flex;gap:10px;padding:11px 13px;border-radius:var(--radius);font-size:13px;border:1px solid;margin-bottom:12px}
+.alert--warn{background:var(--c-warn-bg);border-color:var(--c-warn-border);color:var(--c-warn-text)}
+.alert--danger{background:var(--c-danger-bg);border-color:var(--c-danger-border);color:var(--c-danger-text)}
+.alert--info{background:var(--c-primary-bg);border-color:var(--c-primary-border);color:#0958d9}
+.alert b:first-child{display:block}
+
+.side .card__body{padding:14px}
+.timeline{list-style:none;margin:0;padding:0 0 0 16px;border-left:2px solid var(--c-border-2)}
+.timeline li{position:relative;padding:0 0 14px 6px}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:-22px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--c-ok)}
+.timeline__when{font-size:11px;color:var(--c-text-3)}
+.timeline__what{font-size:12.5px;font-weight:500}
+
+.footbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--c-border);z-index:25;box-shadow:0 -2px 8px rgba(0,0,0,.05)}
+.footbar__inner{max-width:1560px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:12px}
+.footbar__spacer{flex:1}
+
+/* ---------- paleta de comandos ---------- */
+.palette{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-start;justify-content:center;padding-top:12vh;z-index:60}
+.palette[open]{display:flex}
+.palette__box{width:min(620px,92vw);background:#fff;border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,.25);overflow:hidden}
+.palette__input{width:100%;border:0;border-bottom:1px solid var(--c-border-2);padding:16px 18px;font-size:15px;outline:0}
+.palette__list{list-style:none;margin:0;padding:6px;max-height:52vh;overflow:auto}
+.palette__list li{padding:9px 12px;border-radius:6px;display:flex;gap:10px;align-items:center;cursor:pointer;font-size:13.5px}
+.palette__list li:hover,.palette__list li.is-active{background:var(--c-primary-bg)}
+.palette__where{margin-left:auto;font-size:11.5px;color:var(--c-text-3)}
+.palette__foot{padding:8px 14px;border-top:1px solid var(--c-border-2);font-size:11.5px;color:var(--c-text-3);display:flex;gap:14px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top__row">
+    <button class="btn btn--xs" type="button">←</button>
+    <strong class="top__num">#11159</strong>
+    <span class="top__name">LAGUZ · Suspiros e Burbujas</span>
+    <span class="pill pill--warn">Em homologação</span>
+    <span class="pill">Doc. assinada enviada</span>
+    <span class="top__spacer"></span>
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="flex:none;color:var(--c-text-3)"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <label class="sr" for="q">Buscar em todos os campos do pedido</label>
+      <input id="q" placeholder="Buscar campo, documento, valor…">
+      <span class="kbd">⌘K</span>
+    </div>
+    <button class="btn btn--xs" type="button">Imprimir</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- tiles de risco: a leitura que hoje exige abrir 12 abas -->
+  <section class="risk" aria-label="Indicadores do pedido">
+    <button class="tile tile--danger" type="button" data-goto="contrato">
+      <span class="tile__label">Bloqueio</span><span class="tile__value">Processo SEI vazio</span><span class="tile__hint">Obrigatório para homologar →</span>
+    </button>
+    <button class="tile tile--danger" type="button" data-goto="financeiro">
+      <span class="tile__label">Dado inválido</span><span class="tile__value">Vencimento 31/12/1969</span><span class="tile__hint">Parcela única · R$ 5.500,00 →</span>
+    </button>
+    <button class="tile tile--danger" type="button" data-goto="documentos">
+      <span class="tile__label">Assinatura</span><span class="tile__value">1 de 4 pendente</span><span class="tile__hint">Teste FCEA1 Solicitante →</span>
+    </button>
+    <button class="tile tile--warn" type="button" data-goto="certidoes">
+      <span class="tile__label">Certidões</span><span class="tile__value">9 vencem em 19 dias</span><span class="tile__hint">17/03/2026 · 0 vencidas →</span>
+    </button>
+    <button class="tile tile--ok" type="button" data-goto="financeiro">
+      <span class="tile__label">Teto anual do artista</span><span class="tile__value">8,4% usado</span><span class="tile__hint">R$ 5.500 de R$ 65.492,11 →</span>
+    </button>
+    <button class="tile" type="button" data-goto="resumo">
+      <span class="tile__label">Apresentação</span><span class="tile__value">em 48 dias</span><span class="tile__hint">15/04/2026 · 14:00 →</span>
+    </button>
+  </section>
+
+  <!-- um único nível de navegação -->
+  <div class="views" role="tablist" aria-label="Visões do pedido">
+    <button role="tab" aria-selected="true" data-view="resumo">Resumo</button>
+    <button role="tab" aria-selected="false" data-view="pessoas">Pessoas</button>
+    <button role="tab" aria-selected="false" data-view="certidoes">Certidões<span class="badge">13</span></button>
+    <button role="tab" aria-selected="false" data-view="documentos">Documentos<span class="badge">9</span></button>
+    <button role="tab" aria-selected="false" data-view="financeiro">Financeiro</button>
+    <button role="tab" aria-selected="false" data-view="contrato">Contrato</button>
+    <button role="tab" aria-selected="false" data-view="historico">Histórico</button>
+  </div>
+
+  <div class="filters">
+    <button class="chip" type="button" aria-pressed="true">Tudo</button>
+    <button class="chip" type="button" aria-pressed="false">Só pendências</button>
+    <button class="chip" type="button" aria-pressed="false">Vencendo em 30 dias</button>
+    <button class="chip" type="button" aria-pressed="false">Alterado na reabertura</button>
+    <span class="filters__count">Data de referência: 26/02/2026</span>
+  </div>
+
+  <div class="grid">
+    <main>
+
+      <!-- VISÃO: RESUMO -->
+      <section data-panel="resumo">
+        <div class="alert alert--danger">
+          <span aria-hidden="true">●</span>
+          <span><b>3 pendências bloqueantes</b>Processo SEI não informado · vencimento da parcela inválido · 1 documento sem assinatura.</span>
+        </div>
+        <div class="card">
+          <div class="card__head"><h2>Objeto da contratação</h2><span class="pill pill--ok">Completo</span></div>
+          <div class="card__body">
+            <dl class="kv">
+              <div><dt>Evento</dt><dd>Espetáculo de Circo — Suspiros e Burbujas</dd></div>
+              <div><dt>Unidade requisitante</dt><dd>Centro Cultural Grajaú</dd></div>
+              <div><dt>Data e horário</dt><dd>15/04/2026 · 14:00 – 15:00 (1h)</dd></div>
+              <div><dt>Tipo / categoria</dt><dd>Espetáculo de Circo · Comédia</dd></div>
+              <div><dt>Público / classificação</dt><dd>Criança · LIVRE (L)</dd></div>
+              <div><dt>Valor</dt><dd><b>R$ 5.500,00</b></dd></div>
+              <div><dt>Fundamento legal</dt><dd>Portaria nº 34/SMC · art. 74, Lei 14.133/2021</dd></div>
+              <div><dt>Reversão de bilheteria</dt><dd>Não</dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__head"><h2>Partes envolvidas</h2></div>
+          <div class="card__body">
+            <dl class="kv">
+              <div><dt>Artista / coletivo</dt><dd>LAGUZ <span class="pill">Coletivo</span> · 2 integrantes</dd></div>
+              <div><dt>Proponente</dt><dd>25.434.409 Romina Noelia Sanchez <span class="pill">PJ</span></dd></div>
+              <div><dt>Responsável pelo pedido</dt><dd>Fábio Penna Montanini</dd></div>
+              <div><dt>Responsável pelo cadastro</dt><dd>Elizabete Alves Honorato</dd></div>
+              <div><dt>Fiscal</dt><dd>Elizabete Alves Honorato (SMC/CCULT/CCGPC)</dd></div>
+              <div><dt>Suplente</dt><dd>Leandro Dias de Camargo (SMC/CCULT/CCPC)</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISÃO: CERTIDÕES -->
+      <section data-panel="certidoes" class="hidden">
+        <div class="alert alert--warn">
+          <span aria-hidden="true">▲</span>
+          <span><b>9 de 13 certidões vencem em 17/03/2026 (19 dias)</b>Precisam estar vigentes na data da assinatura do contrato. Ordene por prazo para priorizar a reemissão.</span>
+        </div>
+        <div class="card">
+          <div class="card__head"><h2>Certidões, impedimentos e apenados</h2><span class="pill pill--warn">9 em atenção</span></div>
+          <div class="card__body card__body--flush tbl-wrap">
+            <table class="tbl" id="tbl-certidoes">
+              <thead><tr>
+                <th data-sort="text">Certidão</th><th data-sort="text">Órgão</th><th data-sort="text">Válida até</th>
+                <th data-sort="num" class="num" aria-sort="ascending">Prazo</th><th>Arquivo</th><th>Ações</th>
+              </tr></thead>
+              <tbody>
+                <tr class="row-warn"><td><b>CNPJ</b></td><td>Receita Federal</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>CNPJ Romina.pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>FGTS</b></td><td>Caixa</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>Consulta Regularidade.pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>CCM</b></td><td>Prefeitura</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>Emissao_FDC.pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>CADIN</b></td><td>Município</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>Comprovante (19).pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>TCE</b> · apenados</td><td>TCE</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>Certidão Apenados (6).pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>E-Sanções</b></td><td>Estado</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>E-Sanções.pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>CNJ</b></td><td>CNJ</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>CNJ.pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>CEIS</b></td><td>CGU</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>Consulta de Sanções.pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr class="row-warn"><td><b>Listagem de apenados</b></td><td>Coord. Bens e Serviços</td><td>17/03/2026</td><td class="num" data-value="19"><span class="bar bar--warn"><span style="width:20%"></span></span>19 d</td><td>3-listagem-empresas.pdf</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Reemitir</button></td></tr>
+                <tr><td><b>CND</b></td><td>Receita Federal</td><td>07/07/2026</td><td class="num" data-value="131"><span class="bar bar--ok"><span style="width:75%"></span></span>131 d</td><td>CND Romina.pdf</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td><b>CTM</b></td><td>Prefeitura</td><td>07/07/2026</td><td class="num" data-value="131"><span class="bar bar--ok"><span style="width:75%"></span></span>131 d</td><td>Relatorio_CertidaoNegativa.pdf</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td><b>CNDT</b></td><td>TST</td><td>18/08/2026</td><td class="num" data-value="173"><span class="bar bar--ok"><span style="width:88%"></span></span>173 d</td><td>CNDT - 1808.pdf</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td><b>TCU</b></td><td>TCU</td><td>17/03/2027</td><td class="num" data-value="384"><span class="bar bar--ok"><span style="width:100%"></span></span>384 d</td><td>Certidão negativa (7).pdf</td><td><button class="btn btn--xs">Ver</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISÃO: DOCUMENTOS -->
+      <section data-panel="documentos" class="hidden">
+        <div class="card">
+          <div class="card__head"><h2>Todos os documentos do pedido</h2><span class="pill pill--danger">1 sem assinatura</span></div>
+          <div class="card__body card__body--flush tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th data-sort="text">Documento</th><th data-sort="text">Origem</th><th data-sort="text">Vínculo</th><th data-sort="text">Situação</th><th data-sort="text">Data</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr class="row-danger"><td><b>Teste FCEA1 Solicitante</b></td><td>Assinável externo</td><td>Representante legal</td><td><span class="pill pill--danger">Aguardando assinatura</span></td><td>—</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs btn--danger">Cobrar</button></td></tr>
+                <tr><td><b>TESTE MARCELO STI — Dados Tarjados</b></td><td>Anexo</td><td>Pessoa Jurídica</td><td><span class="pill pill--ok">Assinado</span></td><td>24/02/2026</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td><b>Ficha técnica</b></td><td>Documento gerado</td><td>Artista</td><td><span class="pill pill--ok">Assinado</span></td><td>24/02/2026</td><td><button class="btn btn--xs">Ver</button> <button class="btn btn--xs">Regerar</button></td></tr>
+                <tr><td><b>Termo de contratação</b></td><td>Documento interno</td><td>Órgão</td><td><span class="pill pill--ok">Assinado</span></td><td>24/02/2026</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td>Clipping dos artistas</td><td>Doc. do artista</td><td>Coletivo</td><td><span class="pill pill--ok">Enviado</span></td><td>19/02/2026</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td>DRT (teatro / dança / circo)</td><td>Doc. do artista</td><td>Coletivo</td><td><span class="pill pill--ok">Enviado</span></td><td>19/02/2026</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td>RG/CPF, CNH ou RNE do líder</td><td>Doc. do artista</td><td>Romina N. Sanchez</td><td><span class="pill pill--ok">Enviado</span></td><td>19/02/2026</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td>Currículo do coletivo</td><td>Doc. do artista</td><td>Coletivo</td><td><span class="pill pill--ok">Enviado</span></td><td>19/02/2026</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td>Currículo do líder do grupo</td><td>Doc. do artista</td><td>Romina N. Sanchez</td><td><span class="pill pill--ok">Enviado</span></td><td>19/02/2026</td><td><button class="btn btn--xs">Ver</button></td></tr>
+                <tr><td>Documentos adicionais</td><td>Anexo livre</td><td>—</td><td><span class="pill">Nenhum enviado</span></td><td>—</td><td><button class="btn btn--xs">Anexar</button></td></tr>
+                <tr><td>Notas fiscais</td><td>Pós-evento</td><td>Proponente</td><td><span class="pill">Exigível após 15/04/2026</span></td><td>—</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISÃO: FINANCEIRO -->
+      <section data-panel="financeiro" class="hidden">
+        <div class="alert alert--danger"><span aria-hidden="true">●</span>
+          <span><b>Vencimento da parcela única gravado como 31/12/1969</b>Data nula. Deve ser o 30º dia após a entrega da documentação correta.</span></div>
+        <div class="card">
+          <div class="card__head"><h2>Parcelas</h2></div>
+          <div class="card__body card__body--flush tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>Parcela</th><th class="num">Valor</th><th>Vencimento</th><th>Situação</th><th>NF</th><th>Ações</th></tr></thead>
+              <tbody><tr class="row-danger"><td>Parcela única</td><td class="num">R$ 5.500,00</td><td><b>31/12/1969</b> inválido</td><td><span class="pill pill--warn">Pendente</span></td><td>—</td><td><button class="btn btn--xs btn--danger">Corrigir</button></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__head"><h2>Recurso e limites</h2></div>
+          <div class="card__body">
+            <dl class="kv">
+              <div><dt>Nome da reserva</dt><dd>Programação de Atividades Culturais de Centros Culturais e Teatros</dd></div>
+              <div><dt>Nº da dotação</dt><dd class="mono">25.10.13.392.3001.6.391.33903900.00.1.500.9001.1</dd></div>
+              <div><dt>Valor do contrato</dt><dd><b>R$ 5.500,00</b> · valor global para 1 apresentação</dd></div>
+              <div><dt>Forma de pagamento</dt><dd>Parcela única · 30 dias após entrega da documentação</dd></div>
+              <div><dt>Despesas extraordinárias</dt><dd>Não</dd></div>
+              <div><dt>Conta de crédito</dt><dd>Inter 077 · ag. 001 · cc. 32622210</dd></div>
+            </dl>
+            <div class="alert alert--info" style="margin:14px 0 0">
+              <span aria-hidden="true">ℹ</span>
+              <span><b>Teto anual do artista na unidade: R$ 65.492,11</b>
+                <span class="bar bar--ok" style="width:180px"><span style="width:8.4%"></span></span> R$ 5.500,00 comprometidos (8,4%). Parecer jurídico dispensado.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISÃO: PESSOAS -->
+      <section data-panel="pessoas" class="hidden">
+        <div class="card">
+          <div class="card__head"><h2>Integrantes do coletivo LAGUZ</h2><span class="pill pill--info">RG alterado na reabertura</span></div>
+          <div class="card__body card__body--flush tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th data-sort="text">Nome</th><th>Artístico</th><th>Nacionalidade</th><th class="mono">CPF/CIN</th><th class="mono">RG / RNM</th><th class="num" data-sort="num">Idade</th><th>Função</th></tr></thead>
+              <tbody>
+                <tr><td>Romina Noelia Sanchez</td><td>Burbuja</td><td>Argentina</td><td class="mono">622.759.073-86</td><td class="mono">V601351-9</td><td class="num" data-value="42">42</td><td>Palhaça, acordeonista, acrobata</td></tr>
+                <tr class="row-warn"><td>Felipe Abreu Pereira</td><td>Suspiros</td><td>Brasileira</td><td class="mono">035.469.383-21</td><td class="mono">200.300.914-7</td><td class="num" data-value="37">37</td><td>Palhaço, malabarista, acrobata</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__head"><h2>Líder do grupo</h2></div>
+          <div class="card__body">
+            <dl class="kv">
+              <div><dt>Nome completo</dt><dd>Romina Noelia Sanchez</dd></div>
+              <div><dt>Nome artístico</dt><dd>Burbujas</dd></div>
+              <div><dt>Nascimento</dt><dd>10/09/1983 (42 anos)</dd></div>
+              <div><dt>Gênero</dt><dd>Mulher cisgênero</dd></div>
+              <div><dt>Raça/Cor</dt><dd>Parda</dd></div>
+              <div><dt>Grau de instrução</dt><dd>Ensino Superior</dd></div>
+              <div><dt>PCD</dt><dd>Não</dd></div>
+              <div><dt>E-mail</dt><dd>laguzproducoes@gmail.com</dd></div>
+              <div><dt>Telefone</dt><dd class="mono">(85) 99973-9981</dd></div>
+              <div><dt>Endereço</dt><dd>Rua Paulo Setubal, 531 — Messejana, Fortaleza/CE</dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__head"><h2>Proponente</h2><span class="pill">Pessoa Jurídica</span></div>
+          <div class="card__body">
+            <dl class="kv">
+              <div><dt>Razão social</dt><dd>25.434.409 ROMINA NOELIA SANCHEZ</dd></div>
+              <div><dt>Nome fantasia</dt><dd>Laguz</dd></div>
+              <div><dt>CNPJ</dt><dd class="mono">25.434.409/0001-47</dd></div>
+              <div><dt>CCM</dt><dd class="mono">000000</dd></div>
+              <div><dt>Representante legal</dt><dd>Romina Noelia Sanchez</dd></div>
+              <div><dt>Endereço</dt><dd>Rua Paulo Setubal, 531 — Messejana, Fortaleza/CE</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISÃO: CONTRATO -->
+      <section data-panel="contrato" class="hidden">
+        <div class="alert alert--danger"><span aria-hidden="true">●</span>
+          <span><b>Processo SEI não informado</b>Campo obrigatório. Sem ele o pedido não pode ser homologado.
+            <button class="btn btn--xs" style="margin-top:8px">Informar agora</button></span></div>
+        <div class="card">
+          <div class="card__head"><h2>Dados complementares</h2></div>
+          <div class="card__body">
+            <dl class="kv">
+              <div><dt>Processo SEI *</dt><dd><span class="miss">Não informado</span></dd></div>
+              <div><dt>Status de acompanhamento</dt><dd>Documentação assinada enviada</dd></div>
+              <div><dt>Código do pedido</dt><dd class="mono">11159</dd></div>
+              <div><dt>Projeto especial</dt><dd>Não</dd></div>
+              <div><dt>Pedido de reserva</dt><dd>Padrão</dd></div>
+              <div><dt>Fundamento legal</dt><dd>Portaria</dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__head"><h2>Justificativas</h2><span class="pill">3 textos</span></div>
+          <div class="card__body">
+            <dl class="kv" style="grid-template-columns:1fr">
+              <div><dt>Da contratação</dt><dd>Coerente com a proposta dos Centros Culturais; art. 74 caput da Lei 14.133/2021, pela singularidade do serviço. <a href="#contrato">Ler íntegra (620 palavras)</a></dd></div>
+              <div><dt>Do valor</dt><dd>Tabela da Portaria nº 34SMC/G/2023 — artes cênicas (circo), 2 a 3 integrantes: R$ 5.500,00.</dd></div>
+              <div><dt>Da escolha do contratado</dt><dd>Trajetória consolidada na linguagem circense e circulação em festivais no Brasil e Argentina. <a href="#contrato">Ler íntegra (740 palavras)</a></dd></div>
+              <div><dt>Observação</dt><dd>Sem observações.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISÃO: HISTÓRICO -->
+      <section data-panel="historico" class="hidden">
+        <div class="card">
+          <div class="card__head"><h2>Trilha do pedido</h2><span class="pill">8 eventos · 3 reaberturas</span></div>
+          <div class="card__body card__body--flush tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th data-sort="text">Data</th><th>Evento</th><th>Transição</th><th>Responsável</th></tr></thead>
+              <tbody>
+                <tr><td>24/02/2026</td><td>Contratado enviou a documentação assinada</td><td>Aguardando assinada → Assinada enviada</td><td>Romina N. Sanchez</td></tr>
+                <tr><td>24/02/2026</td><td>Contratado notificado para envio</td><td>Aprovado → Aguardando assinada</td><td>Sistema</td></tr>
+                <tr><td>23/02/2026</td><td>Pedido aprovado após reabertura</td><td>Devolvido → Aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
+                <tr class="row-warn"><td>23/02/2026</td><td>Reabertura — alterações enviadas</td><td>Reaberto → Devolvido</td><td>Elizabete A. Honorato</td></tr>
+                <tr class="row-warn"><td>23/02/2026</td><td>Pedido reaberto (equipamento) — RG de Felipe Abreu Pereira</td><td>Aprovado → Reaberto</td><td>Fabrícia C. B. da Silva</td></tr>
+                <tr><td>20/02/2026</td><td>Pedido aprovado</td><td>Enviado → Aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
+                <tr><td>19/02/2026</td><td>Pedido enviado</td><td>Rascunho → Enviado</td><td>Elizabete A. Honorato</td></tr>
+                <tr><td>19/02/2026</td><td>Pedido iniciado</td><td>— → Rascunho</td><td>Elizabete A. Honorato</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- lateral: contexto acionável -->
+    <aside class="side">
+      <div class="card">
+        <div class="card__head"><h2>Reabertura em aberto</h2><span class="pill pill--warn">Enviado</span></div>
+        <div class="card__body">
+          <dl class="kv" style="grid-template-columns:1fr;gap:10px">
+            <div><dt>Solicitante</dt><dd>Fabrícia Cibelle Barros da Silva</dd></div>
+            <div><dt>Solicitado em</dt><dd>23/02/2026</dd></div>
+            <div><dt>Justificativa</dt><dd>Ficha técnica — cadastrar o RG de Felipe Abreu Pereira.</dd></div>
+          </dl>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn--xs btn--primary" type="button" data-goto="pessoas">Conferir</button>
+            <button class="btn btn--xs" type="button">Ver todas (3)</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__head"><h2>Últimos eventos</h2><button class="btn btn--xs" style="margin-left:auto" data-goto="historico">Tudo</button></div>
+        <div class="card__body">
+          <ol class="timeline">
+            <li><div class="timeline__when">24/02/2026</div><div class="timeline__what">Documentação assinada enviada</div></li>
+            <li><div class="timeline__when">23/02/2026</div><div class="timeline__what">Pedido aprovado após reabertura</div></li>
+            <li><div class="timeline__when">23/02/2026</div><div class="timeline__what">Reaberto para o equipamento</div></li>
+          </ol>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__head"><h2>Contato</h2></div>
+        <div class="card__body">
+          <dl class="kv" style="grid-template-columns:1fr;gap:10px">
+            <div><dt>Produtor</dt><dd>laguzproducoes@gmail.com</dd></div>
+            <div><dt>Telefone</dt><dd class="mono">(85) 99973-9981</dd></div>
+            <div><dt>Unidade</dt><dd>Centro Cultural Grajaú</dd></div>
+          </dl>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="footbar">
+  <div class="footbar__inner">
+    <span class="pill pill--danger">3 bloqueios</span>
+    <span style="font-size:12.5px;color:var(--c-text-2)">Homologação liberada quando os bloqueios forem resolvidos.</span>
+    <span class="footbar__spacer"></span>
+    <button class="btn" type="button">Anotar</button>
+    <button class="btn btn--danger" type="button">Devolver ao solicitante</button>
+    <button class="btn btn--primary" type="button" disabled>Homologar</button>
+  </div>
+</div>
+
+<!-- paleta de comandos ⌘K: encontra qualquer campo sem caçar em abas -->
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Busca rápida">
+  <div class="palette__box">
+    <input class="palette__input" id="palette-input" placeholder="Buscar campo, documento, pessoa, valor…" autocomplete="off">
+    <ul class="palette__list" id="palette-list">
+      <li class="is-active" data-view="contrato">📄 <span>Processo SEI</span><span class="palette__where">Contrato</span></li>
+      <li data-view="financeiro">💰 <span>Parcela única — R$ 5.500,00</span><span class="palette__where">Financeiro</span></li>
+      <li data-view="financeiro">🏦 <span>Dotação 25.10.13.392.3001…</span><span class="palette__where">Financeiro</span></li>
+      <li data-view="certidoes">📑 <span>CNDT — válida até 18/08/2026</span><span class="palette__where">Certidões</span></li>
+      <li data-view="certidoes">📑 <span>Listagem de apenados</span><span class="palette__where">Certidões</span></li>
+      <li data-view="pessoas">👤 <span>Felipe Abreu Pereira — RG 200.300.914-7</span><span class="palette__where">Pessoas</span></li>
+      <li data-view="documentos">✍️ <span>Teste FCEA1 Solicitante — aguardando assinatura</span><span class="palette__where">Documentos</span></li>
+      <li data-view="historico">🕓 <span>Reabertura de 23/02/2026</span><span class="palette__where">Histórico</span></li>
+    </ul>
+    <div class="palette__foot"><span><span class="kbd">↑</span><span class="kbd">↓</span> navegar</span><span><span class="kbd">↵</span> abrir</span><span><span class="kbd">esc</span> fechar</span></div>
+  </div>
+</div>
+
+<script>
+// ---- visões (um nível de navegação) ----
+var tabs = Array.prototype.slice.call(document.querySelectorAll('.views [role="tab"]'));
+var panels = Array.prototype.slice.call(document.querySelectorAll('[data-panel]'));
+
+function showView(name) {
+  tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t.dataset.view === name)); });
+  panels.forEach(function (p) { p.classList.toggle('hidden', p.dataset.panel !== name); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+tabs.forEach(function (t) { t.addEventListener('click', function () { showView(t.dataset.view); }); });
+document.querySelectorAll('[data-goto]').forEach(function (el) {
+  el.addEventListener('click', function () { showView(el.dataset.goto); });
+});
+
+// ---- filtros ----
+document.querySelectorAll('.chip').forEach(function (chip) {
+  chip.addEventListener('click', function () {
+    document.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    chip.setAttribute('aria-pressed', 'true');
+  });
+});
+
+// ---- ordenação de tabelas ----
+document.querySelectorAll('th[data-sort]').forEach(function (th) {
+  th.addEventListener('click', function () {
+    var table = th.closest('table');
+    var body = table.tBodies[0];
+    var index = Array.prototype.indexOf.call(th.parentNode.children, th);
+    var asc = th.getAttribute('aria-sort') !== 'ascending';
+    var numeric = th.dataset.sort === 'num';
+
+    Array.prototype.forEach.call(table.querySelectorAll('th'), function (h) { h.removeAttribute('aria-sort'); });
+    th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+
+    var rows = Array.prototype.slice.call(body.rows);
+    rows.sort(function (a, b) {
+      var ca = a.cells[index], cb = b.cells[index];
+      var va = numeric ? Number(ca.dataset.value || 0) : ca.textContent.trim().toLowerCase();
+      var vb = numeric ? Number(cb.dataset.value || 0) : cb.textContent.trim().toLowerCase();
+      if (va < vb) return asc ? -1 : 1;
+      if (va > vb) return asc ? 1 : -1;
+      return 0;
+    });
+    rows.forEach(function (r) { body.appendChild(r); });
+  });
+});
+
+// ---- paleta de comandos ----
+var palette = document.getElementById('palette');
+var paletteInput = document.getElementById('palette-input');
+var paletteItems = Array.prototype.slice.call(document.querySelectorAll('#palette-list li'));
+
+function openPalette() { palette.setAttribute('open', ''); paletteInput.value = ''; filterPalette(); paletteInput.focus(); }
+function closePalette() { palette.removeAttribute('open'); }
+function filterPalette() {
+  var q = paletteInput.value.toLowerCase();
+  paletteItems.forEach(function (li) { li.style.display = li.textContent.toLowerCase().indexOf(q) > -1 ? '' : 'none'; });
+}
+
+document.getElementById('q').addEventListener('focus', openPalette);
+paletteInput.addEventListener('input', filterPalette);
+palette.addEventListener('click', function (e) { if (e.target === palette) closePalette(); });
+paletteItems.forEach(function (li) {
+  li.addEventListener('click', function () { showView(li.dataset.view); closePalette(); });
+});
+
+document.addEventListener('keydown', function (e) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette(); return; }
+  if (e.key === 'Escape') closePalette();
+  if (!palette.hasAttribute('open')) return;
+
+  var visible = paletteItems.filter(function (li) { return li.style.display !== 'none'; });
+  var idx = visible.findIndex(function (li) { return li.classList.contains('is-active'); });
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    var next = e.key === 'ArrowDown' ? Math.min(idx + 1, visible.length - 1) : Math.max(idx - 1, 0);
+    visible.forEach(function (li, i) { li.classList.toggle('is-active', i === next); });
+  }
+  if (e.key === 'Enter' && visible[idx]) { showView(visible[idx].dataset.view); closePalette(); }
+});
+</script>
+</body>
+</html>

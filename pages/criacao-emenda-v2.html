@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criação de Emenda — v2</title>
+<style>
+:root {
+  --c-primary: #1677ff;
+  --c-primary-hover: #4096ff;
+  --c-text: #1f1f1f;
+  --c-text-secondary: #595959;
+  --c-border: #d9d9d9;
+  --c-bg: #f5f5f5;
+  --c-card-bg: #ffffff;
+  --c-danger: #ff4d4f;
+  --c-success: #52c41a;
+
+  --st-empty: #bfbfbf;
+  --st-empty-bg: #fafafa;
+  --st-partial: #1677ff;
+  --st-partial-bg: #e6f4ff;
+  --st-invalid: #ff4d4f;
+  --st-invalid-bg: #fff2f0;
+  --st-valid: #52c41a;
+  --st-valid-bg: #f6ffed;
+  --st-draft: #722ed1;
+  --st-draft-bg: #f9f0ff;
+  --st-draft-border: #d3adf7;
+  --st-draft-text: #531dab;
+
+  --radius: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  font-size: 14px;
+}
+.layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 24px;
+  padding: 24px 24px 96px;
+}
+
+/* ---------- Navegação lateral com status por bloco ---------- */
+.sidenav {
+  position: sticky;
+  top: 24px;
+  align-self: flex-start;
+  width: 276px;
+  flex-shrink: 0;
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 16px 0 8px;
+}
+.sidenav__title { font-weight: 600; font-size: 16px; padding: 0 16px 8px; }
+.sidenav__order {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 16px 12px;
+  padding: 8px 10px;
+  background: #fafafa;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+}
+.order__head { display: flex; align-items: center; gap: 8px; }
+.order__label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--c-text-secondary);
+  line-height: 1.2;
+}
+.order__number {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-primary);
+  letter-spacing: .5px;
+  margin-left: auto;
+}
+.order__councilor { font-size: 12px; color: var(--c-text-secondary); }
+.order__status { align-self: flex-start; }
+.sidenav__progress {
+  padding: 0 16px 12px;
+  border-bottom: 1px solid var(--c-border);
+  margin-bottom: 8px;
+}
+.progress__text { font-size: 12px; color: var(--c-text-secondary); margin-bottom: 6px; display: block; }
+.progress__track { height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
+.progress__bar { height: 100%; width: 0; background: var(--c-success); transition: width .2s ease; }
+
+.nav__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 16px;
+  color: var(--c-text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+}
+.nav__item:hover { background: #fafafa; }
+.nav__item.is-active { border-left-color: var(--c-primary); background: #f0f7ff; }
+.nav__item.is-active .nav__label { color: var(--c-primary); font-weight: 600; }
+.nav__icon {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; line-height: 1;
+  margin-top: 1px;
+}
+.nav__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.nav__label { font-size: 13px; color: var(--c-text); line-height: 1.3; }
+.nav__status { font-size: 11px; font-weight: 600; letter-spacing: .2px; }
+/* Resumo não é bloco de dados: fica separado e sem estado. */
+.nav__item--summary { margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--c-border); }
+.nav__item--summary .nav__label { font-weight: 500; }
+
+.nav__item[data-status="empty"]   .nav__icon { background: var(--st-empty-bg);   color: var(--st-empty);   border: 1px solid var(--st-empty); }
+.nav__item[data-status="partial"] .nav__icon { background: var(--st-partial-bg); color: var(--st-partial); border: 1px solid var(--st-partial); }
+.nav__item[data-status="invalid"] .nav__icon { background: var(--st-invalid-bg); color: var(--st-invalid); border: 1px solid var(--st-invalid); }
+.nav__item[data-status="valid"]   .nav__icon { background: var(--st-valid);      color: #fff;              border: 1px solid var(--st-valid); }
+.nav__item[data-status="draft"]   .nav__icon { background: var(--st-draft-bg);   color: var(--st-draft);   border: 1px solid var(--st-draft); }
+
+.nav__item[data-status="empty"]   .nav__status { color: var(--st-empty); }
+.nav__item[data-status="partial"] .nav__status { color: var(--st-partial); }
+.nav__item[data-status="invalid"] .nav__status { color: var(--st-invalid); }
+.nav__item[data-status="valid"]   .nav__status { color: var(--st-valid); }
+.nav__item[data-status="draft"]   .nav__status { color: var(--st-draft); }
+
+.sidenav__legend {
+  position: relative;
+  border-top: 1px solid var(--c-border);
+  margin-top: 8px;
+  padding: 12px 16px 8px;
+}
+/* O detalhe da legenda é referência ocasional: abre em popover no hover/foco
+   do título para não competir com a navegação por blocos. */
+.legend__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--c-text-secondary);
+  cursor: help;
+}
+.legend__trigger:hover, .legend__trigger:focus-visible { color: var(--c-primary); }
+.legend__caret { font-size: 9px; line-height: 1; }
+.legend__panel {
+  position: absolute;
+  left: 100%;
+  bottom: 0;
+  z-index: 20;
+  padding-left: 10px; /* ponte transparente: mantém o hover ao ir do título ao painel */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .12s ease;
+}
+.sidenav__legend:hover .legend__panel,
+.sidenav__legend:focus-within .legend__panel { opacity: 1; visibility: visible; }
+.legend__card {
+  display: grid;
+  gap: 6px;
+  width: max-content;
+  padding: 12px 14px;
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+}
+.legend__item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--c-text-secondary); white-space: nowrap; }
+.legend__dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+}
+.legend__dot--empty   { background: var(--st-empty-bg);   color: var(--st-empty);   border: 1px solid var(--st-empty); }
+.legend__dot--partial { background: var(--st-partial-bg); color: var(--st-partial); border: 1px solid var(--st-partial); }
+.legend__dot--draft   { background: var(--st-draft-bg);   color: var(--st-draft);   border: 1px solid var(--st-draft); }
+.legend__dot--invalid { background: var(--st-invalid-bg); color: var(--st-invalid); border: 1px solid var(--st-invalid); }
+.legend__dot--valid   { background: var(--st-valid);      color: #fff;              border: 1px solid var(--st-valid); }
+
+/* ---------- Cards / formulários ---------- */
+.content { flex: 1; min-width: 0; }
+.notice {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: var(--st-valid-bg); border: 1px solid #b7eb8f;
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 16px;
+  font-size: 13px; color: #237804;
+}
+.notice__title { font-weight: 600; display: block; margin-bottom: 2px; }
+.card {
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  border-left: 3px solid transparent;
+}
+.card[data-status="partial"] { border-left-color: var(--st-partial); }
+.card[data-status="invalid"] { border-left-color: var(--st-invalid); }
+.card[data-status="valid"]   { border-left-color: var(--st-valid); }
+.card[data-status="draft"]   { border-left-color: var(--st-draft); }
+
+.card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.card__title { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+.card__hint { font-size: 13px; color: var(--c-text-secondary); margin: 0; }
+.card__entity {
+  font-family: var(--mono); font-size: 11px; color: var(--c-text-secondary);
+  background: #fafafa; border: 1px solid var(--c-border); border-radius: 4px;
+  padding: 1px 6px; margin-top: 6px; display: inline-block;
+}
+.chip {
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+.chip[data-status="empty"]   { background: var(--st-empty-bg);   color: var(--st-empty);   border: 1px solid var(--st-empty); }
+.chip[data-status="partial"] { background: var(--st-partial-bg); color: var(--st-partial); border: 1px solid #91caff; }
+.chip[data-status="invalid"] { background: var(--st-invalid-bg); color: var(--st-invalid); border: 1px solid #ffccc7; }
+.chip[data-status="valid"]   { background: var(--st-valid-bg);   color: #389e0d;           border: 1px solid #b7eb8f; }
+.chip[data-status="draft"]   { background: var(--st-draft-bg);   color: var(--st-draft-text); border: 1px solid var(--st-draft-border); }
+
+.card__foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--c-border);
+}
+.card__foot-msg { font-size: 12px; color: var(--c-text-secondary); }
+.card__foot-msg[data-status="invalid"] { color: var(--c-danger); font-weight: 500; }
+.card__foot-msg[data-status="valid"] { color: #389e0d; font-weight: 500; }
+.card__foot-msg[data-status="draft"] { color: var(--st-draft-text); font-weight: 500; }
+
+.field { margin-bottom: 16px; }
+.field__label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; }
+.field__label .req { color: var(--c-danger); margin-left: 2px; }
+.field__help { font-size: 12px; color: var(--c-text-secondary); margin-top: 4px; }
+.field__error { font-size: 12px; color: var(--c-danger); margin-top: 4px; display: none; }
+.field.has-error .field__error { display: block; }
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea { border-color: var(--c-danger); }
+.row { display: flex; gap: 16px; }
+.row > .field { flex: 1; }
+input[type="text"], input[type="number"], input[type="date"], input[type="time"], input[type="search"], select, textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--c-text);
+  background: #fff;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(22,119,255,0.15);
+}
+input:disabled, select:disabled, textarea:disabled { background: #f5f5f5; color: var(--c-text-secondary); cursor: not-allowed; }
+textarea { resize: vertical; min-height: 72px; }
+.toggle-field { display: flex; align-items: center; gap: 10px; }
+.switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch__track {
+  position: absolute; inset: 0; background: var(--c-border);
+  border-radius: 11px; cursor: pointer; transition: background .15s;
+}
+.switch__track::before {
+  content: ""; position: absolute; width: 18px; height: 18px; left: 2px; top: 2px;
+  background: #fff; border-radius: 50%; transition: transform .15s;
+}
+.switch input:checked + .switch__track { background: var(--c-primary); }
+.switch input:checked + .switch__track::before { transform: translateX(18px); }
+.switch input:focus-visible + .switch__track { box-shadow: 0 0 0 2px rgba(22,119,255,0.35); }
+
+/* ---------- Rádios em linha (Sim/Não, Padrão/Global) ---------- */
+.radio-inline { display: flex; align-items: center; gap: 24px; padding: 6px 0; }
+.radio-inline label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+.radio-inline input { margin: 0; }
+
+/* ---------- Escolhas (modo do bloco) ---------- */
+.choice-list { display: grid; gap: 10px; margin-bottom: 16px; }
+.choice {
+  display: flex; gap: 10px; align-items: flex-start;
+  border: 1px solid var(--c-border); border-radius: var(--radius);
+  padding: 12px 14px; cursor: pointer;
+}
+.choice.is-selected { border-color: var(--c-primary); background: #f0f7ff; }
+.choice input { margin: 2px 0 0; flex-shrink: 0; }
+.choice__title { font-size: 13px; font-weight: 600; display: block; }
+.choice__hint { font-size: 12px; color: var(--c-text-secondary); }
+.subform {
+  margin: 0 0 16px; padding: 14px;
+  border: 1px dashed var(--c-border); border-radius: var(--radius);
+  background: #fafafa;
+}
+.subform > .field:last-child, .subform > .row:last-child > .field { margin-bottom: 0; }
+
+/* ---------- Caixas de leitura / listas ---------- */
+.readonly-box {
+  display: grid; gap: 8px; padding: 12px 14px;
+  border: 1px solid var(--c-border); border-radius: var(--radius);
+  background: #fafafa; font-size: 13px;
+}
+.kv { display: flex; justify-content: space-between; gap: 12px; }
+.kv__k { color: var(--c-text-secondary); }
+.kv__v { font-weight: 500; text-align: right; }
+.kv__v--mono { font-family: var(--mono); }
+.kv__v--warn { color: var(--c-danger); }
+.kv__v--ok { color: #389e0d; }
+.hint-empty {
+  padding: 16px; border: 1px dashed var(--c-border); border-radius: var(--radius);
+  color: var(--c-text-secondary); font-size: 13px; background: #fafafa; text-align: center;
+}
+.list-row { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 12px; }
+.list-row .field { flex: 1; margin-bottom: 0; }
+.block-error { font-size: 12px; color: var(--c-danger); margin: 4px 0 12px; display: none; }
+.block-error.is-visible { display: block; }
+.stack-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th {
+  text-align: left; font-weight: 600; font-size: 11px; color: var(--c-text-secondary);
+  text-transform: uppercase; letter-spacing: .4px; padding: 8px 10px;
+  border-bottom: 1px solid var(--c-border); white-space: nowrap;
+}
+.table td { padding: 10px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+.table tbody tr:last-child td { border-bottom: none; }
+.table--pick tbody tr { cursor: pointer; }
+.table--pick tbody tr:hover { background: #fafafa; }
+.table--pick tbody tr.is-picked { background: #f0f7ff; }
+.table__scroll { overflow-x: auto; border: 1px solid var(--c-border); border-radius: var(--radius); }
+.tag {
+  display: inline-block; padding: 1px 8px; border-radius: 999px;
+  background: #f0f0f0; color: var(--c-text-secondary); font-size: 11px; margin: 2px 4px 2px 0;
+}
+.tag--used { background: var(--st-valid-bg); color: #389e0d; border: 1px solid #b7eb8f; }
+.money { font-family: var(--mono); white-space: nowrap; }
+
+/* ---------- Eventos planejados ---------- */
+.ep {
+  border: 1px solid var(--c-border); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px; background: #fff;
+}
+.ep__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.ep__title { font-size: 14px; font-weight: 600; }
+.ep__meta { font-size: 12px; color: var(--c-text-secondary); }
+.sub { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--c-border); }
+.sub__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px;
+}
+.sub__title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .4px; color: var(--c-text-secondary);
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  color: var(--c-text);
+}
+.btn--primary { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+.btn--primary:hover { background: var(--c-primary-hover); }
+.btn--secondary:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.btn--link { border: none; background: none; color: var(--c-primary); padding: 4px 8px; }
+.btn--icon { padding: 8px 10px; line-height: 1; }
+.btn--sm { padding: 6px 12px; font-size: 13px; }
+.btn--danger-link { border: none; background: none; color: var(--c-danger); padding: 4px 8px; font-size: 13px; }
+.btn:disabled,
+.btn:disabled:hover {
+  cursor: not-allowed;
+  background: #f5f5f5;
+  border-color: var(--c-border);
+  color: rgba(0,0,0,0.25);
+}
+
+/* ---------- Barra de ação / toast ---------- */
+.actionbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; border-top: 1px solid var(--c-border);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto;
+}
+.actionbar__status { font-size: 12px; color: var(--c-text-secondary); display: flex; gap: 14px; align-items: center; }
+.actionbar__buttons { display: flex; gap: 12px; }
+.toast {
+  position: fixed; bottom: 76px; right: 24px;
+  background: var(--c-text); color: #fff;
+  padding: 10px 16px; border-radius: var(--radius);
+  font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  max-width: 340px; z-index: 60;
+}
+
+/* ---------- Resumo ---------- */
+.summary-group { margin-bottom: 18px; }
+.summary-group__title { font-size: 13px; font-weight: 600; margin: 0 0 6px; display: flex; align-items: center; gap: 8px; }
+.summary-row { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; border-bottom: 1px dashed var(--c-border); font-size: 13px; }
+.summary-row:last-child { border-bottom: none; }
+.summary-row__label { color: var(--c-text-secondary); }
+.summary-row__value { font-weight: 500; text-align: right; }
+.summary-total { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--c-border); }
+.summary-total .summary-row__value { font-size: 15px; }
+
+/* ---------- Modal de empresas ---------- */
+.modal { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+.modal__panel {
+  position: relative; background: #fff; border-radius: var(--radius);
+  width: min(820px, 100%); max-height: 82vh; display: flex; flex-direction: column;
+  box-shadow: 0 8px 28px rgba(0,0,0,.2);
+}
+.modal__head { padding: 16px 20px 12px; border-bottom: 1px solid var(--c-border); }
+.modal__title { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+.modal__hint { font-size: 13px; color: var(--c-text-secondary); margin: 0 0 12px; }
+.modal__body { padding: 12px 20px 16px; overflow: auto; }
+.modal__foot { padding: 12px 20px; border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.modal__foot-msg { font-size: 12px; color: var(--c-text-secondary); }
+.modal__foot-actions { display: flex; gap: 12px; }
+
+/* ---------- Linhas dinâmicas (fiscais / programações) ---------- */
+.fiscal-row, .schedule-row {
+  border: 1px solid #f0f0f0; border-radius: var(--radius);
+  padding: 12px; margin-bottom: 10px; background: #fcfcfc;
+}
+.fiscal-row .row:last-of-type .field, .schedule-row .row:last-of-type .field { margin-bottom: 0; }
+.row-actions { display: flex; justify-content: flex-end; margin-top: 6px; }
+.aet-info { font-size: 12px; color: var(--c-text-secondary); margin-top: 6px; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+@media (max-width: 900px) {
+  .layout { flex-direction: column; padding-bottom: 120px; }
+  .sidenav { position: static; width: 100%; padding: 12px; }
+  .sidenav__title { padding-left: 4px; padding-right: 4px; }
+  .sidenav__order { margin-left: 4px; margin-right: 4px; }
+  .sidenav__nav { display: flex; overflow-x: auto; gap: 8px; }
+  .nav__item { flex-shrink: 0; border-left: none; border-bottom: 2px solid transparent; border-radius: var(--radius); background: #fafafa; }
+  .nav__item.is-active { border-left-color: transparent; border-bottom-color: var(--c-primary); }
+  .nav__item--summary { margin-top: 0; padding-top: 9px; border-top: none; }
+  /* Sem hover no toque: a legenda fica sempre visível. */
+  .legend__caret { display: none; }
+  .legend__panel { position: static; padding-left: 0; opacity: 1; visibility: visible; margin-top: 8px; }
+  .legend__card { width: auto; border: 0; padding: 0; box-shadow: none; grid-template-columns: repeat(2, 1fr); }
+  .legend__item { white-space: normal; }
+  .row, .list-row { flex-direction: column; align-items: stretch; }
+  .radio-inline { flex-wrap: wrap; }
+  .card__head { flex-direction: column; }
+  .actionbar { flex-direction: column; gap: 8px; align-items: stretch; }
+  .actionbar__buttons > .btn { flex: 1; }
+}
+</style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidenav" aria-label="Blocos da criação da emenda">
+      <div class="sidenav__title">Criação de Emenda</div>
+      <div class="sidenav__order">
+        <div class="order__head">
+          <span class="order__label">Emenda</span>
+          <span class="order__number" id="requestNumber">—</span>
+        </div>
+        <span class="order__councilor" id="requestCouncilor">Vereador: —</span>
+        <span class="chip order__status" id="requestStatus" data-status="draft">✎ Emenda em rascunho</span>
+      </div>
+      <div class="sidenav__progress">
+        <span class="progress__text" id="progressText" role="status">0 de 5 blocos corretos</span>
+        <div class="progress__track"><div class="progress__bar" id="progressBar"></div></div>
+      </div>
+
+      <div class="sidenav__nav" id="sidenavNav">
+        <a href="#sec-evento" class="nav__item" data-section="sec-evento" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Evento da Emenda</span>
+            <span class="nav__status">Vazio</span>
+          </span>
+        </a>
+        <a href="#sec-contrato" class="nav__item" data-section="sec-contrato" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Contrato</span>
+            <span class="nav__status">Vazio</span>
+          </span>
+        </a>
+        <a href="#sec-empresa" class="nav__item" data-section="sec-empresa" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Empresa</span>
+            <span class="nav__status">Vazio</span>
+          </span>
+        </a>
+        <a href="#sec-eventos" class="nav__item" data-section="sec-eventos" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Artistas e eventos planejados</span>
+            <span class="nav__status">Vazio</span>
+          </span>
+        </a>
+        <a href="#sec-valor" class="nav__item" data-section="sec-valor" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Valor do contrato</span>
+            <span class="nav__status">Vazio</span>
+          </span>
+        </a>
+        <a href="#sec-resumo" class="nav__item nav__item--summary" data-section="sec-resumo">
+          <span class="nav__text">
+            <span class="nav__label">Resumo</span>
+          </span>
+        </a>
+      </div>
+
+      <div class="sidenav__legend">
+        <button type="button" class="legend__trigger" aria-describedby="legendPanel">
+          Legenda<span class="legend__caret" aria-hidden="true">▸</span>
+        </button>
+        <div class="legend__panel" id="legendPanel" role="tooltip">
+          <div class="legend__card">
+            <span class="legend__item"><span class="legend__dot legend__dot--empty">○</span> Vazio — nada preenchido</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--partial">◐</span> Preenchido — falta concluir</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--draft">✎</span> Rascunho — alterações não salvas</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--invalid">!</span> Incorreto — há erros</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--valid">✓</span> Correto — pronto</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="content">
+      <div class="notice">
+        <span aria-hidden="true">✓</span>
+        <span>
+          <span class="notice__title">Emenda apta à execução — sem etapa de aprovação</span>
+          A emenda indicada pelo vereador já está apta a ser executada. Não há aprovação da coordenadoria:
+          ao criar, os eventos planejados nascem prontos para contratação.
+        </span>
+      </div>
+
+      <!-- ============ BLOCO 1 — EventManagement ============ -->
+      <section id="sec-evento" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Evento da Emenda</h2>
+            <p class="card__hint">Um único evento agrupa todos os eventos planejados desta emenda (1 evento : N eventos planejados).</p>
+            <span class="card__entity">EventManagement</span>
+          </div>
+          <span class="chip" data-chip-for="sec-evento" data-status="empty">○ Vazio</span>
+        </div>
+
+        <form id="form-evento" class="js-form" data-section="sec-evento" novalidate>
+          <div class="field">
+            <label class="field__label" for="councilorId">Vereador responsável pela emenda<span class="req">*</span></label>
+            <select id="councilorId" name="councilorId"></select>
+            <p class="field__help">Autor da emenda parlamentar. Gravado no evento (EventManagement) no momento da criação e propagado aos eventos planejados.</p>
+            <p class="field__error" data-error-for="councilorId"></p>
+          </div>
+          <div class="readonly-box" id="councilorInfo" style="margin-bottom:16px"></div>
+
+          <div class="choice-list" role="radiogroup" aria-label="Como agrupar o evento desta emenda">
+            <label class="choice" data-choice-for="eventMode" data-choice-value="unified">
+              <input type="radio" name="eventMode" value="unified" checked>
+              <span>
+                <span class="choice__title">Vincular ao evento unificado do vereador</span>
+                <span class="choice__hint">Todas as emendas do vereador no exercício entram no mesmo EventManagement. Recomendado: mantém indicadores, reservas e programação em um só lugar.</span>
+              </span>
+            </label>
+            <label class="choice" data-choice-for="eventMode" data-choice-value="new">
+              <input type="radio" name="eventMode" value="new">
+              <span>
+                <span class="choice__title">Criar um evento próprio para esta emenda</span>
+                <span class="choice__hint">Use quando a emenda tem identidade própria (festival, temporada) e não deve se misturar às demais.</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="subform" data-mode-panel="eventMode:unified">
+            <div class="field">
+              <label class="field__label" for="eventManagementId">Evento unificado<span class="req">*</span></label>
+              <select id="eventManagementId" name="eventManagementId"></select>
+              <p class="field__help">Evento guarda-chuva já existente do vereador selecionado. Os eventos planejados desta emenda serão vinculados a ele.</p>
+              <p class="field__error" data-error-for="eventManagementId"></p>
+            </div>
+            <div class="readonly-box" id="eventManagementInfo"></div>
+          </div>
+
+          <div class="subform" data-mode-panel="eventMode:new" hidden>
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="eventName">Nome do evento<span class="req">*</span></label>
+                <input type="text" id="eventName" name="eventName" placeholder="Ex: Emenda 2026 — Festival de Inverno da Zona Leste">
+                <p class="field__error" data-error-for="eventName"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="projectType">Tipo de projeto</label>
+                <input type="text" id="projectType" name="projectType" value="Emenda Parlamentar" disabled>
+                <p class="field__help">Fixo para emendas.</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="eventStartDate">Início da vigência<span class="req">*</span></label>
+                <input type="date" id="eventStartDate" name="eventStartDate">
+                <p class="field__error" data-error-for="eventStartDate"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="eventEndDate">Fim da vigência<span class="req">*</span></label>
+                <input type="date" id="eventEndDate" name="eventEndDate">
+                <p class="field__error" data-error-for="eventEndDate"></p>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="eventDescription">Descrição</label>
+              <textarea id="eventDescription" name="eventDescription" placeholder="Objeto cultural da emenda, público e território atendidos…"></textarea>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="placeId">Local do evento<span class="req">*</span></label>
+            <select id="placeId" name="placeId"></select>
+            <p class="field__help">Único local habilitado para esta emenda. A programação de cada evento planejado e os fiscais do contrato só podem usar este local.</p>
+            <p class="field__error" data-error-for="placeId"></p>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-evento" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-evento" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 2 — ContractingRequest ============ -->
+      <section id="sec-contrato" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Contrato</h2>
+            <p class="card__hint">Contrato criado sem artista e sem valor: recebe os dados gerais da contratação. Os eventos planejados desta emenda são anexados a ele (N eventos planejados : 1 contrato).</p>
+            <span class="card__entity">ContractingRequest</span>
+          </div>
+          <span class="chip" data-chip-for="sec-contrato" data-status="empty">○ Vazio</span>
+        </div>
+
+        <form id="form-contrato" class="js-form" data-section="sec-contrato" novalidate>
+          <input type="hidden" id="contractCode" name="contractCode" value="">
+          <div class="readonly-box" id="contractInfo"></div>
+          <p class="block-error" data-error-for="contractBlock"></p>
+          <div class="stack-actions" style="margin:12px 0 20px">
+            <button type="button" id="btnCreateContract" class="btn btn--secondary btn--sm">Criar contrato</button>
+            <button type="button" id="btnDiscardContract" class="btn btn--danger-link" hidden>Descartar contrato</button>
+          </div>
+
+          <div class="sub" style="margin-top:0">
+            <div class="sub__head"><span class="sub__title">Dados gerais</span></div>
+
+            <div class="field">
+              <label class="field__label" for="inspectorModeYes">Múltiplos fiscais por local<span class="req">*</span></label>
+              <div class="radio-inline" role="radiogroup" aria-label="Múltiplos fiscais por local">
+                <label><input type="radio" id="inspectorModeYes" name="inspectorMode" value="multiple" checked> Sim</label>
+                <label><input type="radio" id="inspectorModeNo" name="inspectorMode" value="single"> Não</label>
+              </div>
+              <p class="field__help">Sim: um fiscal (e suplente) para cada local habilitado. Não: um único fiscal para todo o contrato.</p>
+            </div>
+
+            <div data-mode-panel="inspectorMode:multiple">
+              <label class="field__label">Fiscais por local<span class="req">*</span></label>
+              <div id="fiscalRows"></div>
+              <p class="block-error" data-error-for="fiscalRows"></p>
+              <button type="button" id="btnAddFiscalRow" class="btn btn--secondary btn--sm" style="margin-bottom:16px">+ Adicionar fiscal</button>
+            </div>
+
+            <div class="row" data-mode-panel="inspectorMode:single" hidden>
+              <div class="field">
+                <label class="field__label" for="fiscalSingleId">Fiscal<span class="req">*</span></label>
+                <select id="fiscalSingleId" name="fiscalSingleId"></select>
+                <p class="field__error" data-error-for="fiscalSingleId"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="substituteSingleId">Suplente</label>
+                <select id="substituteSingleId" name="substituteSingleId"></select>
+                <p class="field__error" data-error-for="substituteSingleId"></p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="registrationResponsible">Responsável pelo cadastro<span class="req">*</span></label>
+                <input type="text" id="registrationResponsible" name="registrationResponsible" value="Salete de Campos Dias">
+                <p class="field__help">Usuário autenticado que está cadastrando a solicitação.</p>
+                <p class="field__error" data-error-for="registrationResponsible"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="requestingUnitId">Unidade Requisitante<span class="req">*</span></label>
+                <select id="requestingUnitId" name="requestingUnitId"></select>
+                <p class="field__error" data-error-for="requestingUnitId"></p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="initialResponsibleId">Responsável pela solicitação inicial<span class="req">*</span></label>
+                <select id="initialResponsibleId" name="initialResponsibleId"></select>
+                <p class="field__error" data-error-for="initialResponsibleId"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="legalFoundation">Fundamento Legal da Contratação<span class="req">*</span></label>
+                <select id="legalFoundation" name="legalFoundation"></select>
+                <p class="field__error" data-error-for="legalFoundation"></p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="contractObject">Objeto do contrato<span class="req">*</span></label>
+              <input type="text" id="contractObject" name="contractObject" placeholder="Ex: Concerto - Divina's Tro - Espetáculo">
+              <p class="field__error" data-error-for="contractObject"></p>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="parentProccessSEI">Processo SEI Mãe<span class="req">*</span></label>
+                <input type="text" id="parentProccessSEI" name="parentProccessSEI" placeholder="Ex: 00000.000000/0000-00">
+                <p class="field__error" data-error-for="parentProccessSEI"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="contractObservation">Observação</label>
+                <input type="text" id="contractObservation" name="contractObservation" placeholder="Observação interna do contrato">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="reserveRequestStandard">Pedido de Reserva<span class="req">*</span></label>
+              <div class="radio-inline" role="radiogroup" aria-label="Pedido de Reserva">
+                <label><input type="radio" id="reserveRequestStandard" name="reserveRequest" value="standard"> Padrão</label>
+                <label><input type="radio" id="reserveRequestGlobal" name="reserveRequest" value="global" checked> Global</label>
+              </div>
+              <p class="field__help">Global: uma única reserva cobre todos os eventos planejados do contrato.</p>
+            </div>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-contrato" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-contrato" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 3 — LegalPerson (empresa) ============ -->
+      <section id="sec-empresa" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Empresa</h2>
+            <p class="card__hint">Empresa agenciadora contratada. A escolha define quais artistas ficam disponíveis para os eventos planejados.</p>
+            <span class="card__entity">LegalPerson</span>
+          </div>
+          <span class="chip" data-chip-for="sec-empresa" data-status="empty">○ Vazio</span>
+        </div>
+
+        <form id="form-empresa" class="js-form" data-section="sec-empresa" novalidate>
+          <input type="hidden" id="companyId" name="companyId" value="">
+          <div id="companyPanel"></div>
+          <p class="block-error" data-error-for="companyBlock"></p>
+          <div class="stack-actions">
+            <button type="button" id="btnOpenCompanyModal" class="btn btn--secondary btn--sm">Selecionar empresa</button>
+            <button type="button" id="btnClearCompany" class="btn btn--danger-link" hidden>Remover empresa</button>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-empresa" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-empresa" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 4 — Artistas agenciados + EventPlanneds ============ -->
+      <section id="sec-eventos" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Artistas e eventos planejados</h2>
+            <p class="card__hint">Cada evento planejado é criado escolhendo um artista agenciado (1 evento : 1 artista) e definindo o cronograma das apresentações.</p>
+            <span class="card__entity">EventPlanned · type = AMENDMENT_EVENT · Artist · EventPlannedSchedule</span>
+          </div>
+          <span class="chip" data-chip-for="sec-eventos" data-status="empty">○ Vazio</span>
+        </div>
+
+        <form id="form-eventos" class="js-form" data-section="sec-eventos" novalidate>
+          <div class="sub" style="margin-top:0;padding-top:0;border-top:none">
+            <div class="sub__head"><span class="sub__title">Artistas agenciados pela empresa</span></div>
+            <div id="artistsPanel"></div>
+          </div>
+
+          <div class="sub">
+            <div class="sub__head">
+              <span class="sub__title">Eventos planejados (mínimo 1)</span>
+              <button type="button" id="btnAddEvent" class="btn btn--secondary btn--sm">+ Adicionar evento planejado</button>
+            </div>
+            <div id="eventsList"></div>
+            <p class="block-error" data-error-for="eventsBlock"></p>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-eventos" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-eventos" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 5 — Valor do contrato ============ -->
+      <section id="sec-valor" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Valor do contrato</h2>
+            <p class="card__hint">Valor global a ser empenhado no contrato. Não pode ser menor que a soma dos cachês dos eventos planejados.</p>
+            <span class="card__entity">ContractingRequest.amount</span>
+          </div>
+          <span class="chip" data-chip-for="sec-valor" data-status="empty">○ Vazio</span>
+        </div>
+
+        <form id="form-valor" class="js-form" data-section="sec-valor" novalidate>
+          <div class="readonly-box" id="contractValueInfo" style="margin-bottom:16px"></div>
+
+          <div class="row">
+            <div class="field">
+              <label class="field__label" for="contractValue">Valor do contrato (R$)<span class="req">*</span></label>
+              <input type="number" id="contractValue" name="contractValue" min="0" step="0.01" placeholder="0,00">
+              <p class="field__help">Valor total do contrato, incluindo cachês e eventuais despesas extraordinárias.</p>
+              <p class="field__error" data-error-for="contractValue"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="extraordinaryValue">Despesas extraordinárias (R$)</label>
+              <input type="number" id="extraordinaryValue" name="extraordinaryValue" min="0" step="0.01" placeholder="0,00">
+              <p class="field__help">Custos fora do cachê (transporte, cenografia, acessibilidade).</p>
+              <p class="field__error" data-error-for="extraordinaryValue"></p>
+            </div>
+          </div>
+
+          <div class="stack-actions" style="margin-bottom:16px">
+            <button type="button" id="btnFillContractValue" class="btn btn--secondary btn--sm">Usar a soma dos eventos planejados</button>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="contractValueJustification">Justificativa do valor</label>
+            <textarea id="contractValueJustification" name="contractValueJustification" placeholder="Base de cálculo, referências de preço, memória de cálculo das despesas extraordinárias…"></textarea>
+            <p class="field__error" data-error-for="contractValueJustification"></p>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-valor" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-valor" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ RESUMO ============ -->
+      <section id="sec-resumo" class="card">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Resumo</h2>
+            <p class="card__hint">Consolidação dos 5 blocos. Revise antes de criar a emenda.</p>
+          </div>
+        </div>
+        <div id="summaryContent"></div>
+        <div class="card__foot">
+          <span class="card__foot-msg" data-foot-for="sec-resumo">Preencha os blocos anteriores.</span>
+          <button type="button" id="btnValidateAll" class="btn btn--secondary btn--sm">Validar todos os blocos</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="actionbar">
+    <div class="actionbar__status">
+      <span id="savedLabel"></span>
+      <span id="globalStatusLabel"></span>
+    </div>
+    <div class="actionbar__buttons">
+      <button type="button" id="btnCreate" class="btn btn--primary">Criar emenda</button>
+    </div>
+  </div>
+
+  <!-- ============ MODAL DE EMPRESAS ============ -->
+  <div class="modal" id="companyModal" hidden>
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="companyModalTitle">
+      <div class="modal__head">
+        <h3 class="modal__title" id="companyModalTitle">Selecionar empresa</h3>
+        <p class="modal__hint">Empresas cadastradas com artistas agenciados. Selecione uma para continuar.</p>
+        <input type="search" id="companySearch" placeholder="Buscar por razão social, nome fantasia ou CNPJ…" aria-label="Buscar empresa">
+      </div>
+      <div class="modal__body">
+        <div class="table__scroll">
+          <table class="table table--pick">
+            <thead>
+              <tr>
+                <th style="width:36px"><span class="sr-only">Seleção</span></th>
+                <th>Razão social / Nome fantasia</th>
+                <th>CNPJ</th>
+                <th>Artistas</th>
+              </tr>
+            </thead>
+            <tbody id="companyRows"></tbody>
+          </table>
+        </div>
+        <p class="hint-empty" id="companyEmpty" hidden>Nenhuma empresa encontrada para a busca.</p>
+      </div>
+      <div class="modal__foot">
+        <span class="modal__foot-msg" id="companyModalMsg">Nenhuma empresa selecionada.</span>
+        <div class="modal__foot-actions">
+          <button type="button" class="btn btn--secondary" data-modal-close>Cancelar</button>
+          <button type="button" id="btnConfirmCompany" class="btn btn--primary" disabled>Selecionar empresa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+<script>
+  /* ==========================================================================
+     Protótipo — Criação de Emenda (v2)
+     Sem integração: todos os dados abaixo são mocks equivalentes aos endpoints
+     de EventManagement, Place, ContractingRequest, LegalPerson,
+     Artist/ArtistEventType e EventPlanned/EventPlannedSchedule.
+
+     Diferenças em relação à v1:
+       · o vereador autor da emenda é informado ao criar o evento (EventManagement);
+       · o bloco "Coordenadoria de Emendas" saiu (a unidade requisitante é campo do contrato);
+       · "Artistas agenciados" e "Eventos planejados" viraram um único bloco:
+         cada evento planejado é criado escolhendo o artista e definindo o cronograma;
+       · novo bloco "Valor do contrato";
+       · o contrato recebe os dados gerais da contratação (fiscais, unidade, SEI mãe…).
+     ========================================================================== */
+
+  const AMENDMENT_NUMBER = '2026/0087';
+  const CONTRACT_CODE = 'CT-2026-004312';
+
+  const COUNCILORS = [
+    { id: 'vr-1', name: 'Ana Beatriz Lima', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 420000 },
+    { id: 'vr-2', name: 'Carlos Eduardo Ramos', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 1150000 },
+    { id: 'vr-3', name: 'Marina Tavares', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 90000 },
+  ];
+
+  const EVENT_MANAGEMENTS = [
+    {
+      id: 'em-2026-vr1',
+      councilorId: 'vr-1',
+      eventName: 'Emendas Ana Beatriz Lima — 2026',
+      projectType: 'Emenda Parlamentar',
+      period: '01/01/2026 a 31/12/2026',
+      linkedEventPlanneds: 12,
+    },
+    {
+      id: 'em-2026-vr2',
+      councilorId: 'vr-2',
+      eventName: 'Emendas Carlos Eduardo Ramos — 2026',
+      projectType: 'Emenda Parlamentar',
+      period: '01/01/2026 a 31/12/2026',
+      linkedEventPlanneds: 27,
+    },
+    {
+      id: 'em-2026-vr3',
+      councilorId: 'vr-3',
+      eventName: 'Emendas Marina Tavares — 2026',
+      projectType: 'Emenda Parlamentar',
+      period: '01/01/2026 a 31/12/2026',
+      linkedEventPlanneds: 4,
+    },
+  ];
+
+  const PLACES = [
+    { id: 'pl-1', name: 'Teatro Municipal', district: 'Sé', capacity: 1500 },
+    { id: 'pl-2', name: 'Centro Cultural São Paulo', district: 'Liberdade', capacity: 800 },
+    { id: 'pl-3', name: 'Casa de Cultura Itaquera', district: 'Itaquera', capacity: 220 },
+    { id: 'pl-4', name: 'Praça das Artes', district: 'República', capacity: 400 },
+    { id: 'pl-5', name: 'Biblioteca Mário de Andrade', district: 'República', capacity: 180 },
+  ];
+
+  /* Fiscais e suplentes disponíveis (Dados gerais do contrato). */
+  const INSPECTORS = [
+    { id: 'fi-1', name: 'Julio Cesar Doria Alves', unit: 'SMC/CCULT' },
+    { id: 'fi-2', name: 'Morizi Salles Martins', unit: 'smc/ccult' },
+    { id: 'fi-3', name: 'Renata Aparecida Souza', unit: 'SMC/CCULT/AHM' },
+    { id: 'fi-4', name: 'Paulo Henrique Barros', unit: 'SMC/CCULT/TAA' },
+  ];
+
+  const CONTRACT_UNITS = [
+    { id: 'cu-1', name: 'Teatro Arthur Azevedo' },
+    { id: 'cu-2', name: 'AHM-Arquivo Histórico Municipal - SMC/PMSP' },
+    { id: 'cu-3', name: 'Centro Cultural São Paulo' },
+    { id: 'cu-4', name: 'Coordenadoria de Emendas Parlamentares' },
+  ];
+
+  const INITIAL_RESPONSIBLES = [
+    { id: 'ir-1', name: 'Vanessa Mariliz Gomes', unit: 'smc/ccult/ccj' },
+    { id: 'ir-2', name: 'Salete de Campos Dias', unit: 'smc/ccult' },
+    { id: 'ir-3', name: 'Fábio Nogueira Prado', unit: 'smc/ccult/emendas' },
+  ];
+
+  const LEGAL_FOUNDATIONS = [
+    ['editais', 'Editais'],
+    ['inexigibilidade', 'Inexigibilidade — art. 74, II'],
+    ['dispensa', 'Dispensa de licitação'],
+    ['emenda', 'Emenda parlamentar'],
+  ];
+
+  const COMPANIES = [
+    { id: 'lp-1', companyName: 'Produções Culturais Horizonte Ltda', tradingName: 'Horizonte Produções', cnpj: '12.345.678/0001-90' },
+    { id: 'lp-2', companyName: 'Agência Palco Aberto Eireli', tradingName: 'Palco Aberto', cnpj: '98.765.432/0001-11' },
+    { id: 'lp-3', companyName: 'Coletivo Sonora Gestão Artística Ltda', tradingName: 'Sonora Gestão', cnpj: '45.678.901/0001-23' },
+  ];
+
+  const ARTISTS = [
+    {
+      id: 'ar-1', companyId: 'lp-1', nameGroup: 'Cia. de Dança Movimento', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-1', nameEvent: 'Espetáculo "Corpo Urbano"', durationInMinutes: 70, valueSuggestion: 18000 },
+        { id: 'aet-2', nameEvent: 'Oficina de dança contemporânea', durationInMinutes: 120, valueSuggestion: 6500 },
+      ],
+    },
+    {
+      id: 'ar-2', companyId: 'lp-1', nameGroup: 'Quarteto Mário de Andrade', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-3', nameEvent: 'Concerto de câmara', durationInMinutes: 90, valueSuggestion: 22000 },
+      ],
+    },
+    {
+      id: 'ar-3', companyId: 'lp-1', nameGroup: 'Joana Prado', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-4', nameEvent: 'Show "Raiz e Verso"', durationInMinutes: 80, valueSuggestion: 14000 },
+        { id: 'aet-5', nameEvent: 'Bate-papo com público escolar', durationInMinutes: 60, valueSuggestion: 3800 },
+      ],
+    },
+    {
+      id: 'ar-4', companyId: 'lp-2', nameGroup: 'Trupe Circo do Beco', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-6', nameEvent: 'Espetáculo circense "Beco Alto"', durationInMinutes: 60, valueSuggestion: 16500 },
+      ],
+    },
+    {
+      id: 'ar-5', companyId: 'lp-2', nameGroup: 'Bloco Afro Ilú Obá', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-7', nameEvent: 'Cortejo percussivo', durationInMinutes: 100, valueSuggestion: 25000 },
+        { id: 'aet-8', nameEvent: 'Vivência de percussão', durationInMinutes: 90, valueSuggestion: 7200 },
+      ],
+    },
+    {
+      id: 'ar-6', companyId: 'lp-3', nameGroup: 'Sonora Big Band', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-9', nameEvent: 'Show "Sopros da Cidade"', durationInMinutes: 95, valueSuggestion: 31000 },
+      ],
+    },
+    {
+      id: 'ar-7', companyId: 'lp-3', nameGroup: 'Duo Cordas do Centro', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-10', nameEvent: 'Recital de cordas', durationInMinutes: 60, valueSuggestion: 9500 },
+        { id: 'aet-11', nameEvent: 'Apresentação didática', durationInMinutes: 50, valueSuggestion: 4200 },
+      ],
+    },
+  ];
+
+  const STATUS_META = {
+    empty:   { icon: '○', label: 'Vazio' },
+    partial: { icon: '◐', label: 'Preenchido' },
+    draft:   { icon: '✎', label: 'Rascunho' },
+    invalid: { icon: '!', label: 'Incorreto' },
+    valid:   { icon: '✓', label: 'Correto' },
+  };
+
+  /* Status da emenda (ciclo de vida). Sem aprovação: rascunho → criada. */
+  const REQUEST_STATUS_META = {
+    draft:   { status: 'draft', label: 'Emenda em rascunho' },
+    created: { status: 'valid', label: 'Emenda criada' },
+  };
+  let requestStatus = 'draft';
+
+  /* ---------------- helpers ---------------- */
+  const el = (id) => document.getElementById(id);
+  const val = (id) => { const node = el(id); return node ? String(node.value).trim() : ''; };
+  const currentMode = (name) => {
+    const node = document.querySelector(`input[name="${name}"]:checked`);
+    return node ? node.value : '';
+  };
+  const brl = (value) => (value == null || Number.isNaN(value))
+    ? '—'
+    : value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const escapeHtml = (str) => {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  };
+  const pending = (count) => `${count} ${count === 1 ? 'pendência' : 'pendências'}`;
+  const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
+
+  const findPlace = (id) => PLACES.find((place) => place.id === id);
+  const findCompany = (id) => COMPANIES.find((company) => company.id === id);
+  const findArtist = (id) => ARTISTS.find((artist) => artist.id === id);
+  const findCouncilor = (id) => COUNCILORS.find((councilor) => councilor.id === id);
+  const findInspector = (id) => INSPECTORS.find((inspector) => inspector.id === id);
+  const findContractUnit = (id) => CONTRACT_UNITS.find((unit) => unit.id === id);
+  const findInitialResponsible = (id) => INITIAL_RESPONSIBLES.find((person) => person.id === id);
+  const findLegalFoundation = (id) => LEGAL_FOUNDATIONS.find(([value]) => value === id);
+  const findEventType = (artistId, aetId) => {
+    const artist = findArtist(artistId);
+    return artist ? artist.eventTypes.find((eventType) => eventType.id === aetId) : undefined;
+  };
+  const companyArtists = (companyId) => ARTISTS.filter((artist) => artist.companyId === companyId);
+  const councilorEventManagements = (councilorId) =>
+    EVENT_MANAGEMENTS.filter((item) => !councilorId || item.councilorId === councilorId);
+
+  /**
+   * Tipos de erro, por momento em que ficam visíveis:
+   *  required → obrigatório não informado; aparece depois que o bloco é salvo.
+   *  soft     → regra sobre valor em digitação; aparece depois que o bloco é salvo.
+   *  live     → contradição inequívoca entre dados já informados; aparece na hora.
+   */
+  const missing = (field, message) => ({ field, message, kind: 'required' });
+  const soft = (field, message) => ({ field, message, kind: 'soft' });
+  const wrong = (field, message) => ({ field, message, kind: 'live' });
+
+  /* ---------------- leitura do DOM (fonte da verdade) ---------------- */
+  const selectedPlaceIds = () => (val('placeId') ? [val('placeId')] : []);
+
+  function fiscalRowsData() {
+    return Array.from(document.querySelectorAll('#fiscalRows .fiscal-row')).map((row) => ({
+      rowId: row.dataset.rowId,
+      fiscalId: row.querySelector('select[data-role="fiscal"]').value,
+      substituteId: row.querySelector('select[data-role="substitute"]').value,
+      placeId: row.querySelector('select[data-role="fiscal-place"]').value,
+    }));
+  }
+
+  const selectedCompany = () => findCompany(val('companyId'));
+
+  function eventsData() {
+    return Array.from(document.querySelectorAll('#eventsList .ep')).map((card, index) => {
+      const epId = card.dataset.epId;
+      return {
+        epId,
+        index,
+        artistId: card.querySelector('select[data-role="artist"]').value,
+        aetId: card.querySelector('select[data-role="aet"]').value,
+        title: card.querySelector(`#epTitle-${epId}`).value.trim(),
+        description: card.querySelector(`#epDescription-${epId}`).value.trim(),
+        schedules: Array.from(card.querySelectorAll('.schedule-row')).map((row) => ({
+          rowId: row.dataset.rowId,
+          startDate: row.querySelector('input[data-role="start-date"]').value,
+          endDate: row.querySelector('input[data-role="end-date"]').value,
+          allDay: row.querySelector('input[data-role="all-day"]').checked,
+          startTime: row.querySelector('input[data-role="start-time"]').value,
+          durationInMinutes: row.querySelector('input[data-role="duration"]').value.trim(),
+          placeId: row.querySelector('select[data-role="place"]').value,
+          amount: row.querySelector('input[data-role="amount"]').value.trim(),
+        })),
+      };
+    });
+  }
+
+  const scheduleAmount = (schedule) => (schedule.amount === '' ? 0 : Number(schedule.amount));
+  const eventTotal = (event) => event.schedules.reduce((total, schedule) => total + scheduleAmount(schedule), 0);
+  const schedulesTotal = () => eventsData().reduce((total, event) => total + eventTotal(event), 0);
+  const extraordinaryAmount = () => (val('extraordinaryValue') === '' ? 0 : Number(val('extraordinaryValue')));
+  const requiredContractValue = () => schedulesTotal() + extraordinaryAmount();
+  const contractValueAmount = () => (val('contractValue') === '' ? null : Number(val('contractValue')));
+
+  /* ---------------- definição dos blocos ---------------- */
+  const SECTIONS = [
+    {
+      id: 'sec-evento',
+      formId: 'form-evento',
+      label: 'Evento da Emenda',
+      filled: () => Boolean(
+        val('councilorId') ||
+        (currentMode('eventMode') === 'unified' && val('eventManagementId')) ||
+        (currentMode('eventMode') === 'new' && (val('eventName') || val('eventStartDate') || val('eventEndDate') || val('eventDescription'))) ||
+        selectedPlaceIds().length > 0
+      ),
+      validate() {
+        const errors = [];
+        const councilorId = val('councilorId');
+        if (!councilorId) errors.push(missing('councilorId', 'Informe o vereador responsável pela emenda parlamentar.'));
+
+        if (currentMode('eventMode') === 'unified') {
+          const eventManagementId = val('eventManagementId');
+          if (!eventManagementId) {
+            errors.push(missing('eventManagementId', 'Selecione o evento unificado do vereador.'));
+          } else {
+            const item = EVENT_MANAGEMENTS.find((event) => event.id === eventManagementId);
+            if (councilorId && item && item.councilorId !== councilorId) {
+              errors.push(wrong('eventManagementId', 'Este evento pertence a outro vereador. Selecione um evento do vereador informado.'));
+            }
+          }
+        } else {
+          const name = val('eventName');
+          if (!name) errors.push(missing('eventName', 'Informe o nome do evento.'));
+          else if (name.length < 5) errors.push(soft('eventName', 'O nome do evento deve ter ao menos 5 caracteres.'));
+
+          const startDate = val('eventStartDate');
+          const endDate = val('eventEndDate');
+          if (!startDate) errors.push(missing('eventStartDate', 'Informe o início da vigência.'));
+          if (!endDate) errors.push(missing('eventEndDate', 'Informe o fim da vigência.'));
+          if (startDate && endDate && endDate < startDate) {
+            errors.push(wrong('eventEndDate', 'O fim da vigência não pode ser anterior ao início.'));
+          }
+        }
+
+        if (!val('placeId')) errors.push(missing('placeId', 'Selecione o local do evento.'));
+        return errors;
+      },
+    },
+    {
+      id: 'sec-contrato',
+      formId: 'form-contrato',
+      label: 'Contrato',
+      filled: () => Boolean(
+        val('contractCode') || val('parentProccessSEI') || val('contractObservation') ||
+        val('contractObject') || val('requestingUnitId') || val('initialResponsibleId') ||
+        val('legalFoundation') || val('fiscalSingleId') ||
+        fiscalRowsData().some((row) => row.fiscalId || row.substituteId || row.placeId)
+      ),
+      validate() {
+        const errors = [];
+        const placeIds = selectedPlaceIds();
+
+        if (!val('contractCode')) {
+          errors.push(missing('contractBlock', 'Crie o contrato para vincular os eventos planejados desta emenda.'));
+        }
+
+        if (currentMode('inspectorMode') === 'multiple') {
+          const rows = fiscalRowsData();
+          const touched = rows.filter((row) => row.fiscalId || row.substituteId || row.placeId);
+          if (touched.length === 0) {
+            errors.push(missing('fiscalRows', 'Informe ao menos um fiscal por local.'));
+          }
+
+          const seenPlaces = new Set();
+          rows.forEach((row) => {
+            if (!row.fiscalId) errors.push(missing(`fiscalId-${row.rowId}`, 'Selecione o fiscal.'));
+            if (!row.placeId) {
+              errors.push(missing(`fiscalPlace-${row.rowId}`, 'Selecione o local.'));
+            } else {
+              if (!placeIds.includes(row.placeId)) {
+                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Local não está habilitado no evento da emenda.'));
+              }
+              if (seenPlaces.has(row.placeId)) {
+                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Este local já tem fiscal designado.'));
+              }
+              seenPlaces.add(row.placeId);
+            }
+            if (row.substituteId && row.substituteId === row.fiscalId) {
+              errors.push(wrong(`fiscalSubstitute-${row.rowId}`, 'O suplente deve ser diferente do fiscal.'));
+            }
+          });
+        } else {
+          if (!val('fiscalSingleId')) errors.push(missing('fiscalSingleId', 'Selecione o fiscal do contrato.'));
+          if (val('substituteSingleId') && val('substituteSingleId') === val('fiscalSingleId')) {
+            errors.push(wrong('substituteSingleId', 'O suplente deve ser diferente do fiscal.'));
+          }
+        }
+
+        if (!val('registrationResponsible')) errors.push(missing('registrationResponsible', 'Informe o responsável pelo cadastro.'));
+        if (!val('requestingUnitId')) errors.push(missing('requestingUnitId', 'Selecione a unidade requisitante.'));
+        if (!val('initialResponsibleId')) errors.push(missing('initialResponsibleId', 'Selecione o responsável pela solicitação inicial.'));
+        if (!val('legalFoundation')) errors.push(missing('legalFoundation', 'Selecione o fundamento legal da contratação.'));
+
+        const object = val('contractObject');
+        if (!object) errors.push(missing('contractObject', 'Informe o objeto do contrato.'));
+        else if (object.length < 5) errors.push(soft('contractObject', 'O objeto deve ter ao menos 5 caracteres.'));
+
+        const sei = val('parentProccessSEI');
+        if (!sei) errors.push(missing('parentProccessSEI', 'Informe o processo SEI mãe.'));
+        else if (!/^\d{5}\.\d{6}\/\d{4}-\d{2}$/.test(sei)) {
+          errors.push(wrong('parentProccessSEI', 'Formato esperado: 00000.000000/0000-00.'));
+        }
+        return errors;
+      },
+    },
+    {
+      id: 'sec-empresa',
+      formId: 'form-empresa',
+      label: 'Empresa',
+      filled: () => Boolean(val('companyId')),
+      validate() {
+        if (!val('companyId')) return [missing('companyBlock', 'Selecione a empresa agenciadora.')];
+        return [];
+      },
+    },
+    {
+      id: 'sec-eventos',
+      formId: 'form-eventos',
+      label: 'Artistas e eventos planejados',
+      filled: () => eventsData().length > 0,
+      validate() {
+        const errors = [];
+        const companyId = val('companyId');
+        const placeIds = selectedPlaceIds();
+
+        if (!companyId) {
+          errors.push(missing('eventsBlock', 'Selecione a empresa no bloco anterior para listar os artistas agenciados.'));
+          return errors;
+        }
+
+        const allowedArtistIds = companyArtists(companyId).map((artist) => artist.id);
+        const events = eventsData();
+        if (events.length === 0) {
+          errors.push(missing('eventsBlock', 'Adicione ao menos um evento planejado — escolha o artista e defina o cronograma.'));
+          return errors;
+        }
+
+        events.forEach((event) => {
+          const position = event.index + 1;
+
+          if (!event.artistId) {
+            errors.push(missing(`epArtist-${event.epId}`, 'Selecione o artista deste evento planejado.'));
+          } else if (!allowedArtistIds.includes(event.artistId)) {
+            errors.push(wrong(`epArtist-${event.epId}`, 'Artista não é agenciado pela empresa selecionada.'));
+          }
+
+          if (!event.aetId) errors.push(missing(`epAet-${event.epId}`, 'Selecione a atração do artista.'));
+
+          if (!event.title) errors.push(missing(`epTitle-${event.epId}`, `Informe o título do evento planejado ${position}.`));
+          else if (event.title.length < 5) errors.push(soft(`epTitle-${event.epId}`, 'O título deve ter ao menos 5 caracteres.'));
+
+          if (event.schedules.length === 0) {
+            errors.push(missing(`epSchedules-${event.epId}`, `Evento ${position}: defina ao menos uma data no cronograma.`));
+          }
+
+          const seenSlots = new Set();
+          event.schedules.forEach((schedule) => {
+            const rowId = schedule.rowId;
+
+            if (!schedule.startDate) errors.push(missing(`epStartDate-${rowId}`, 'Informe a data de início.'));
+            if (schedule.endDate && schedule.startDate && schedule.endDate < schedule.startDate) {
+              errors.push(wrong(`epEndDate-${rowId}`, 'A data de término não pode ser anterior à de início.'));
+            }
+
+            if (!schedule.allDay) {
+              if (!schedule.startTime) errors.push(missing(`epStartTime-${rowId}`, 'Informe o horário de início.'));
+              if (schedule.durationInMinutes === '') errors.push(missing(`epDuration-${rowId}`, 'Informe a duração.'));
+              else if (!(Number(schedule.durationInMinutes) > 0)) errors.push(wrong(`epDuration-${rowId}`, 'A duração deve ser maior que zero.'));
+            }
+
+            if (!schedule.placeId) errors.push(missing(`epPlace-${rowId}`, 'Selecione o local.'));
+            else if (!placeIds.includes(schedule.placeId)) errors.push(wrong(`epPlace-${rowId}`, 'Local não está mais habilitado no evento da emenda.'));
+
+            if (schedule.amount === '') errors.push(missing(`epAmount-${rowId}`, 'Informe o valor do cachê.'));
+            else if (!(Number(schedule.amount) > 0)) errors.push(wrong(`epAmount-${rowId}`, 'O valor deve ser maior que zero.'));
+
+            if (schedule.startDate && schedule.placeId) {
+              const slot = `${schedule.startDate}|${schedule.startTime}|${schedule.placeId}`;
+              if (seenSlots.has(slot)) {
+                errors.push(wrong(`epStartDate-${rowId}`, 'Já existe uma data igual neste local para este evento.'));
+              }
+              seenSlots.add(slot);
+            }
+          });
+        });
+
+        return errors;
+      },
+    },
+    {
+      id: 'sec-valor',
+      formId: 'form-valor',
+      label: 'Valor do contrato',
+      filled: () => Boolean(val('contractValue') || val('extraordinaryValue') || val('contractValueJustification')),
+      validate() {
+        const errors = [];
+        const value = contractValueAmount();
+        const extraordinary = extraordinaryAmount();
+        const minimum = requiredContractValue();
+
+        if (val('extraordinaryValue') !== '' && !(extraordinary >= 0)) {
+          errors.push(wrong('extraordinaryValue', 'O valor das despesas extraordinárias não pode ser negativo.'));
+        }
+        if (extraordinary > 0 && !val('contractValueJustification')) {
+          errors.push(missing('contractValueJustification', 'Justifique as despesas extraordinárias.'));
+        }
+
+        if (value === null) {
+          errors.push(missing('contractValue', 'Informe o valor do contrato.'));
+          return errors;
+        }
+        if (!(value > 0)) {
+          errors.push(wrong('contractValue', 'O valor do contrato deve ser maior que zero.'));
+          return errors;
+        }
+        if (minimum > 0 && value < minimum) {
+          errors.push(wrong('contractValue', `O valor do contrato não pode ser menor que ${brl(minimum)} (cachês + despesas extraordinárias).`));
+        }
+        return errors;
+      },
+    },
+  ];
+
+  /* Blocos já salvos: a partir daí todos os erros ficam visíveis. */
+  const attempted = new Set();
+
+  /* ---------------- rascunho por bloco ---------------- */
+  /**
+   * snapshots guarda a última versão salva de cada bloco. Comparar a serialização
+   * atual com o snapshot dá o estado "rascunho": há alterações não salvas.
+   * A chave de cada campo é sua posição no formulário, então incluir ou remover
+   * linhas (locais, fiscais, programações) também conta como alteração.
+   */
+  const snapshots = new Map();
+
+  function serializeSection(section) {
+    const formEl = el(section.formId);
+    return Array.from(formEl.querySelectorAll('input, select, textarea'))
+      .map((node, index) => `${index}:${node.type === 'checkbox' || node.type === 'radio' ? node.checked : node.value}`)
+      .join('|');
+  }
+
+  const isDirty = (section) => snapshots.get(section.id) !== serializeSection(section);
+  const takeSnapshot = (section) => snapshots.set(section.id, serializeSection(section));
+  const snapshotAll = () => SECTIONS.forEach(takeSnapshot);
+
+  /* ---------------- selects dinâmicos ---------------- */
+  /** Reescreve as opções só quando elas mudam, preservando o valor atual. */
+  function fillSelect(selectEl, options, placeholder) {
+    const signature = JSON.stringify([placeholder, options]);
+    if (selectEl.dataset.signature === signature) return;
+    const current = selectEl.value;
+    selectEl.dataset.signature = signature;
+    selectEl.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` +
+      options.map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join('');
+    selectEl.value = options.some(([value]) => value === current) ? current : '';
+  }
+
+  /**
+   * Mantém no select um valor que saiu da lista de origem (local removido do
+   * evento, artista de outra empresa). Sem isso a seleção sumiria em silêncio e
+   * o erro cruzado viraria um genérico "campo obrigatório".
+   */
+  function withStale(options, currentValue, labelFor) {
+    if (!currentValue || options.some(([value]) => value === currentValue)) return options;
+    return [...options, [currentValue, labelFor(currentValue)]];
+  }
+
+  const placeOptions = () => PLACES.map((place) => [place.id, `${place.name} — ${place.district} (${place.capacity} lugares)`]);
+  const inspectorOptions = () => INSPECTORS.map((inspector) => [inspector.id, `${inspector.name} (${inspector.unit})`]);
+  const enabledPlaceOptions = () => selectedPlaceIds().map((id) => {
+    const place = findPlace(id);
+    return [id, `${place.name} — ${place.district}`];
+  });
+  const artistOptions = () => companyArtists(val('companyId')).map((artist) => [artist.id, `${artist.nameGroup} (${artist.artistType})`]);
+
+  function refreshDynamicOptions() {
+    fillSelect(el('councilorId'), COUNCILORS.map((councilor) => [councilor.id, councilor.name]), 'Selecione o vereador…');
+
+    const councilorId = val('councilorId');
+    const managements = councilorEventManagements(councilorId);
+    const managementSelect = el('eventManagementId');
+    fillSelect(
+      managementSelect,
+      withStale(
+        managements.map((item) => [item.id, item.eventName]),
+        managementSelect.value,
+        (id) => {
+          const item = EVENT_MANAGEMENTS.find((event) => event.id === id);
+          return `${item ? item.eventName : id} — de outro vereador`;
+        }
+      ),
+      councilorId ? 'Selecione o evento unificado…' : 'Informe o vereador primeiro'
+    );
+
+    fillSelect(el('placeId'), placeOptions(), 'Selecione o local…');
+
+    /* Fiscais do contrato */
+    const inspectors = inspectorOptions();
+    const enabledPlaces = enabledPlaceOptions();
+    fillSelect(el('fiscalSingleId'), inspectors, 'Selecione o fiscal…');
+    fillSelect(el('substituteSingleId'), inspectors, 'Selecione o suplente…');
+    document.querySelectorAll('#fiscalRows .fiscal-row').forEach((row) => {
+      fillSelect(row.querySelector('select[data-role="fiscal"]'), inspectors, 'Selecione o fiscal…');
+      fillSelect(row.querySelector('select[data-role="substitute"]'), inspectors, 'Selecione o suplente…');
+      const placeSelect = row.querySelector('select[data-role="fiscal-place"]');
+      fillSelect(
+        placeSelect,
+        withStale(enabledPlaces, placeSelect.value, (id) => {
+          const place = findPlace(id);
+          return `${place ? place.name : id} — fora dos locais habilitados`;
+        }),
+        enabledPlaces.length ? 'Selecione o local…' : 'Nenhum local habilitado no evento da emenda'
+      );
+    });
+
+    fillSelect(el('requestingUnitId'), CONTRACT_UNITS.map((unit) => [unit.id, unit.name]), 'Selecione a unidade…');
+    fillSelect(el('initialResponsibleId'), INITIAL_RESPONSIBLES.map((person) => [person.id, `${person.name} (${person.unit})`]), 'Selecione o responsável…');
+    fillSelect(el('legalFoundation'), LEGAL_FOUNDATIONS, 'Selecione o fundamento…');
+
+    /* Eventos planejados: artista (1:1), atração e cronograma */
+    const artists = artistOptions();
+    document.querySelectorAll('#eventsList .ep').forEach((card) => {
+      const artistSelect = card.querySelector('select[data-role="artist"]');
+      const aetSelect = card.querySelector('select[data-role="aet"]');
+      fillSelect(
+        artistSelect,
+        withStale(artists, artistSelect.value, (id) => {
+          const artist = findArtist(id);
+          return `${artist ? artist.nameGroup : id} — fora dos agenciados da empresa`;
+        }),
+        artists.length ? 'Selecione o artista…' : 'Nenhum artista agenciado disponível'
+      );
+
+      const artist = findArtist(artistSelect.value);
+      const eventTypes = artist ? artist.eventTypes.map((item) => [item.id, item.nameEvent]) : [];
+      fillSelect(aetSelect, eventTypes, artist ? 'Selecione a atração…' : 'Selecione o artista primeiro');
+
+      const eventType = findEventType(artistSelect.value, aetSelect.value);
+      card.querySelector('.aet-info').textContent = eventType
+        ? `Duração cadastrada: ${eventType.durationInMinutes} min · Valor sugerido: ${brl(eventType.valueSuggestion)}`
+        : '';
+
+      card.querySelectorAll('.schedule-row').forEach((row) => {
+        const placeSelect = row.querySelector('select[data-role="place"]');
+        fillSelect(
+          placeSelect,
+          withStale(enabledPlaces, placeSelect.value, (id) => {
+            const place = findPlace(id);
+            return `${place ? place.name : id} — fora dos locais habilitados`;
+          }),
+          enabledPlaces.length ? 'Selecione o local…' : 'Nenhum local habilitado no evento da emenda'
+        );
+
+        const allDay = row.querySelector('input[data-role="all-day"]').checked;
+        row.querySelector('input[data-role="start-time"]').disabled = allDay;
+        row.querySelector('input[data-role="duration"]').disabled = allDay;
+      });
+    });
+  }
+
+  /* ---------------- painéis de leitura ---------------- */
+  function renderCouncilorInfo() {
+    const councilor = findCouncilor(val('councilorId'));
+    el('councilorInfo').innerHTML = councilor
+      ? `
+        <div class="kv"><span class="kv__k">Vereador</span><span class="kv__v">${escapeHtml(councilor.name)}</span></div>
+        <div class="kv"><span class="kv__k">Mandato</span><span class="kv__v">${escapeHtml(councilor.mandate)}</span></div>
+        <div class="kv"><span class="kv__k">Teto de emendas do exercício</span><span class="kv__v money">${brl(councilor.amendmentCeiling)}</span></div>
+        <div class="kv"><span class="kv__k">Já comprometido</span><span class="kv__v money">${brl(councilor.usedAmount)}</span></div>
+        <div class="kv"><span class="kv__k">Saldo disponível</span><span class="kv__v money">${brl(councilor.amendmentCeiling - councilor.usedAmount)}</span></div>
+        <div class="kv"><span class="kv__k">Eventos unificados do vereador</span><span class="kv__v">${councilorEventManagements(councilor.id).length}</span></div>`
+      : '<div class="kv"><span class="kv__k">Selecione o vereador para ver mandato e saldo de emendas.</span><span class="kv__v">—</span></div>';
+  }
+
+  function renderEventManagementInfo() {
+    const item = EVENT_MANAGEMENTS.find((event) => event.id === val('eventManagementId'));
+    const councilor = item ? findCouncilor(item.councilorId) : null;
+    el('eventManagementInfo').innerHTML = item
+      ? `
+        <div class="kv"><span class="kv__k">Tipo de projeto</span><span class="kv__v">${escapeHtml(item.projectType)}</span></div>
+        <div class="kv"><span class="kv__k">Vigência</span><span class="kv__v">${escapeHtml(item.period)}</span></div>
+        <div class="kv"><span class="kv__k">Vereador do evento</span><span class="kv__v">${councilor ? escapeHtml(councilor.name) : '—'}</span></div>
+        <div class="kv"><span class="kv__k">Eventos planejados já vinculados</span><span class="kv__v">${item.linkedEventPlanneds}</span></div>`
+      : '<div class="kv"><span class="kv__k">Selecione um evento para ver os detalhes.</span><span class="kv__v">—</span></div>';
+  }
+
+  function renderContractInfo() {
+    const code = val('contractCode');
+    const events = eventsData();
+    const unit = findContractUnit(val('requestingUnitId'));
+    const value = contractValueAmount();
+
+    el('contractInfo').innerHTML = code
+      ? `
+        <div class="kv"><span class="kv__k">Código do contrato</span><span class="kv__v kv__v--mono">${escapeHtml(code)}</span></div>
+        <div class="kv"><span class="kv__k">Status</span><span class="kv__v">Rascunho</span></div>
+        <div class="kv"><span class="kv__k">Objeto do contrato</span><span class="kv__v">${escapeHtml(val('contractObject') || '—')}</span></div>
+        <div class="kv"><span class="kv__k">Unidade requisitante</span><span class="kv__v">${escapeHtml(unit ? unit.name : '—')}</span></div>
+        <div class="kv"><span class="kv__k">Eventos planejados vinculados</span><span class="kv__v">${events.length}</span></div>
+        <div class="kv"><span class="kv__k">Valor do contrato</span><span class="kv__v money">${value === null ? '—' : brl(value)}</span></div>`
+      : '<p class="hint-empty" style="margin:0">Nenhum contrato criado. O contrato nasce sem artista e sem valor — recebe os dados gerais aqui e os eventos planejados no bloco seguinte.</p>';
+
+    el('btnCreateContract').hidden = Boolean(code);
+    el('btnDiscardContract').hidden = !code;
+  }
+
+  function renderCompanyPanel() {
+    const company = selectedCompany();
+    el('companyPanel').innerHTML = company
+      ? `
+        <div class="readonly-box" style="margin-bottom:12px">
+          <div class="kv"><span class="kv__k">Razão social</span><span class="kv__v">${escapeHtml(company.companyName)}</span></div>
+          <div class="kv"><span class="kv__k">Nome fantasia</span><span class="kv__v">${escapeHtml(company.tradingName)}</span></div>
+          <div class="kv"><span class="kv__k">CNPJ</span><span class="kv__v kv__v--mono">${escapeHtml(company.cnpj)}</span></div>
+          <div class="kv"><span class="kv__k">Artistas agenciados</span><span class="kv__v">${companyArtists(company.id).length}</span></div>
+        </div>`
+      : '<p class="hint-empty" style="margin-bottom:12px">Nenhuma empresa selecionada. Abra a lista de empresas para escolher a agenciadora desta emenda.</p>';
+
+    el('btnOpenCompanyModal').textContent = company ? 'Trocar empresa' : 'Selecionar empresa';
+    el('btnClearCompany').hidden = !company;
+  }
+
+  /**
+   * Catálogo dos artistas agenciados, agora dentro do bloco de eventos: serve de
+   * referência ao montar cada evento planejado e mostra quantos eventos já usam
+   * cada artista. Somente leitura — a seleção acontece no próprio evento.
+   */
+  function renderArtistsPanel() {
+    const companyId = val('companyId');
+    const panel = el('artistsPanel');
+
+    if (!companyId) {
+      panel.innerHTML = '<p class="hint-empty">Selecione a empresa no bloco Empresa para listar os artistas agenciados.</p>';
+      return;
+    }
+
+    const artists = companyArtists(companyId);
+    if (artists.length === 0) {
+      panel.innerHTML = '<p class="hint-empty">Esta empresa não possui artistas agenciados.</p>';
+      return;
+    }
+
+    const usage = eventsData().reduce((map, event) => {
+      if (event.artistId) map[event.artistId] = (map[event.artistId] || 0) + 1;
+      return map;
+    }, {});
+
+    panel.innerHTML = `
+      <div class="table__scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Artista / grupo</th>
+              <th>Tipo</th>
+              <th>Atrações cadastradas (ArtistEventType)</th>
+              <th style="width:120px">Eventos nesta emenda</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${artists.map((artist) => `
+              <tr>
+                <td style="font-weight:500">${escapeHtml(artist.nameGroup)}</td>
+                <td>${escapeHtml(artist.artistType)}</td>
+                <td>${artist.eventTypes.map((eventType) => `<span class="tag">${escapeHtml(eventType.nameEvent)} · ${eventType.durationInMinutes} min · ${brl(eventType.valueSuggestion)}</span>`).join('')}</td>
+                <td>${usage[artist.id]
+                  ? `<span class="tag tag--used">${plural(usage[artist.id], 'evento', 'eventos')}</span>`
+                  : '<span class="ep__meta">—</span>'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  function renderContractValueInfo() {
+    const schedules = schedulesTotal();
+    const extraordinary = extraordinaryAmount();
+    const minimum = requiredContractValue();
+    const value = contractValueAmount();
+    const events = eventsData();
+    const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
+    const balance = value === null ? null : value - minimum;
+
+    el('contractValueInfo').innerHTML = `
+      <div class="kv"><span class="kv__k">Eventos planejados</span><span class="kv__v">${events.length} · ${plural(schedulesCount, 'data', 'datas')}</span></div>
+      <div class="kv"><span class="kv__k">Soma dos cachês</span><span class="kv__v money">${brl(schedules)}</span></div>
+      <div class="kv"><span class="kv__k">Despesas extraordinárias</span><span class="kv__v money">${brl(extraordinary)}</span></div>
+      <div class="kv"><span class="kv__k">Mínimo do contrato</span><span class="kv__v money">${brl(minimum)}</span></div>
+      <div class="kv"><span class="kv__k">Margem sobre o mínimo</span><span class="kv__v money ${balance === null ? '' : (balance < 0 ? 'kv__v--warn' : 'kv__v--ok')}">${balance === null ? '—' : brl(balance)}</span></div>`;
+  }
+
+  /* ---------------- linhas de fiscal (dados gerais do contrato) ---------------- */
+  let fiscalRowCount = 0;
+
+  function addFiscalRow() {
+    fiscalRowCount += 1;
+    const rowId = String(fiscalRowCount);
+    const wrapper = document.createElement('div');
+    wrapper.className = 'fiscal-row';
+    wrapper.dataset.rowId = rowId;
+    wrapper.innerHTML = `
+      <div class="row">
+        <div class="field">
+          <label class="field__label" for="fiscalId-${rowId}">Fiscal<span class="req">*</span></label>
+          <select id="fiscalId-${rowId}" data-role="fiscal"></select>
+          <p class="field__error" data-error-for="fiscalId-${rowId}"></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="fiscalSubstitute-${rowId}">Suplente</label>
+          <select id="fiscalSubstitute-${rowId}" data-role="substitute"></select>
+          <p class="field__error" data-error-for="fiscalSubstitute-${rowId}"></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="fiscalPlace-${rowId}">Local<span class="req">*</span></label>
+          <select id="fiscalPlace-${rowId}" data-role="fiscal-place"></select>
+          <p class="field__error" data-error-for="fiscalPlace-${rowId}"></p>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button type="button" class="btn btn--danger-link js-remove-fiscal">Remover fiscal</button>
+      </div>`;
+    el('fiscalRows').appendChild(wrapper);
+    wrapper.querySelector('.js-remove-fiscal').addEventListener('click', () => { wrapper.remove(); refresh(); });
+    refreshDynamicOptions();
+    return wrapper;
+  }
+
+  el('btnAddFiscalRow').addEventListener('click', () => { addFiscalRow(); refresh(); });
+
+  /* ---------------- eventos planejados (artista + cronograma) ---------------- */
+  let eventCount = 0;
+  let rowCount = 0;
+
+  function scheduleRowHtml(rowId) {
+    return `
+      <div class="schedule-row" data-row-id="${rowId}">
+        <div class="row">
+          <div class="field">
+            <label class="field__label" for="epPlace-${rowId}">Local<span class="req">*</span></label>
+            <select id="epPlace-${rowId}" data-role="place"></select>
+            <p class="field__error" data-error-for="epPlace-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epStartDate-${rowId}">Data de início<span class="req">*</span></label>
+            <input type="date" id="epStartDate-${rowId}" data-role="start-date">
+            <p class="field__error" data-error-for="epStartDate-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epEndDate-${rowId}">Data de término</label>
+            <input type="date" id="epEndDate-${rowId}" data-role="end-date">
+            <p class="field__help">Preencha só em temporadas/recorrências.</p>
+            <p class="field__error" data-error-for="epEndDate-${rowId}"></p>
+          </div>
+        </div>
+        <div class="field toggle-field">
+          <label class="switch">
+            <input type="checkbox" id="epAllDay-${rowId}" data-role="all-day">
+            <span class="switch__track"></span>
+          </label>
+          <label for="epAllDay-${rowId}" class="field__label" style="margin-bottom:0">Dia inteiro</label>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label class="field__label" for="epStartTime-${rowId}">Horário de início<span class="req">*</span></label>
+            <input type="time" id="epStartTime-${rowId}" data-role="start-time">
+            <p class="field__error" data-error-for="epStartTime-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epDuration-${rowId}">Duração (min)<span class="req">*</span></label>
+            <input type="number" id="epDuration-${rowId}" data-role="duration" min="1" placeholder="Ex: 70">
+            <p class="field__error" data-error-for="epDuration-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epAmount-${rowId}">Valor do cachê (R$)<span class="req">*</span></label>
+            <input type="number" id="epAmount-${rowId}" data-role="amount" min="0" step="0.01" placeholder="0,00">
+            <p class="field__error" data-error-for="epAmount-${rowId}"></p>
+          </div>
+        </div>
+        <div class="row-actions">
+          <button type="button" class="btn btn--danger-link js-remove-schedule">Remover data</button>
+        </div>
+      </div>`;
+  }
+
+  /** Preenche duração e cachê vazios com o que está cadastrado no ArtistEventType. */
+  function suggestFromEventType(card, scheduleRow) {
+    const eventType = findEventType(
+      card.querySelector('select[data-role="artist"]').value,
+      card.querySelector('select[data-role="aet"]').value
+    );
+    if (!eventType) return;
+    const rows = scheduleRow ? [scheduleRow] : Array.from(card.querySelectorAll('.schedule-row'));
+    rows.forEach((row) => {
+      const amountInput = row.querySelector('input[data-role="amount"]');
+      const durationInput = row.querySelector('input[data-role="duration"]');
+      if (amountInput.value.trim() === '') amountInput.value = String(eventType.valueSuggestion);
+      if (durationInput.value.trim() === '') durationInput.value = String(eventType.durationInMinutes);
+    });
+  }
+
+  function addScheduleRow(card) {
+    rowCount += 1;
+    const rowId = `${card.dataset.epId}-${rowCount}`;
+    card.querySelector('[data-schedules]').insertAdjacentHTML('beforeend', scheduleRowHtml(rowId));
+    const row = card.querySelector(`.schedule-row[data-row-id="${rowId}"]`);
+    suggestFromEventType(card, row);
+    return rowId;
+  }
+
+  function addEvent() {
+    eventCount += 1;
+    const epId = String(eventCount);
+    const card = document.createElement('article');
+    card.className = 'ep';
+    card.dataset.epId = epId;
+    card.innerHTML = `
+      <div class="ep__head">
+        <div>
+          <div class="ep__title" data-ep-title>Evento planejado</div>
+          <div class="ep__meta" data-ep-meta></div>
+        </div>
+        <button type="button" class="btn btn--danger-link js-remove-event">Remover evento</button>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="field__label" for="epArtist-${epId}">Artista<span class="req">*</span></label>
+          <select id="epArtist-${epId}" data-role="artist"></select>
+          <p class="field__help">Um evento planejado tem exatamente um artista.</p>
+          <p class="field__error" data-error-for="epArtist-${epId}"></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="epAet-${epId}">Atração do artista<span class="req">*</span></label>
+          <select id="epAet-${epId}" data-role="aet"></select>
+          <p class="field__error" data-error-for="epAet-${epId}"></p>
+        </div>
+      </div>
+      <p class="aet-info"></p>
+      <div class="field">
+        <label class="field__label" for="epTitle-${epId}">Título do evento planejado<span class="req">*</span></label>
+        <input type="text" id="epTitle-${epId}" placeholder="Ex: Show de abertura — Praça das Artes">
+        <p class="field__error" data-error-for="epTitle-${epId}"></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="epDescription-${epId}">Descrição</label>
+        <textarea id="epDescription-${epId}" placeholder="Detalhes da atração, público-alvo, acessibilidade…"></textarea>
+      </div>
+      <div class="sub">
+        <div class="sub__head">
+          <span class="sub__title">Cronograma — datas do evento (mínimo 1)</span>
+          <button type="button" class="btn btn--secondary btn--sm js-add-schedule">+ Data</button>
+        </div>
+        <div data-schedules></div>
+        <p class="block-error" data-error-for="epSchedules-${epId}"></p>
+      </div>`;
+    el('eventsList').appendChild(card);
+    refreshDynamicOptions();
+    addScheduleRow(card);
+    return card;
+  }
+
+  el('btnAddEvent').addEventListener('click', () => { addEvent(); refresh(); });
+
+  /* Ações dentro da lista de eventos (delegação: as linhas são dinâmicas). */
+  el('eventsList').addEventListener('click', (event) => {
+    const card = event.target.closest('.ep');
+    if (!card) return;
+
+    if (event.target.closest('.js-add-schedule')) { addScheduleRow(card); refresh(); return; }
+    if (event.target.closest('.js-remove-schedule')) { event.target.closest('.schedule-row').remove(); refresh(); return; }
+    if (event.target.closest('.js-remove-event')) { card.remove(); refresh(); }
+  });
+
+  /* Ao escolher a atração, sugere duração e cachê cadastrados no ArtistEventType. */
+  el('eventsList').addEventListener('change', (event) => {
+    const select = event.target.closest('select[data-role="aet"]');
+    if (!select || !select.value) return;
+    suggestFromEventType(select.closest('.ep'));
+  });
+
+  function renumberEvents() {
+    eventsData().forEach((event) => {
+      const card = document.querySelector(`.ep[data-ep-id="${event.epId}"]`);
+      card.querySelector('[data-ep-title]').textContent = `Evento planejado ${event.index + 1}`;
+      const artist = findArtist(event.artistId);
+      const eventType = findEventType(event.artistId, event.aetId);
+      const who = artist
+        ? `${artist.nameGroup}${eventType ? ` — ${eventType.nameEvent}` : ''}`
+        : 'Artista não definido';
+      card.querySelector('[data-ep-meta]').textContent =
+        `${who} · ${plural(event.schedules.length, 'data', 'datas')} · ${brl(eventTotal(event))}`;
+    });
+  }
+
+  /* ---------------- contrato ---------------- */
+  el('btnCreateContract').addEventListener('click', () => {
+    el('contractCode').value = CONTRACT_CODE;
+    refresh();
+    showToast(`Contrato ${CONTRACT_CODE} criado (mock) — status Rascunho, sem artista e sem valor.`);
+  });
+
+  el('btnDiscardContract').addEventListener('click', () => {
+    el('contractCode').value = '';
+    refresh();
+    showToast('Contrato descartado.');
+  });
+
+  /* ---------------- valor do contrato ---------------- */
+  el('btnFillContractValue').addEventListener('click', () => {
+    const minimum = requiredContractValue();
+    if (!(minimum > 0)) {
+      showToast('Nenhum cachê informado nos eventos planejados.');
+      return;
+    }
+    el('contractValue').value = String(minimum);
+    refresh();
+    showToast(`Valor do contrato definido em ${brl(minimum)} (cachês + despesas extraordinárias).`);
+  });
+
+  /* ---------------- modal de empresas ---------------- */
+  let pendingCompanyId = null;
+
+  function renderCompanyRows() {
+    const term = el('companySearch').value.trim().toLowerCase();
+    const rows = COMPANIES.filter((company) => !term ||
+      `${company.companyName} ${company.tradingName} ${company.cnpj}`.toLowerCase().includes(term));
+
+    el('companyRows').innerHTML = rows.map((company) => `
+      <tr data-company-id="${escapeHtml(company.id)}" class="${pendingCompanyId === company.id ? 'is-picked' : ''}">
+        <td><input type="radio" name="companyPick" value="${escapeHtml(company.id)}" ${pendingCompanyId === company.id ? 'checked' : ''} aria-label="Selecionar ${escapeHtml(company.companyName)}"></td>
+        <td>
+          <span style="font-weight:500">${escapeHtml(company.companyName)}</span><br>
+          <span class="ep__meta">${escapeHtml(company.tradingName)}</span>
+        </td>
+        <td class="money">${escapeHtml(company.cnpj)}</td>
+        <td>${companyArtists(company.id).length}</td>
+      </tr>`).join('');
+
+    el('companyEmpty').hidden = rows.length > 0;
+    const picked = findCompany(pendingCompanyId);
+    el('companyModalMsg').textContent = picked ? `Selecionada: ${picked.companyName}` : 'Nenhuma empresa selecionada.';
+    el('btnConfirmCompany').disabled = !pendingCompanyId;
+  }
+
+  function openCompanyModal() {
+    pendingCompanyId = val('companyId') || null;
+    el('companySearch').value = '';
+    renderCompanyRows();
+    el('companyModal').hidden = false;
+    el('companySearch').focus();
+  }
+
+  function closeCompanyModal() {
+    el('companyModal').hidden = true;
+    el('btnOpenCompanyModal').focus();
+  }
+
+  el('btnOpenCompanyModal').addEventListener('click', openCompanyModal);
+  el('companySearch').addEventListener('input', renderCompanyRows);
+
+  el('companyRows').addEventListener('click', (event) => {
+    const row = event.target.closest('tr[data-company-id]');
+    if (!row) return;
+    pendingCompanyId = row.dataset.companyId;
+    renderCompanyRows();
+  });
+
+  el('btnConfirmCompany').addEventListener('click', () => {
+    if (!pendingCompanyId) return;
+    const changed = pendingCompanyId !== val('companyId');
+    el('companyId').value = pendingCompanyId;
+    closeCompanyModal();
+    refresh();
+    const company = findCompany(pendingCompanyId);
+    showToast(changed
+      ? `Empresa "${company.tradingName}" selecionada — ${plural(companyArtists(company.id).length, 'artista agenciado', 'artistas agenciados')} disponíveis.`
+      : `Empresa "${company.tradingName}" mantida.`);
+  });
+
+  el('btnClearCompany').addEventListener('click', () => {
+    el('companyId').value = '';
+    refresh();
+    showToast('Empresa removida — os artistas dos eventos planejados ficam pendentes.');
+  });
+
+  document.querySelectorAll('[data-modal-close]').forEach((node) => node.addEventListener('click', closeCompanyModal));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !el('companyModal').hidden) closeCompanyModal();
+  });
+
+  /* ---------------- modos (radio) ---------------- */
+  function syncModePanels() {
+    document.querySelectorAll('[data-mode-panel]').forEach((panel) => {
+      const [name, value] = panel.dataset.modePanel.split(':');
+      panel.hidden = currentMode(name) !== value;
+    });
+    document.querySelectorAll('.choice').forEach((choice) => {
+      choice.classList.toggle('is-selected', currentMode(choice.dataset.choiceFor) === choice.dataset.choiceValue);
+    });
+  }
+
+  /* ---------------- avaliação de status ---------------- */
+  /**
+   * Regras de status por bloco, em ordem de precedência:
+   *  invalid → há erro visível (contradição entre dados, ou bloco já salvo com pendências)
+   *  draft   → há alterações ainda não salvas e nenhum erro visível
+   *  valid   → nenhum erro e nada pendente de salvar
+   *  empty   → nada preenchido e o usuário não começou
+   *  partial → começou a preencher, faltam obrigatórios, nada errado ainda visível
+   */
+  function evaluate(section) {
+    const errors = section.validate();
+    const wasAttempted = attempted.has(section.id);
+    const visible = errors.filter((error) => wasAttempted || error.kind === 'live');
+    const filled = section.filled();
+    const dirty = isDirty(section);
+
+    let status;
+    if (visible.length > 0) status = 'invalid';
+    else if (dirty) status = 'draft';
+    else if (errors.length === 0) status = 'valid';
+    else if (!filled && !wasAttempted) status = 'empty';
+    else status = 'partial';
+
+    return { section, status, errors, visible, filled, dirty };
+  }
+
+  function renderFieldErrors(result) {
+    const formEl = el(result.section.formId);
+    formEl.querySelectorAll('.field.has-error').forEach((field) => field.classList.remove('has-error'));
+    formEl.querySelectorAll('.field__error').forEach((node) => { node.textContent = ''; });
+    formEl.querySelectorAll('[aria-invalid]').forEach((node) => node.removeAttribute('aria-invalid'));
+    formEl.querySelectorAll('.block-error').forEach((node) => {
+      node.classList.remove('is-visible');
+      node.textContent = '';
+    });
+
+    result.visible.forEach((error) => {
+      const target = formEl.querySelector(`[data-error-for="${error.field}"]`);
+      if (!target) return;
+      target.textContent = error.message;
+      if (target.classList.contains('block-error')) {
+        target.classList.add('is-visible');
+        return;
+      }
+      const fieldEl = target.closest('.field');
+      if (fieldEl) fieldEl.classList.add('has-error');
+      const inputEl = el(error.field);
+      if (inputEl) inputEl.setAttribute('aria-invalid', 'true');
+    });
+  }
+
+  function footMessage(result) {
+    const { status, errors, visible, dirty } = result;
+    if (status === 'valid') return 'Bloco salvo e correto.';
+    if (status === 'draft') {
+      return errors.length === 0
+        ? 'Rascunho — alterações não salvas.'
+        : `Rascunho — alterações não salvas e ${pending(errors.length)} a concluir.`;
+    }
+    if (status === 'empty') return 'Nenhum campo preenchido.';
+    if (status === 'invalid') {
+      return dirty
+        ? `${pending(visible.length)} neste bloco — alterações não salvas.`
+        : `${pending(visible.length)} neste bloco.`;
+    }
+    return `${pending(errors.length)} a concluir.`;
+  }
+
+  function paintStatus(sectionId, status) {
+    const meta = STATUS_META[status];
+    const navEl = document.querySelector(`.nav__item[data-section="${sectionId}"]`);
+    if (navEl) {
+      navEl.dataset.status = status;
+      navEl.querySelector('.nav__icon').textContent = meta.icon;
+      navEl.querySelector('.nav__status').textContent = meta.label;
+      navEl.setAttribute('aria-label', `${navEl.querySelector('.nav__label').textContent}: ${meta.label}`);
+    }
+    const cardEl = el(sectionId);
+    if (cardEl) cardEl.dataset.status = status;
+    const chipEl = document.querySelector(`[data-chip-for="${sectionId}"]`);
+    if (chipEl) {
+      chipEl.dataset.status = status;
+      chipEl.textContent = `${meta.icon} ${meta.label}`;
+    }
+  }
+
+  function refresh() {
+    syncModePanels();
+    refreshDynamicOptions();
+    renderCouncilorInfo();
+    renderEventManagementInfo();
+    renderContractInfo();
+    renderCompanyPanel();
+    renderArtistsPanel();
+    renumberEvents();
+    renderContractValueInfo();
+    renderRequestCouncilor();
+    el('eventsEmpty').hidden = eventsData().length > 0;
+    el('btnAddEvent').disabled = !val('companyId');
+
+    const results = SECTIONS.map(evaluate);
+
+    results.forEach((result) => {
+      renderFieldErrors(result);
+      paintStatus(result.section.id, result.status);
+      const footEl = document.querySelector(`[data-foot-for="${result.section.id}"]`);
+      if (footEl) {
+        footEl.dataset.status = result.status;
+        footEl.textContent = footMessage(result);
+      }
+      /* "Salvar alterações" só fica ativo enquanto houver alteração não salva no bloco. */
+      const saveEl = document.querySelector(`[data-save-for="${result.section.id}"]`);
+      if (saveEl) saveEl.disabled = !result.dirty;
+    });
+
+    renderSummary(results);
+    renderOverall(results);
+    return results;
+  }
+
+  /* ---------------- resumo ---------------- */
+  const summaryRow = (label, value) =>
+    `<div class="summary-row"><span class="summary-row__label">${escapeHtml(label)}</span><span class="summary-row__value">${escapeHtml(value)}</span></div>`;
+
+  function summaryGroup(title, status, rowsHtml) {
+    const chipHtml = status
+      ? `<span class="chip" data-status="${status}">${STATUS_META[status].icon} ${STATUS_META[status].label}</span>`
+      : '';
+    return `<div class="summary-group"><h3 class="summary-group__title">${escapeHtml(title)}${chipHtml}</h3>${rowsHtml}</div>`;
+  }
+
+  function renderSummary(results) {
+    const statusById = Object.fromEntries(results.map((result) => [result.section.id, result.status]));
+
+    const councilor = findCouncilor(val('councilorId'));
+    const eventMode = currentMode('eventMode');
+    const eventManagement = EVENT_MANAGEMENTS.find((item) => item.id === val('eventManagementId'));
+    const place = findPlace(val('placeId'));
+    const eventoRows =
+      summaryRow('Vereador responsável', councilor ? councilor.name : '—') +
+      (eventMode === 'unified'
+        ? summaryRow('Agrupamento', 'Evento unificado do vereador') +
+          summaryRow('Evento', eventManagement ? eventManagement.eventName : '—') +
+          summaryRow('Vigência', eventManagement ? eventManagement.period : '—')
+        : summaryRow('Agrupamento', 'Evento próprio desta emenda') +
+          summaryRow('Nome', val('eventName') || '—') +
+          summaryRow('Vigência', val('eventStartDate') && val('eventEndDate') ? `${val('eventStartDate')} a ${val('eventEndDate')}` : '—'));
+
+    const inspectorsHtml = currentMode('inspectorMode') === 'multiple'
+      ? (fiscalRowsData().filter((row) => row.fiscalId || row.placeId).map((row) => {
+          const fiscal = findInspector(row.fiscalId);
+          const substitute = findInspector(row.substituteId);
+          const place = findPlace(row.placeId);
+          return summaryRow(
+            place ? place.name : 'Local —',
+            `${fiscal ? fiscal.name : '—'}${substitute ? ` · suplente: ${substitute.name}` : ''}`
+          );
+        }).join('') || summaryRow('Fiscais por local', '—'))
+      : (() => {
+          const fiscal = findInspector(val('fiscalSingleId'));
+          const substitute = findInspector(val('substituteSingleId'));
+          return summaryRow('Fiscal único', `${fiscal ? fiscal.name : '—'}${substitute ? ` · suplente: ${substitute.name}` : ''}`);
+        })();
+
+    const unit = findContractUnit(val('requestingUnitId'));
+    const initialResponsible = findInitialResponsible(val('initialResponsibleId'));
+    const foundation = findLegalFoundation(val('legalFoundation'));
+    const contratoRows =
+      summaryRow('Código', val('contractCode') || '—') +
+      summaryRow('Objeto do contrato', val('contractObject') || '—') +
+      summaryRow('Múltiplos fiscais por local', currentMode('inspectorMode') === 'multiple' ? 'Sim' : 'Não') +
+      inspectorsHtml +
+      summaryRow('Responsável pelo cadastro', val('registrationResponsible') || '—') +
+      summaryRow('Unidade requisitante', unit ? unit.name : '—') +
+      summaryRow('Responsável pela solicitação inicial', initialResponsible ? `${initialResponsible.name} (${initialResponsible.unit})` : '—') +
+      summaryRow('Fundamento legal', foundation ? foundation[1] : '—') +
+      summaryRow('Processo SEI mãe', val('parentProccessSEI') || '—') +
+      summaryRow('Pedido de reserva', currentMode('reserveRequest') === 'global' ? 'Global' : 'Padrão');
+
+    const events = eventsData();
+    const schedules = schedulesTotal();
+    const extraordinary = extraordinaryAmount();
+    const contractValue = contractValueAmount();
+    const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
+
+    const company = selectedCompany();
+
+    const eventsHtml = events.length === 0
+      ? summaryRow('Eventos planejados', '—')
+      : events.map((event) => {
+          const artist = findArtist(event.artistId);
+          const eventType = findEventType(event.artistId, event.aetId);
+
+          const schedulesHtml = event.schedules.map((schedule) => {
+            const place = findPlace(schedule.placeId);
+            const when = [
+              schedule.startDate || '—',
+              schedule.allDay ? 'dia inteiro' : (schedule.startTime || '—'),
+              place ? place.name : 'local —',
+            ].join(' · ');
+            return summaryRow('Data', `${when} · ${schedule.amount === '' ? '—' : brl(Number(schedule.amount))}`);
+          }).join('') || summaryRow('Data', '—');
+
+          return `
+            <div class="summary-group">
+              <h3 class="summary-group__title">Evento planejado ${event.index + 1}${event.title ? ` — ${escapeHtml(event.title)}` : ''}</h3>
+              ${summaryRow('Artista', artist ? `${artist.nameGroup} (${artist.artistType})` : '—')}
+              ${summaryRow('Atração', eventType ? eventType.nameEvent : '—')}
+              ${schedulesHtml}
+              ${summaryRow('Subtotal do evento', brl(eventTotal(event)))}
+            </div>`;
+        }).join('');
+
+    el('summaryContent').innerHTML = `
+      ${summaryGroup('Evento da Emenda', statusById['sec-evento'], eventoRows + summaryRow('Local habilitado', place ? place.name : '—'))}
+      ${summaryGroup('Contrato', statusById['sec-contrato'], contratoRows)}
+      ${summaryGroup('Empresa', statusById['sec-empresa'],
+        summaryRow('Razão social', company ? company.companyName : '—') +
+        summaryRow('CNPJ', company ? company.cnpj : '—') +
+        summaryRow('Artistas agenciados', company ? String(companyArtists(company.id).length) : '—'))}
+      ${summaryGroup('Artistas e eventos planejados', statusById['sec-eventos'], '')}
+      ${eventsHtml}
+      ${summaryGroup('Valor do contrato', statusById['sec-valor'],
+        summaryRow('Soma dos cachês', brl(schedules)) +
+        summaryRow('Despesas extraordinárias', brl(extraordinary)) +
+        summaryRow('Valor do contrato', contractValue === null ? '—' : brl(contractValue)) +
+        summaryRow('Justificativa', val('contractValueJustification') || '—'))}
+      <div class="summary-total">
+        ${summaryRow('Eventos planejados', String(events.length))}
+        ${summaryRow('Datas programadas', String(schedulesCount))}
+        <div class="summary-row"><span class="summary-row__label">Valor do contrato</span><span class="summary-row__value money">${contractValue === null ? '—' : brl(contractValue)}</span></div>
+      </div>`;
+  }
+
+  /* ---------------- status global ---------------- */
+  function aggregateStatus(results) {
+    if (results.every((result) => result.status === 'valid')) return 'valid';
+    if (results.some((result) => result.status === 'invalid')) return 'invalid';
+    if (results.some((result) => result.status === 'draft')) return 'draft';
+    const started = results.some((result) => result.filled || attempted.has(result.section.id));
+    return started ? 'partial' : 'empty';
+  }
+
+  function renderOverall(results) {
+    const validCount = results.filter((result) => result.status === 'valid').length;
+    const invalidCount = results.filter((result) => result.status === 'invalid').length;
+    const draftCount = results.filter((result) => result.dirty).length;
+    const overall = aggregateStatus(results);
+
+    /* O Resumo não tem estado próprio: só descreve o andamento dos blocos. */
+    const resumoFoot = document.querySelector('[data-foot-for="sec-resumo"]');
+    resumoFoot.removeAttribute('data-status');
+    resumoFoot.textContent = overall === 'valid'
+      ? 'Todos os blocos estão salvos e corretos. A emenda pode ser criada.'
+      : (invalidCount > 0
+        ? `${invalidCount} ${invalidCount === 1 ? 'bloco incorreto' : 'blocos incorretos'}.`
+        : (draftCount > 0
+          ? `${draftCount} ${draftCount === 1 ? 'bloco com alterações não salvas' : 'blocos com alterações não salvas'}.`
+          : `${validCount} de ${results.length} blocos corretos.`));
+
+    el('progressText').textContent = `${validCount} de ${results.length} blocos corretos`;
+    el('progressBar').style.width = `${(validCount / results.length) * 100}%`;
+    el('globalStatusLabel').textContent = overall === 'valid'
+      ? '✓ Pronto para criar'
+      : (draftCount > 0
+        ? `${validCount}/${results.length} blocos corretos · ${draftCount} não ${draftCount === 1 ? 'salvo' : 'salvos'}`
+        : `${validCount}/${results.length} blocos corretos`);
+  }
+
+  /* ---------------- salvar bloco / criar emenda ---------------- */
+  function focusFirstError(result) {
+    const first = result.visible[0];
+    if (!first) return;
+    const node = el(first.field) || el(result.section.id);
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (typeof node.focus === 'function') node.focus({ preventScroll: true });
+  }
+
+  const formatSavedAt = (date) => date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  document.querySelectorAll('.js-form').forEach((formEl) => {
+    formEl.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const sectionId = formEl.dataset.section;
+      const section = SECTIONS.find((item) => item.id === sectionId);
+      if (!section || !isDirty(section)) return;
+
+      /* Salvar grava o bloco (mock) e libera todos os erros para exibição. */
+      takeSnapshot(section);
+      attempted.add(sectionId);
+      el('savedLabel').textContent = `Salvo às ${formatSavedAt(new Date())}`;
+      const results = refresh();
+      const result = results.find((item) => item.section.id === sectionId);
+      if (result.status === 'valid') {
+        showToast(`Bloco "${result.section.label}" salvo.`);
+        return;
+      }
+      focusFirstError(result);
+      showToast(`Bloco "${result.section.label}" salvo com ${pending(result.visible.length)}.`);
+    });
+    formEl.addEventListener('input', refresh);
+    formEl.addEventListener('change', refresh);
+  });
+
+  function validateAll() {
+    SECTIONS.forEach((section) => attempted.add(section.id));
+    const results = refresh();
+    const firstInvalid = results.find((result) => result.status !== 'valid');
+    return { results, firstInvalid };
+  }
+
+  el('btnValidateAll').addEventListener('click', () => {
+    const { firstInvalid } = validateAll();
+    if (!firstInvalid) { showToast('Todos os blocos estão corretos.'); return; }
+    focusFirstError(firstInvalid);
+    showToast(firstInvalid.status === 'draft'
+      ? `Bloco "${firstInvalid.section.label}" tem alterações não salvas.`
+      : `Bloco "${firstInvalid.section.label}" precisa de atenção.`);
+  });
+
+  el('btnCreate').addEventListener('click', () => {
+    const { results, firstInvalid } = validateAll();
+    if (firstInvalid) {
+      const invalidCount = results.filter((result) => result.status === 'invalid').length;
+      const unsavedCount = results.filter((result) => result.dirty).length;
+      const pendingCount = results.filter((result) => result.status !== 'valid').length;
+      focusFirstError(firstInvalid);
+      showToast(invalidCount === 0 && unsavedCount > 0
+        ? `${unsavedCount} ${unsavedCount === 1 ? 'bloco com alterações não salvas' : 'blocos com alterações não salvas'}. Salve antes de criar.`
+        : `${pendingCount} ${pendingCount === 1 ? 'bloco pendente' : 'blocos pendentes'}. Corrija antes de criar.`);
+      return;
+    }
+
+    requestStatus = 'created';
+    renderRequestStatus();
+    const events = eventsData();
+    const councilor = findCouncilor(val('councilorId'));
+    showToast(`Emenda criada (mock) — ${plural(events.length, 'evento planejado', 'eventos planejados')} do vereador ${councilor.name} vinculados ao contrato ${val('contractCode')} de ${brl(contractValueAmount())}.`);
+  });
+
+  /* ---------------- toast ---------------- */
+  let toastTimer = null;
+  function showToast(message) {
+    const toastEl = el('toast');
+    toastEl.textContent = message;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toastEl.hidden = true; }, 4000);
+  }
+
+  /* ---------------- scroll spy ---------------- */
+  const navItems = Array.from(document.querySelectorAll('.nav__item'));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navItems.forEach((item) => {
+        const active = item.dataset.section === entry.target.id;
+        item.classList.toggle('is-active', active);
+        if (active) item.setAttribute('aria-current', 'true');
+        else item.removeAttribute('aria-current');
+      });
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+
+  navItems.forEach((item) => {
+    const sectionEl = el(item.dataset.section);
+    if (sectionEl) observer.observe(sectionEl);
+  });
+
+  /* ---------------- bootstrap ---------------- */
+  function renderRequestNumber() {
+    el('requestNumber').textContent = `Nº ${AMENDMENT_NUMBER}`;
+    document.title = `Emenda ${AMENDMENT_NUMBER} — Criação`;
+  }
+
+  function renderRequestCouncilor() {
+    const councilor = findCouncilor(val('councilorId'));
+    el('requestCouncilor').textContent = councilor
+      ? `Vereador: ${councilor.name}`
+      : 'Vereador: —';
+  }
+
+  function renderRequestStatus() {
+    const meta = REQUEST_STATUS_META[requestStatus];
+    const chipEl = el('requestStatus');
+    chipEl.dataset.status = meta.status;
+    chipEl.textContent = `${STATUS_META[meta.status].icon} ${meta.label}`;
+    document.querySelector('.sidenav__order')
+      .setAttribute('aria-label', `Emenda número ${AMENDMENT_NUMBER} — ${meta.label}`);
+  }
+
+  (function createEventsEmptyHint() {
+    const hint = document.createElement('p');
+    hint.className = 'hint-empty';
+    hint.id = 'eventsEmpty';
+    hint.style.marginTop = '0';
+    hint.textContent = 'Nenhum evento planejado. Adicione o primeiro — escolha o artista agenciado, a atração e defina o cronograma (datas, locais e cachês).';
+    el('eventsList').prepend(hint);
+  })();
+
+  renderRequestNumber();
+  renderRequestStatus();
+  addFiscalRow();
+  snapshotAll();
+  refresh();
+</script>
+</body>
+</html>
