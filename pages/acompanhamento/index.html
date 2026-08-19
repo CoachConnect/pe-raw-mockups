@@ -4,165 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>V1 · Dossiê — Pedido 11159</title>
-<style>
-:root{
-  --c-primary:#1677ff; --c-primary-bg:#e6f4ff; --c-primary-border:#91caff;
-  --c-text:#1f1f1f; --c-text-2:#595959; --c-text-3:#8c8c8c;
-  --c-border:#d9d9d9; --c-border-2:#f0f0f0; --c-bg:#f5f5f5; --c-card:#fff;
-  --c-danger:#ff4d4f; --c-danger-bg:#fff2f0; --c-danger-border:#ffccc7; --c-danger-text:#cf1322;
-  --c-warn:#faad14; --c-warn-bg:#fffbe6; --c-warn-border:#ffe58f; --c-warn-text:#ad6800;
-  --c-ok:#52c41a; --c-ok-bg:#f6ffed; --c-ok-border:#b7eb8f; --c-ok-text:#389e0d;
-  --radius:8px;
-  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-  --appbar-h:56px;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:var(--font);font-size:14px;line-height:1.5;color:var(--c-text);background:var(--c-bg)}
-a{color:var(--c-primary)}
-h1,h2,h3,h4{margin:0;font-weight:600}
-.skip{position:absolute;left:-9999px;top:8px;background:var(--c-primary);color:#fff;padding:10px 16px;border-radius:var(--radius);z-index:99}
-.skip:focus{left:16px}
-
-/* ---------- app bar ---------- */
-.appbar{position:sticky;top:0;z-index:30;height:var(--appbar-h);background:#fff;border-bottom:1px solid var(--c-border);
-  display:flex;align-items:center;gap:16px;padding:0 20px}
-.appbar__back{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--c-border);background:#fff;border-radius:6px;
-  padding:5px 10px;font-size:13px;color:var(--c-text-2);cursor:pointer}
-.appbar__back:hover{border-color:var(--c-primary);color:var(--c-primary)}
-.appbar__id{display:flex;align-items:baseline;gap:10px;min-width:0}
-.appbar__num{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.4px}
-.appbar__name{font-size:14px;color:var(--c-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34ch}
-.appbar__spacer{flex:1}
-.appbar__actions{display:flex;align-items:center;gap:8px}
-
-.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;
-  background:var(--c-primary-bg);color:#0958d9;border:1px solid var(--c-primary-border)}
-.pill--ok{background:var(--c-ok-bg);color:var(--c-ok-text);border-color:var(--c-ok-border)}
-.pill--warn{background:var(--c-warn-bg);color:var(--c-warn-text);border-color:var(--c-warn-border)}
-.pill--danger{background:var(--c-danger-bg);color:var(--c-danger-text);border-color:var(--c-danger-border)}
-.pill--neutral{background:#fafafa;color:var(--c-text-2);border-color:var(--c-border)}
-
-.btn{border:1px solid var(--c-border);background:#fff;color:var(--c-text);border-radius:6px;padding:6px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit}
-.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
-.btn--primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
-.btn--primary:hover{background:#4096ff;border-color:#4096ff;color:#fff}
-.btn--danger{border-color:var(--c-danger-border);color:var(--c-danger-text);background:#fff}
-.btn--danger:hover{background:var(--c-danger-bg);border-color:var(--c-danger)}
-.btn--sm{padding:3px 10px;font-size:12px}
-.btn--ghost{border-color:transparent;background:transparent;color:var(--c-text-2)}
-.btn--ghost:hover{background:#f5f5f5;color:var(--c-text)}
-
-/* ---------- faixa de resumo ---------- */
-.ribbon{background:#fff;border-bottom:1px solid var(--c-border)}
-.ribbon__inner{max-width:1520px;margin:0 auto;padding:14px 20px;display:grid;gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
-.kpi{border-left:3px solid var(--c-border-2);padding:2px 0 2px 12px}
-.kpi__label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text-3);font-weight:600}
-.kpi__value{font-size:15px;font-weight:600;margin-top:2px}
-.kpi__hint{font-size:12px;color:var(--c-text-3)}
-.kpi--warn{border-left-color:var(--c-warn)} .kpi--warn .kpi__value{color:var(--c-warn-text)}
-.kpi--danger{border-left-color:var(--c-danger)} .kpi--danger .kpi__value{color:var(--c-danger-text)}
-.kpi--ok{border-left-color:var(--c-ok)}
-
-/* ---------- layout ---------- */
-.layout{max-width:1520px;margin:0 auto;padding:20px;display:grid;gap:20px;
-  grid-template-columns:240px minmax(0,1fr) 320px;align-items:start}
-@media (max-width:1280px){.layout{grid-template-columns:220px minmax(0,1fr)} .rail{grid-column:1/-1}}
-@media (max-width:900px){.layout{grid-template-columns:1fr} .toc{display:none}}
-
-/* índice */
-.toc{position:sticky;top:calc(var(--appbar-h) + 16px);background:#fff;border:1px solid var(--c-border-2);border-radius:var(--radius);padding:8px}
-.toc__title{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text-3);font-weight:600;padding:8px 10px 6px}
-.toc a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;color:var(--c-text-2);text-decoration:none;font-size:13px}
-.toc a:hover{background:#fafafa;color:var(--c-text)}
-.toc a.is-active{background:var(--c-primary-bg);color:#0958d9;font-weight:600}
-.toc a .dot{width:7px;height:7px;border-radius:50%;background:var(--c-ok);flex:none}
-.toc a .dot--warn{background:var(--c-warn)} .toc a .dot--danger{background:var(--c-danger)} .toc a .dot--none{background:var(--c-border)}
-.toc .count{margin-left:auto;font-size:11px;color:var(--c-text-3);font-variant-numeric:tabular-nums}
-
-/* documento */
-.doc{display:flex;flex-direction:column;gap:16px;min-width:0}
-.card{background:var(--c-card);border:1px solid var(--c-border-2);border-radius:var(--radius);scroll-margin-top:calc(var(--appbar-h) + 16px)}
-.card__head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--c-border-2);cursor:pointer}
-.card__head h2{font-size:15px}
-.card__head .pill{margin-left:auto}
-.card__chev{width:16px;height:16px;color:var(--c-text-3);transition:transform .15s}
-.card[data-collapsed="true"] .card__chev{transform:rotate(-90deg)}
-.card[data-collapsed="true"] .card__body{display:none}
-.card__body{padding:18px}
-.card__body>*+.subhead{margin-top:24px}
-
-.subhead{font-size:13px;font-weight:600;color:var(--c-text-2);text-transform:uppercase;letter-spacing:.4px;margin:0 0 10px}
-
-/* grade chave/valor — substitui as tabelas de bordas do layout atual */
-.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 24px}
-.kv--3{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media (max-width:760px){.kv--3{grid-template-columns:1fr 1fr}}
-.kv div{min-width:0}
-.kv dt{font-size:12px;color:var(--c-text-3);margin:0 0 1px}
-.kv dd{margin:0;font-size:14px;word-break:break-word}
-.kv dd.mono{font-family:var(--mono);font-size:13px}
-.kv dd .miss{color:var(--c-danger-text);font-weight:600}
-.copy{border:0;background:transparent;color:var(--c-text-3);cursor:pointer;padding:0 2px;font-size:12px}
-.copy:hover{color:var(--c-primary)}
-
-/* tabela de dados */
-.tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--c-text-3);
-  font-weight:600;padding:8px 10px;border-bottom:1px solid var(--c-border)}
-.tbl td{padding:10px;border-bottom:1px solid var(--c-border-2);vertical-align:top}
-.tbl tbody tr:hover{background:#fafafa}
-.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
-.tbl-wrap{overflow-x:auto}
-
-/* linha de arquivo */
-.file{display:flex;align-items:center;gap:10px;padding:9px 10px;border-bottom:1px solid var(--c-border-2)}
-.file:last-child{border-bottom:0}
-.file__ico{width:26px;height:26px;border-radius:5px;background:#fff1f0;color:#cf1322;display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
-.file__name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.file__meta{font-size:12px;color:var(--c-text-3)}
-.file__actions{display:flex;gap:6px;flex:none}
-
-/* alerta */
-.alert{display:flex;gap:10px;padding:12px 14px;border-radius:var(--radius);font-size:13px;border:1px solid}
-.alert--warn{background:var(--c-warn-bg);border-color:var(--c-warn-border);color:var(--c-warn-text)}
-.alert--danger{background:var(--c-danger-bg);border-color:var(--c-danger-border);color:var(--c-danger-text)}
-.alert--info{background:var(--c-primary-bg);border-color:var(--c-primary-border);color:#0958d9}
-.alert b:first-child{display:block}
-
-/* texto longo */
-.longtext{position:relative;font-size:13.5px;color:var(--c-text-2);line-height:1.65}
-.longtext p{margin:0 0 10px}
-.longtext[data-clamped="true"]{max-height:132px;overflow:hidden;
-  -webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
-.longtext__toggle{margin-top:6px}
-
-/* rail */
-.rail{position:sticky;top:calc(var(--appbar-h) + 16px);display:flex;flex-direction:column;gap:16px}
-.rail .card__body{padding:14px}
-.timeline{list-style:none;margin:0;padding:0 0 0 18px;border-left:2px solid var(--c-border-2)}
-.timeline li{position:relative;padding:0 0 16px 6px}
-.timeline li:last-child{padding-bottom:0}
-.timeline li::before{content:"";position:absolute;left:-24px;top:5px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--c-primary)}
-.timeline li.is-done::before{background:var(--c-ok);border-color:var(--c-ok)}
-.timeline__when{font-size:11px;color:var(--c-text-3)}
-.timeline__what{font-size:13px;font-weight:500}
-.timeline__flow{font-size:11px;color:var(--c-text-3);margin-top:2px}
-
-.empty{padding:26px;text-align:center;color:var(--c-text-3);font-size:13px;border:1px dashed var(--c-border);border-radius:var(--radius)}
-
-/* barra de decisão fixa */
-.decisionbar{position:sticky;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--c-border);
-  box-shadow:0 -2px 8px rgba(0,0,0,.05)}
-.decisionbar__inner{max-width:1520px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
-.decisionbar__msg{font-size:13px;color:var(--c-text-2)}
-.decisionbar__msg b{color:var(--c-danger-text)}
-.decisionbar__spacer{flex:1}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-</style>
+<link rel="stylesheet" href="../../styles/global.css">
 </head>
-<body>
+<body data-page="acompanhamento">
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="appbar">
@@ -176,7 +20,7 @@ h1,h2,h3,h4{margin:0;font-weight:600}
   <div class="appbar__spacer"></div>
   <div class="appbar__actions">
     <button class="btn btn--sm" type="button">Imprimir dossiê</button>
-    <button class="btn btn--sm" type="button">Histórico completo</button>
+    <button class="btn btn--sm" type="button" data-open-history>Histórico completo</button>
   </div>
 </header>
 
@@ -228,7 +72,7 @@ h1,h2,h3,h4{margin:0;font-weight:600}
     <a href="#s-contrato"><span class="dot"></span>Contrato e pagamento</a>
     <a href="#s-documentos"><span class="dot dot--danger"></span>Documentos<span class="count">3</span></a>
     <a href="#s-justificativas"><span class="dot"></span>Justificativas</a>
-    <a href="#s-historico"><span class="dot dot--none"></span>Histórico</a>
+    <a href="#s-historico" data-open-history><span class="dot dot--none"></span>Histórico</a>
   </nav>
 
   <main class="doc">
@@ -549,31 +393,6 @@ h1,h2,h3,h4{margin:0;font-weight:600}
       </div>
     </section>
 
-    <!-- 9. HISTÓRICO -->
-    <section class="card" id="s-historico" data-collapsed="true">
-      <div class="card__head" data-toggle>
-        <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h2>Histórico completo</h2>
-        <span class="pill pill--neutral">8 eventos</span>
-      </div>
-      <div class="card__body">
-        <div class="tbl-wrap">
-          <table class="tbl">
-            <thead><tr><th style="width:120px">Data</th><th>Evento</th><th>Transição</th><th>Responsável</th></tr></thead>
-            <tbody>
-              <tr><td>24/02/2026</td><td>Contratado enviou a documentação assinada</td><td class="file__meta">Aguardando documentação assinada → Documentação assinada enviada</td><td>Romina N. Sanchez</td></tr>
-              <tr><td>24/02/2026</td><td>Contratado notificado para envio de documentação</td><td class="file__meta">Pedido aprovado → Aguardando documentação assinada</td><td>Sistema</td></tr>
-              <tr><td>23/02/2026</td><td>Pedido aprovado após reabertura</td><td class="file__meta">Pedido devolvido → Pedido aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
-              <tr><td>23/02/2026</td><td>Reabertura — alterações enviadas</td><td class="file__meta">Pedido reaberto → Pedido devolvido</td><td>Elizabete A. Honorato</td></tr>
-              <tr><td>23/02/2026</td><td>Pedido reaberto (equipamento)</td><td class="file__meta">Pedido aprovado → Pedido reaberto</td><td>Fabrícia C. B. da Silva</td></tr>
-              <tr><td>20/02/2026</td><td>Pedido aprovado</td><td class="file__meta">Pedido enviado → Pedido aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
-              <tr><td>19/02/2026</td><td>Pedido enviado</td><td class="file__meta">Rascunho → Pedido enviado</td><td>Elizabete A. Honorato</td></tr>
-              <tr><td>19/02/2026</td><td>Pedido iniciado</td><td class="file__meta">— → Rascunho</td><td>Elizabete A. Honorato</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- RAIL: só o que é acionável, não a timeline inteira -->
@@ -599,7 +418,7 @@ h1,h2,h3,h4{margin:0;font-weight:600}
     <section class="card">
       <div class="card__head" style="cursor:default">
         <h2>Andamento</h2>
-        <a href="#s-historico" style="margin-left:auto;font-size:12px">Ver tudo</a>
+        <a href="#s-historico" data-open-history style="margin-left:auto;font-size:12px">Ver tudo</a>
       </div>
       <div class="card__body">
         <ol class="timeline">
@@ -633,6 +452,40 @@ h1,h2,h3,h4{margin:0;font-weight:600}
   </div>
 </div>
 
+<!-- MODAL: histórico completo -->
+<div class="modal" id="historyModal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+    <div class="modal__head">
+      <h3 class="modal__title" id="historyModalTitle">Histórico completo</h3>
+      <p class="modal__hint">8 eventos registrados neste pedido.</p>
+    </div>
+    <div class="modal__body">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th style="width:120px">Data</th><th>Evento</th><th>Transição</th><th>Responsável</th></tr></thead>
+          <tbody>
+            <tr><td>24/02/2026</td><td>Contratado enviou a documentação assinada</td><td class="file__meta">Aguardando documentação assinada → Documentação assinada enviada</td><td>Romina N. Sanchez</td></tr>
+            <tr><td>24/02/2026</td><td>Contratado notificado para envio de documentação</td><td class="file__meta">Pedido aprovado → Aguardando documentação assinada</td><td>Sistema</td></tr>
+            <tr><td>23/02/2026</td><td>Pedido aprovado após reabertura</td><td class="file__meta">Pedido devolvido → Pedido aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
+            <tr><td>23/02/2026</td><td>Reabertura — alterações enviadas</td><td class="file__meta">Pedido reaberto → Pedido devolvido</td><td>Elizabete A. Honorato</td></tr>
+            <tr><td>23/02/2026</td><td>Pedido reaberto (equipamento)</td><td class="file__meta">Pedido aprovado → Pedido reaberto</td><td>Fabrícia C. B. da Silva</td></tr>
+            <tr><td>20/02/2026</td><td>Pedido aprovado</td><td class="file__meta">Pedido enviado → Pedido aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
+            <tr><td>19/02/2026</td><td>Pedido enviado</td><td class="file__meta">Rascunho → Pedido enviado</td><td>Elizabete A. Honorato</td></tr>
+            <tr><td>19/02/2026</td><td>Pedido iniciado</td><td class="file__meta">— → Rascunho</td><td>Elizabete A. Honorato</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg">Pedido #11159</span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn btn--sm" data-modal-close>Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // colapsar/expandir seções
 document.querySelectorAll('[data-toggle]').forEach(function (head) {
@@ -650,6 +503,26 @@ document.querySelectorAll('[data-expand]').forEach(function (btn) {
     box.dataset.clamped = clamped ? 'false' : 'true';
     btn.textContent = clamped ? 'Recolher ▴' : 'Ler tudo ▾';
   });
+});
+
+// modal de histórico completo
+function openHistoryModal() {
+  document.getElementById('historyModal').hidden = false;
+}
+function closeHistoryModal() {
+  document.getElementById('historyModal').hidden = true;
+}
+document.querySelectorAll('[data-open-history]').forEach(function (trigger) {
+  trigger.addEventListener('click', function (event) {
+    event.preventDefault();
+    openHistoryModal();
+  });
+});
+document.querySelectorAll('#historyModal [data-modal-close]').forEach(function (node) {
+  node.addEventListener('click', closeHistoryModal);
+});
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape' && !document.getElementById('historyModal').hidden) closeHistoryModal();
 });
 
 // scrollspy do índice lateral
