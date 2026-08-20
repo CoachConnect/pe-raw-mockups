@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Eventos — Mockups PE</title>
+<link rel="stylesheet" href="../../styles/global.css">
+</head>
+<body data-page="gestao-eventos">
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="appbar">
+  <span class="appbar__title">Gestão de Eventos</span>
+  <span class="appbar__spacer"></span>
+  <span class="pill pill--neutral">5 eventos</span>
+</header>
+
+<main class="layout" id="conteudo">
+  <div class="page__head">
+    <h1>Eventos e pedidos de contratação</h1>
+    <p>Lista de eventos vinculados a emendas parlamentares. Expanda uma linha para ver os pedidos de contratação relacionados.</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl tbl--expandable">
+      <thead>
+        <tr>
+          <th style="width:36px"></th>
+          <th>Evento</th>
+          <th>Vereador responsável</th>
+          <th>Data do evento</th>
+          <th class="num" style="width:90px">Pedidos</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="tbl__row" data-event="ev1">
+          <td><button class="tbl__toggle" type="button" data-toggle="ev1" aria-expanded="false" aria-controls="detail-ev1">+</button></td>
+          <td><span class="evt__name">Virada Cultural — Palco Anhangabaú</span></td>
+          <td>Ricardo Nunes</td>
+          <td>15/04/2026</td>
+          <td class="num">3</td>
+        </tr>
+        <tr class="tbl__detail-row" id="detail-ev1" hidden>
+          <td colspan="5">
+            <div class="tbl__sub-wrap">
+              <table class="tbl tbl__sub">
+                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">#11159</td><td>Suspiros e Burbujas (Circo)</td><td class="num money">R$ 5.500,00</td><td><span class="pill pill--warn">Em homologação</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                  <tr><td class="mono">#11160</td><td>Banda Fanfarra Popular</td><td class="num money">R$ 3.200,00</td><td><span class="pill pill--ok">Aprovado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                  <tr><td class="mono">#11161</td><td>Estrutura de Som e Palco</td><td class="num money">R$ 8.900,00</td><td><span class="pill pill--neutral">Rascunho</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="tbl__row" data-event="ev2">
+          <td><button class="tbl__toggle" type="button" data-toggle="ev2" aria-expanded="false" aria-controls="detail-ev2">+</button></td>
+          <td><span class="evt__name">Festival de Inverno — Centro Cultural Grajaú</span></td>
+          <td>Camila Souza</td>
+          <td>22/05/2026</td>
+          <td class="num">2</td>
+        </tr>
+        <tr class="tbl__detail-row" id="detail-ev2" hidden>
+          <td colspan="5">
+            <div class="tbl__sub-wrap">
+              <table class="tbl tbl__sub">
+                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">#11205</td><td>Cia de Dança Raízes</td><td class="num money">R$ 4.100,00</td><td><span class="pill pill--danger">Pendência</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                  <tr><td class="mono">#11206</td><td>Iluminação Cênica LTDA</td><td class="num money">R$ 2.750,00</td><td><span class="pill pill--warn">Em homologação</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="tbl__row" data-event="ev3">
+          <td><button class="tbl__toggle" type="button" data-toggle="ev3" aria-expanded="false" aria-controls="detail-ev3">+</button></td>
+          <td><span class="evt__name">Aniversário do Bairro — Praça Central</span></td>
+          <td>Fábio Penna</td>
+          <td>03/06/2026</td>
+          <td class="num">1</td>
+        </tr>
+        <tr class="tbl__detail-row" id="detail-ev3" hidden>
+          <td colspan="5">
+            <div class="tbl__sub-wrap">
+              <table class="tbl tbl__sub">
+                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">#11240</td><td>DJ Set Marcos Lima</td><td class="num money">R$ 1.800,00</td><td><span class="pill pill--ok">Aprovado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="tbl__row" data-event="ev4">
+          <td><button class="tbl__toggle" type="button" data-toggle="ev4" aria-expanded="false" aria-controls="detail-ev4">+</button></td>
+          <td><span class="evt__name">Encontro de Corais — Teatro Municipal</span></td>
+          <td>Marta Lima</td>
+          <td>18/07/2026</td>
+          <td class="num">2</td>
+        </tr>
+        <tr class="tbl__detail-row" id="detail-ev4" hidden>
+          <td colspan="5">
+            <div class="tbl__sub-wrap">
+              <table class="tbl tbl__sub">
+                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">#11288</td><td>Coral Vozes da Cidade</td><td class="num money">R$ 2.300,00</td><td><span class="pill pill--neutral">Rascunho</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                  <tr><td class="mono">#11289</td><td>Sonorização Titulada Eventos</td><td class="num money">R$ 3.600,00</td><td><span class="pill pill--warn">Em homologação</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="tbl__row" data-event="ev5">
+          <td><button class="tbl__toggle" type="button" data-toggle="ev5" aria-expanded="false" aria-controls="detail-ev5">+</button></td>
+          <td><span class="evt__name">Circuito de Rua — Vila Madalena</span></td>
+          <td>Diego Alves</td>
+          <td>09/08/2026</td>
+          <td class="num">3</td>
+        </tr>
+        <tr class="tbl__detail-row" id="detail-ev5" hidden>
+          <td colspan="5">
+            <div class="tbl__sub-wrap">
+              <table class="tbl tbl__sub">
+                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">#11310</td><td>Palhaço Tico Trupe</td><td class="num money">R$ 1.950,00</td><td><span class="pill pill--ok">Aprovado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                  <tr><td class="mono">#11311</td><td>Segurança Eventos SP</td><td class="num money">R$ 6.400,00</td><td><span class="pill pill--danger">Pendência</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                  <tr><td class="mono">#11312</td><td>Estrutura Elétrica Móvel</td><td class="num money">R$ 4.750,00</td><td><span class="pill pill--warn">Em homologação</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Ver dossiê</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+document.querySelectorAll('[data-toggle]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var id = btn.dataset.toggle;
+    var detailRow = document.getElementById('detail-' + id);
+    var expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    detailRow.hidden = expanded;
+    btn.textContent = expanded ? '+' : '−';
+    btn.closest('tr').classList.toggle('is-expanded', !expanded);
+  });
+});
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Criação de Emenda — v3</title>
+<title>Criação de Emenda — v2</title>
 <link rel="stylesheet" href="../../styles/global.css">
 </head>
 <body data-page="criacao-emenda">
@@ -19,7 +19,7 @@
         <span class="chip order__status" id="requestStatus" data-status="draft">✎ Emenda em rascunho</span>
       </div>
       <div class="sidenav__progress">
-        <span class="progress__text" id="progressText" role="status">0 de 6 blocos corretos</span>
+        <span class="progress__text" id="progressText" role="status">0 de 5 blocos corretos</span>
         <div class="progress__track"><div class="progress__bar" id="progressBar"></div></div>
       </div>
 
@@ -56,13 +56,6 @@
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Valor do contrato</span>
-            <span class="nav__status">Vazio</span>
-          </span>
-        </a>
-        <a href="#sec-parcelamento" class="nav__item" data-section="sec-parcelamento" data-status="empty">
-          <span class="nav__icon" aria-hidden="true">○</span>
-          <span class="nav__text">
-            <span class="nav__label">Parcelamento</span>
             <span class="nav__status">Vazio</span>
           </span>
         </a>
@@ -298,32 +291,6 @@
             </div>
           </div>
 
-          <div class="sub">
-            <div class="sub__head"><span class="sub__title">Justificativas</span></div>
-
-            <div class="field">
-              <span class="field__label" id="lbl-justContracting">Justificativa da contratação<span class="req">*</span></span>
-              <div class="rte" data-rte-for="justContracting" data-placeholder="Motivo da contratação: demanda cultural atendida, público e território, alinhamento com a emenda parlamentar…"></div>
-              <textarea id="justContracting" name="justContracting" hidden></textarea>
-              <p class="field__error" data-error-for="justContracting"></p>
-            </div>
-
-            <div class="field">
-              <span class="field__label" id="lbl-justContractorChoice">Justificativa da Escolha do Contratado<span class="req">*</span></span>
-              <div class="rte" data-rte-for="justContractorChoice" data-placeholder="Por que esta empresa/artista: exclusividade, notória especialização, aderência ao objeto…"></div>
-              <textarea id="justContractorChoice" name="justContractorChoice" hidden></textarea>
-              <p class="field__error" data-error-for="justContractorChoice"></p>
-            </div>
-
-            <div class="field">
-              <span class="field__label" id="lbl-justContractingValue">Justificativa do Valor da Contratação</span>
-              <div class="rte" data-rte-for="justContractingValue" data-placeholder="Pesquisa de preços, contratos anteriores, cachês praticados em eventos equivalentes…"></div>
-              <textarea id="justContractingValue" name="justContractingValue" hidden></textarea>
-              <p class="field__help">Opcional aqui: a memória de cálculo do valor global fica no bloco “Valor do contrato”.</p>
-              <p class="field__error" data-error-for="justContractingValue"></p>
-            </div>
-          </div>
-
           <div class="card__foot">
             <span class="card__foot-msg" data-foot-for="sec-contrato" data-status="empty">Nenhum campo preenchido.</span>
             <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-contrato" disabled>Salvar alterações</button>
@@ -437,100 +404,12 @@
         </form>
       </section>
 
-      <!-- ============ BLOCO 6 — Parcelamento do pagamento ============ -->
-      <section id="sec-parcelamento" class="card" data-status="empty">
-        <div class="card__head">
-          <div>
-            <h2 class="card__title">Parcelamento</h2>
-            <p class="card__hint">Como o valor do contrato será pago e, em cada parcela, quanto cabe a cada subprefeitura. A soma das parcelas tem de fechar com o valor do contrato.</p>
-            <span class="card__entity">ContractingRequest.paymentForm · ContractInstallment · InstallmentSubprefecture</span>
-          </div>
-          <span class="chip" data-chip-for="sec-parcelamento" data-status="empty">○ Vazio</span>
-        </div>
-
-        <form id="form-parcelamento" class="js-form" data-section="sec-parcelamento" novalidate>
-          <div class="readonly-box" id="paymentInfo" style="margin-bottom:16px"></div>
-
-          <div class="pay-grid">
-            <div class="field">
-              <span class="field__label" id="lbl-paymentMethod">Forma de pagamento<span class="req">*</span></span>
-              <p class="field__help" style="margin:0 0 10px">O pagamento se dará no 30º (trigésimo) dia após a data de entrega de toda documentação correta relativa ao pagamento.</p>
-              <div class="radio-stack" role="radiogroup" aria-labelledby="lbl-paymentMethod">
-                <label><input type="radio" name="paymentMethod" value="unica"> Parcela Única</label>
-                <label><input type="radio" name="paymentMethod" value="parcelado"> Parcelado</label>
-                <label><input type="radio" name="paymentMethod" value="bilheteria"> Reversão de Bilheteria</label>
-                <label><input type="radio" name="paymentMethod" value="outros"> Outros</label>
-                <label><input type="radio" name="paymentMethod" value="sem-cache"> Sem Cachê</label>
-              </div>
-              <p class="block-error" data-error-for="paymentMethodBlock"></p>
-            </div>
-
-            <div class="field">
-              <label class="field__label" for="kitDate">Data prevista para entrega (Kit)<span class="info-dot" title="Data prevista de entrega do kit de documentação do pagamento. O pagamento ocorre 30 dias depois."><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 7.2v4.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="4.9" r=".9" fill="currentColor"/></svg><span class="sr-only">Data prevista de entrega do kit de documentação do pagamento. O pagamento ocorre 30 dias depois.</span></span></label>
-              <input type="date" id="kitDate" name="kitDate">
-              <span class="date-chip" id="kitDateChip" hidden></span>
-              <p class="field__error" data-error-for="kitDate"></p>
-            </div>
-          </div>
-
-          <div id="parcelasPanel" hidden>
-            <div class="sub">
-              <div class="sub__head">
-                <span class="sub__title">Valores por subprefeitura</span>
-                <button type="button" id="btnAddParcela" class="btn btn--secondary btn--sm" hidden>+ Adicionar parcela</button>
-              </div>
-              <div id="parcelasList"></div>
-              <p class="block-error" data-error-for="parcelasBlock"></p>
-            </div>
-          </div>
-
-          <div class="subform" data-mode-panel="paymentMethod:bilheteria" hidden>
-            <div class="row">
-              <div class="field">
-                <label class="field__label" for="boxOfficeShare">Percentual de reversão de bilheteria (%)<span class="req">*</span></label>
-                <input type="number" id="boxOfficeShare" name="boxOfficeShare" min="0" max="100" step="0.01" placeholder="Ex: 70">
-                <p class="field__help">Parte da bilheteria repassada ao contratado.</p>
-                <p class="field__error" data-error-for="boxOfficeShare"></p>
-              </div>
-              <div class="field">
-                <label class="field__label" for="boxOfficeMinimum">Valor mínimo garantido (R$)</label>
-                <input type="number" id="boxOfficeMinimum" name="boxOfficeMinimum" min="0" step="0.01" placeholder="0,00">
-                <p class="field__help">Deixe vazio quando não houver garantia de valor mínimo.</p>
-                <p class="field__error" data-error-for="boxOfficeMinimum"></p>
-              </div>
-            </div>
-          </div>
-
-          <div class="subform" data-mode-panel="paymentMethod:outros" hidden>
-            <div class="field">
-              <label class="field__label" for="paymentOtherDescription">Descrição da forma de pagamento<span class="req">*</span></label>
-              <textarea id="paymentOtherDescription" name="paymentOtherDescription" placeholder="Descreva o arranjo de pagamento acordado com o contratado…"></textarea>
-              <p class="field__error" data-error-for="paymentOtherDescription"></p>
-            </div>
-          </div>
-
-          <div class="subform" data-mode-panel="paymentMethod:sem-cache" hidden>
-            <p style="margin:0;font-size:13px;color:var(--c-text-secondary)">Sem cachê: não há valor a pagar ao contratado. Despesas extraordinárias, se houver, continuam no valor do contrato.</p>
-          </div>
-
-          <div class="field">
-            <label class="field__label" for="paymentObservation">Observação do pagamento</label>
-            <input type="text" id="paymentObservation" name="paymentObservation" placeholder="Condições, retenções, documentos exigidos para liberação…">
-          </div>
-
-          <div class="card__foot">
-            <span class="card__foot-msg" data-foot-for="sec-parcelamento" data-status="empty">Nenhum campo preenchido.</span>
-            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-parcelamento" disabled>Salvar alterações</button>
-          </div>
-        </form>
-      </section>
-
       <!-- ============ RESUMO ============ -->
       <section id="sec-resumo" class="card">
         <div class="card__head">
           <div>
             <h2 class="card__title">Resumo</h2>
-            <p class="card__hint">Consolidação dos 6 blocos. Revise antes de criar a emenda.</p>
+            <p class="card__hint">Consolidação dos 5 blocos. Revise antes de criar a emenda.</p>
           </div>
         </div>
         <div id="summaryContent"></div>
@@ -678,32 +557,6 @@
     ['emenda', 'Emenda parlamentar'],
   ];
 
-  /* Subprefeituras que podem receber valor dentro de cada parcela. */
-  const SUBPREFEITURAS = [
-    ['sub-se', 'Sé'],
-    ['sub-vila-mariana', 'Vila Mariana'],
-    ['sub-pinheiros', 'Pinheiros'],
-    ['sub-butanta', 'Butantã'],
-    ['sub-lapa', 'Lapa'],
-    ['sub-mooca', 'Mooca'],
-    ['sub-ipiranga', 'Ipiranga'],
-    ['sub-penha', 'Penha'],
-    ['sub-itaquera', 'Itaquera'],
-    ['sub-santo-amaro', 'Santo Amaro'],
-    ['sub-sao-miguel', 'São Miguel Paulista'],
-    ['sub-freguesia', 'Freguesia/Brasilândia'],
-  ];
-
-  /* Formas de pagamento. Só "Parcela Única" e "Parcelado" abrem parcelas. */
-  const PAYMENT_METHODS = [
-    ['unica', 'Parcela Única'],
-    ['parcelado', 'Parcelado'],
-    ['bilheteria', 'Reversão de Bilheteria'],
-    ['outros', 'Outros'],
-    ['sem-cache', 'Sem Cachê'],
-  ];
-  const PAYMENT_WITH_INSTALLMENTS = ['unica', 'parcelado'];
-
   const COMPANIES = [
     { id: 'lp-1', companyName: 'Produções Culturais Horizonte Ltda', tradingName: 'Horizonte Produções', cnpj: '12.345.678/0001-90' },
     { id: 'lp-2', companyName: 'Agência Palco Aberto Eireli', tradingName: 'Palco Aberto', cnpj: '98.765.432/0001-11' },
@@ -800,23 +653,6 @@
   const findContractUnit = (id) => CONTRACT_UNITS.find((unit) => unit.id === id);
   const findInitialResponsible = (id) => INITIAL_RESPONSIBLES.find((person) => person.id === id);
   const findLegalFoundation = (id) => LEGAL_FOUNDATIONS.find(([value]) => value === id);
-  const findSubprefeitura = (id) => SUBPREFEITURAS.find(([value]) => value === id);
-  const findPaymentMethod = (id) => PAYMENT_METHODS.find(([value]) => value === id);
-  const formatDateBR = (iso) => {
-    if (!iso) return '—';
-    const [year, month, day] = iso.split('-');
-    return `${day}/${month}/${year}`;
-  };
-  /* Texto de um campo de texto rico, sem marcação, para resumo e validação. */
-  const rteText = (id) => {
-    const area = document.querySelector(`[data-rte-input="${id}"]`);
-    return area ? area.textContent.replace(/\s+/g, ' ').trim() : '';
-  };
-  const excerpt = (text, max = 140) => {
-    const clean = String(text || '').replace(/\s+/g, ' ').trim();
-    if (!clean) return '—';
-    return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
-  };
   const findEventType = (artistId, aetId) => {
     const artist = findArtist(artistId);
     return artist ? artist.eventTypes.find((eventType) => eventType.id === aetId) : undefined;
@@ -848,24 +684,6 @@
   }
 
   const selectedCompany = () => findCompany(val('companyId'));
-
-  function parcelasData() {
-    return Array.from(document.querySelectorAll('#parcelasList .parcela')).map((node, index) => ({
-      parcelaId: node.dataset.parcelaId,
-      index,
-      subs: Array.from(node.querySelectorAll('tr[data-sub-id]')).map((row) => ({
-        subId: row.dataset.subId,
-        subprefeituraId: row.querySelector('select[data-role="subprefeitura"]').value,
-        amount: row.querySelector('input[data-role="sub-amount"]').value.trim(),
-      })),
-    }));
-  }
-
-  const subAmount = (sub) => (sub.amount === '' ? 0 : Number(sub.amount));
-  const parcelaTotal = (parcela) => parcela.subs.reduce((total, sub) => total + subAmount(sub), 0);
-  const parcelasTotal = () => parcelasData().reduce((total, parcela) => total + parcelaTotal(parcela), 0);
-  const parcelaLabel = (index) => `${index + 1}ª parcela`;
-  const usesParcelas = () => PAYMENT_WITH_INSTALLMENTS.includes(currentMode('paymentMethod'));
 
   function eventsData() {
     return Array.from(document.querySelectorAll('#eventsList .ep')).map((card, index) => {
@@ -951,7 +769,6 @@
         val('contractCode') || val('parentProccessSEI') || val('contractObservation') ||
         val('contractObject') || val('requestingUnitId') || val('initialResponsibleId') ||
         val('legalFoundation') || val('fiscalSingleId') ||
-        val('justContracting') || val('justContractorChoice') || val('justContractingValue') ||
         fiscalRowsData().some((row) => row.fiscalId || row.substituteId || row.placeId)
       ),
       validate() {
@@ -1007,23 +824,6 @@
         if (!sei) errors.push(missing('parentProccessSEI', 'Informe o processo SEI mãe.'));
         else if (!/^\d{5}\.\d{6}\/\d{4}-\d{2}$/.test(sei)) {
           errors.push(wrong('parentProccessSEI', 'Formato esperado: 00000.000000/0000-00.'));
-        }
-
-        /* Justificativas: obrigatórias no processo, exceto a do valor da contratação. */
-        if (!val('justContracting')) {
-          errors.push(missing('justContracting', 'Escreva a justificativa da contratação.'));
-        } else if (rteText('justContracting').length < 20) {
-          errors.push(soft('justContracting', 'A justificativa da contratação está curta demais (mínimo 20 caracteres).'));
-        }
-
-        if (!val('justContractorChoice')) {
-          errors.push(missing('justContractorChoice', 'Escreva a justificativa da escolha do contratado.'));
-        } else if (rteText('justContractorChoice').length < 20) {
-          errors.push(soft('justContractorChoice', 'A justificativa da escolha do contratado está curta demais (mínimo 20 caracteres).'));
-        }
-
-        if (val('justContractingValue') && rteText('justContractingValue').length < 20) {
-          errors.push(soft('justContractingValue', 'A justificativa do valor da contratação está curta demais (mínimo 20 caracteres).'));
         }
         return errors;
       },
@@ -1140,83 +940,6 @@
         }
         if (minimum > 0 && value < minimum) {
           errors.push(wrong('contractValue', `O valor do contrato não pode ser menor que ${brl(minimum)} (cachês + despesas extraordinárias).`));
-        }
-        return errors;
-      },
-    },
-    {
-      id: 'sec-parcelamento',
-      formId: 'form-parcelamento',
-      label: 'Parcelamento',
-      filled: () => Boolean(
-        currentMode('paymentMethod') || val('kitDate') || val('paymentObservation') ||
-        val('paymentOtherDescription') || val('boxOfficeShare') || val('boxOfficeMinimum') ||
-        parcelasData().some((parcela) => parcela.subs.some((sub) => sub.subprefeituraId || sub.amount))
-      ),
-      validate() {
-        const errors = [];
-        const method = currentMode('paymentMethod');
-
-        if (!method) {
-          errors.push(missing('paymentMethodBlock', 'Selecione a forma de pagamento.'));
-          return errors;
-        }
-
-        if (method === 'bilheteria') {
-          const share = val('boxOfficeShare');
-          if (share === '') errors.push(missing('boxOfficeShare', 'Informe o percentual de reversão de bilheteria.'));
-          else if (!(Number(share) > 0) || Number(share) > 100) {
-            errors.push(wrong('boxOfficeShare', 'O percentual deve ser maior que zero e no máximo 100.'));
-          }
-          if (val('boxOfficeMinimum') !== '' && Number(val('boxOfficeMinimum')) < 0) {
-            errors.push(wrong('boxOfficeMinimum', 'O valor mínimo garantido não pode ser negativo.'));
-          }
-          return errors;
-        }
-
-        if (method === 'outros') {
-          const description = val('paymentOtherDescription');
-          if (!description) errors.push(missing('paymentOtherDescription', 'Descreva a forma de pagamento.'));
-          else if (description.length < 15) errors.push(soft('paymentOtherDescription', 'A descrição deve ter ao menos 15 caracteres.'));
-          return errors;
-        }
-
-        if (method === 'sem-cache') return errors;
-
-        /* Parcela única / parcelado: cada parcela distribui valor por subprefeitura. */
-        const parcelas = parcelasData();
-        if (parcelas.length === 0) {
-          errors.push(missing('parcelasBlock', 'Informe ao menos uma parcela com valor por subprefeitura.'));
-          return errors;
-        }
-        if (method === 'parcelado' && parcelas.length < 2) {
-          errors.push(wrong('parcelasBlock', 'Pagamento parcelado exige ao menos duas parcelas — ou volte para "Parcela Única".'));
-        }
-
-        parcelas.forEach((parcela) => {
-          if (parcela.subs.length === 0) {
-            errors.push(missing(`parcelaSubs-${parcela.parcelaId}`, `${parcelaLabel(parcela.index)}: adicione ao menos um valor por subprefeitura.`));
-            return;
-          }
-          const seen = new Set();
-          parcela.subs.forEach((sub) => {
-            if (!sub.subprefeituraId) {
-              errors.push(missing(`subPref-${sub.subId}`, 'Selecione a subprefeitura.'));
-            } else if (seen.has(sub.subprefeituraId)) {
-              errors.push(wrong(`subPref-${sub.subId}`, 'Esta subprefeitura já tem valor nesta parcela.'));
-            } else {
-              seen.add(sub.subprefeituraId);
-            }
-
-            if (sub.amount === '') errors.push(missing(`subAmount-${sub.subId}`, 'Informe o valor.'));
-            else if (!(Number(sub.amount) > 0)) errors.push(wrong(`subAmount-${sub.subId}`, 'O valor deve ser maior que zero.'));
-          });
-        });
-
-        const total = parcelasTotal();
-        const contractValue = contractValueAmount();
-        if (contractValue !== null && total > 0 && Math.abs(total - contractValue) > 0.005) {
-          errors.push(wrong('parcelasBlock', `A soma das parcelas (${brl(total)}) tem de ser igual ao valor do contrato (${brl(contractValue)}). Diferença de ${brl(contractValue - total)}.`));
         }
         return errors;
       },
@@ -1359,11 +1082,6 @@
         row.querySelector('input[data-role="duration"]').disabled = allDay;
       });
     });
-
-    /* Parcelamento: subprefeituras que recebem valor em cada parcela. */
-    document.querySelectorAll('#parcelasList select[data-role="subprefeitura"]').forEach((select) => {
-      fillSelect(select, SUBPREFEITURAS, 'Selecione a subprefeitura…');
-    });
   }
 
   /* ---------------- painéis de leitura ---------------- */
@@ -1494,96 +1212,6 @@
       <div class="kv"><span class="kv__k">Despesas extraordinárias</span><span class="kv__v money">${brl(extraordinary)}</span></div>
       <div class="kv"><span class="kv__k">Mínimo do contrato</span><span class="kv__v money">${brl(minimum)}</span></div>
       <div class="kv"><span class="kv__k">Margem sobre o mínimo</span><span class="kv__v money ${balance === null ? '' : (balance < 0 ? 'kv__v--warn' : 'kv__v--ok')}">${balance === null ? '—' : brl(balance)}</span></div>`;
-  }
-
-  /* ---------------- justificativas: editor de texto rico ---------------- */
-  /**
-   * Editor mínimo, sem dependência externa: a área editável é um contenteditable
-   * e o conteúdo é espelhado num <textarea> oculto do próprio formulário. Assim o
-   * campo entra na serialização do bloco (rascunho / "salvar alterações") e no
-   * fluxo de erros como qualquer outro input.
-   */
-  const RTE_ICONS = {
-    orderedList: '<svg viewBox="0 0 16 16" aria-hidden="true"><text x="0" y="5.4" font-size="5" fill="currentColor">1</text><text x="0" y="9.9" font-size="5" fill="currentColor">2</text><text x="0" y="14.4" font-size="5" fill="currentColor">3</text><path d="M6.5 3.8h7.5M6.5 8.3h7.5M6.5 12.8h7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    bulletList: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="2.6" cy="3.8" r="1.3" fill="currentColor"/><circle cx="2.6" cy="8.3" r="1.3" fill="currentColor"/><circle cx="2.6" cy="12.8" r="1.3" fill="currentColor"/><path d="M6.5 3.8h7.5M6.5 8.3h7.5M6.5 12.8h7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    alignLeft: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h8M2 12h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    alignCenter: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M4 8h8M3 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    link: '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M6.8 9.9a2.9 2.9 0 0 1 0-4.1l1.3-1.3a2.9 2.9 0 0 1 4.1 4.1l-.8.8M9.2 6.1a2.9 2.9 0 0 1 0 4.1l-1.3 1.3a2.9 2.9 0 0 1-4.1-4.1l.8-.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-  };
-
-  const RTE_TOOLS = [
-    { cmd: 'bold', html: '<b>B</b>', title: 'Negrito' },
-    { cmd: 'italic', html: '<i>I</i>', title: 'Itálico' },
-    { cmd: 'underline', html: '<u>U</u>', title: 'Sublinhado' },
-    'sep',
-    { cmd: 'insertOrderedList', html: RTE_ICONS.orderedList, title: 'Lista numerada' },
-    { cmd: 'insertUnorderedList', html: RTE_ICONS.bulletList, title: 'Lista com marcadores' },
-    'sep',
-    { cmd: 'justifyLeft', html: RTE_ICONS.alignLeft, title: 'Alinhar à esquerda' },
-    { cmd: 'justifyCenter', html: RTE_ICONS.alignCenter, title: 'Centralizar' },
-    { cmd: 'createLink', html: RTE_ICONS.link, title: 'Inserir link' },
-    { cmd: 'removeFormat', html: 'T<sub>x</sub>', title: 'Limpar formatação' },
-  ];
-
-  /** Espelha o conteúdo editável no textarea; vazio de verdade quando só há marcação. */
-  function syncRichText(area) {
-    const target = el(area.dataset.rteInput);
-    const text = area.textContent.replace(/\u200b/g, '').trim();
-    target.value = text ? area.innerHTML : '';
-    area.classList.toggle('is-empty', !text);
-  }
-
-  function initRichTexts() {
-    const toolbarHtml = RTE_TOOLS.map((tool) => tool === 'sep'
-      ? '<span class="rte__sep" aria-hidden="true"></span>'
-      : `<button type="button" class="rte__btn" data-cmd="${tool.cmd}" title="${escapeHtml(tool.title)}" aria-label="${escapeHtml(tool.title)}">${tool.html}</button>`).join('');
-
-    document.querySelectorAll('.rte[data-rte-for]').forEach((rte) => {
-      const targetId = rte.dataset.rteFor;
-      rte.innerHTML = `
-        <div class="rte__toolbar" role="toolbar" aria-label="Formatação do texto">
-          <select class="rte__block" data-role="rte-block" aria-label="Estilo do parágrafo">
-            <option value="p">Normal</option>
-            <option value="h3">Título</option>
-            <option value="h4">Subtítulo</option>
-          </select>
-          <span class="rte__sep" aria-hidden="true"></span>
-          ${toolbarHtml}
-        </div>
-        <div class="rte__area is-empty" contenteditable="true" role="textbox" aria-multiline="true"
-             aria-labelledby="lbl-${targetId}" data-rte-input="${targetId}"
-             data-placeholder="${escapeHtml(rte.dataset.placeholder || '')}"></div>`;
-
-      const area = rte.querySelector('.rte__area');
-      const runCommand = (command, argument) => {
-        area.focus();
-        document.execCommand(command, false, argument === undefined ? null : argument);
-        syncRichText(area);
-        /* O bloco recalcula status/rascunho pelo mesmo caminho dos outros campos. */
-        area.dispatchEvent(new Event('input', { bubbles: true }));
-      };
-
-      area.addEventListener('input', () => syncRichText(area));
-      area.addEventListener('blur', () => syncRichText(area));
-
-      rte.querySelector('.rte__toolbar').addEventListener('click', (event) => {
-        const button = event.target.closest('.rte__btn');
-        if (!button) return;
-        if (button.dataset.cmd === 'createLink') {
-          const url = window.prompt('Endereço do link (URL):', 'https://');
-          if (!url) return;
-          runCommand('createLink', url);
-          return;
-        }
-        runCommand(button.dataset.cmd);
-      });
-
-      rte.querySelector('[data-role="rte-block"]').addEventListener('change', (event) => {
-        runCommand('formatBlock', `<${event.target.value}>`);
-      });
-
-      syncRichText(area);
-    });
   }
 
   /* ---------------- linhas de fiscal (dados gerais do contrato) ---------------- */
@@ -1813,158 +1441,6 @@
     showToast(`Valor do contrato definido em ${brl(minimum)} (cachês + despesas extraordinárias).`);
   });
 
-  /* ---------------- parcelamento (parcelas x subprefeituras) ---------------- */
-  const TRASH_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-  let parcelaCount = 0;
-  let subCount = 0;
-
-  function subRowHtml(subId) {
-    return `
-      <tr data-sub-id="${subId}">
-        <td>
-          <div class="field field--cell">
-            <select id="subPref-${subId}" data-role="subprefeitura" aria-label="Subprefeitura"></select>
-            <p class="field__error" data-error-for="subPref-${subId}"></p>
-          </div>
-        </td>
-        <td>
-          <div class="field field--cell">
-            <input type="number" id="subAmount-${subId}" data-role="sub-amount" min="0" step="0.01" placeholder="0,00" aria-label="Valor da subprefeitura (R$)">
-            <p class="field__error" data-error-for="subAmount-${subId}"></p>
-          </div>
-        </td>
-        <td class="table__actions">
-          <button type="button" class="icon-btn js-remove-sub" title="Remover valor" aria-label="Remover valor por subprefeitura">${TRASH_ICON}</button>
-        </td>
-      </tr>`;
-  }
-
-  function parcelaHtml(parcelaId) {
-    return `
-      <article class="parcela" data-parcela-id="${parcelaId}">
-        <div class="parcela__head">
-          <div>
-            <div class="parcela__title" data-parcela-title>1ª parcela</div>
-            <div class="parcela__meta" data-parcela-meta></div>
-          </div>
-          <button type="button" class="btn btn--danger-link js-remove-parcela" hidden>Remover parcela</button>
-        </div>
-        <div class="table__scroll">
-          <table class="table table--parcela">
-            <thead>
-              <tr>
-                <th>Subprefeitura</th>
-                <th>Valor</th>
-                <th style="width:72px">Ações</th>
-              </tr>
-            </thead>
-            <tbody data-subs></tbody>
-          </table>
-        </div>
-        <p class="block-error" data-error-for="parcelaSubs-${parcelaId}"></p>
-        <div class="parcela__foot">
-          <span class="parcela__total" data-parcela-total></span>
-          <button type="button" class="btn btn--primary btn--sm js-add-sub" data-add-label></button>
-        </div>
-      </article>`;
-  }
-
-  function addSubParcela(parcela) {
-    subCount += 1;
-    const subId = `${parcela.dataset.parcelaId}-${subCount}`;
-    parcela.querySelector('[data-subs]').insertAdjacentHTML('beforeend', subRowHtml(subId));
-    refreshDynamicOptions();
-    return subId;
-  }
-
-  function addParcela() {
-    parcelaCount += 1;
-    const parcelaId = String(parcelaCount);
-    el('parcelasList').insertAdjacentHTML('beforeend', parcelaHtml(parcelaId));
-    const parcela = document.querySelector(`.parcela[data-parcela-id="${parcelaId}"]`);
-    addSubParcela(parcela);
-    return parcela;
-  }
-
-  /**
-   * A forma de pagamento define a estrutura: "Parcela Única" mantém exatamente
-   * uma parcela; "Parcelado" libera várias. A troca acontece aqui (e não em
-   * refresh) para que a re-renderização nunca mexa no DOM que ela mesma lê.
-   */
-  el('form-parcelamento').addEventListener('change', (event) => {
-    if (!event.target.closest('input[name="paymentMethod"]')) return;
-    if (!usesParcelas()) return;
-    if (parcelasData().length === 0) addParcela();
-    if (currentMode('paymentMethod') === 'unica') {
-      Array.from(document.querySelectorAll('#parcelasList .parcela')).slice(1).forEach((node) => node.remove());
-    }
-  });
-
-  el('btnAddParcela').addEventListener('click', () => { addParcela(); refresh(); });
-
-  el('parcelasList').addEventListener('click', (event) => {
-    const parcela = event.target.closest('.parcela');
-    if (!parcela) return;
-
-    if (event.target.closest('.js-add-sub')) { addSubParcela(parcela); refresh(); return; }
-    if (event.target.closest('.js-remove-sub')) { event.target.closest('tr[data-sub-id]').remove(); refresh(); return; }
-    if (event.target.closest('.js-remove-parcela')) { parcela.remove(); refresh(); }
-  });
-
-  function syncPaymentPanels() {
-    const method = currentMode('paymentMethod');
-    const parcelado = method === 'parcelado';
-    el('parcelasPanel').hidden = !usesParcelas();
-    el('btnAddParcela').hidden = !parcelado;
-    const total = document.querySelectorAll('#parcelasList .parcela').length;
-    document.querySelectorAll('#parcelasList .js-remove-parcela').forEach((button) => {
-      button.hidden = !parcelado || total < 2;
-    });
-  }
-
-  function renumberParcelas() {
-    parcelasData().forEach((parcela) => {
-      const node = document.querySelector(`.parcela[data-parcela-id="${parcela.parcelaId}"]`);
-      const label = parcelaLabel(parcela.index);
-      node.querySelector('[data-parcela-title]').textContent = label;
-      node.querySelector('[data-parcela-meta]').textContent =
-        `${plural(parcela.subs.length, 'subprefeitura', 'subprefeituras')} · ${brl(parcelaTotal(parcela))}`;
-      node.querySelector('[data-parcela-total]').textContent =
-        `Valor total das subparcelas ${brl(parcelaTotal(parcela))}`;
-      node.querySelector('[data-add-label]').textContent =
-        `+ Adicionar novo valor por subprefeitura para ${label}`;
-    });
-  }
-
-  function renderKitDateChip() {
-    const chip = el('kitDateChip');
-    const date = val('kitDate');
-    chip.hidden = !date;
-    chip.textContent = date ? formatDateBR(date) : '';
-  }
-
-  function renderPaymentInfo() {
-    const method = findPaymentMethod(currentMode('paymentMethod'));
-    const contractValue = contractValueAmount();
-    const parcelas = parcelasData();
-    const subsCount = parcelas.reduce((count, parcela) => count + parcela.subs.length, 0);
-    const total = parcelasTotal();
-    const balance = contractValue === null ? null : contractValue - total;
-
-    const structureRow = usesParcelas()
-      ? `
-        <div class="kv"><span class="kv__k">Parcelas / subparcelas</span><span class="kv__v">${plural(parcelas.length, 'parcela', 'parcelas')} · ${plural(subsCount, 'subparcela', 'subparcelas')}</span></div>
-        <div class="kv"><span class="kv__k">Total das parcelas</span><span class="kv__v money">${brl(total)}</span></div>
-        <div class="kv"><span class="kv__k">A distribuir</span><span class="kv__v money ${balance === null ? '' : (Math.abs(balance) > 0.005 ? 'kv__v--warn' : 'kv__v--ok')}">${balance === null ? '—' : brl(balance)}</span></div>`
-      : '';
-
-    el('paymentInfo').innerHTML = `
-      <div class="kv"><span class="kv__k">Forma de pagamento</span><span class="kv__v">${method ? escapeHtml(method[1]) : '—'}</span></div>
-      <div class="kv"><span class="kv__k">Valor do contrato</span><span class="kv__v money">${contractValue === null ? '—' : brl(contractValue)}</span></div>
-      <div class="kv"><span class="kv__k">Entrega do kit / pagamento previsto</span><span class="kv__v">${val('kitDate') ? `${formatDateBR(val('kitDate'))} · pagamento em 30 dias` : '—'}</span></div>${structureRow}`;
-  }
-
   /* ---------------- modal de empresas ---------------- */
   let pendingCompanyId = null;
 
@@ -2143,10 +1619,6 @@
     renderArtistsPanel();
     renumberEvents();
     renderContractValueInfo();
-    syncPaymentPanels();
-    renumberParcelas();
-    renderKitDateChip();
-    renderPaymentInfo();
     renderRequestCouncilor();
     el('eventsEmpty').hidden = eventsData().length > 0;
     el('btnAddEvent').disabled = !val('companyId');
@@ -2228,10 +1700,7 @@
       summaryRow('Responsável pela solicitação inicial', initialResponsible ? `${initialResponsible.name} (${initialResponsible.unit})` : '—') +
       summaryRow('Fundamento legal', foundation ? foundation[1] : '—') +
       summaryRow('Processo SEI mãe', val('parentProccessSEI') || '—') +
-      summaryRow('Pedido de reserva', currentMode('reserveRequest') === 'global' ? 'Global' : 'Padrão') +
-      summaryRow('Justificativa da contratação', excerpt(rteText('justContracting'))) +
-      summaryRow('Justificativa da escolha do contratado', excerpt(rteText('justContractorChoice'))) +
-      summaryRow('Justificativa do valor da contratação', excerpt(rteText('justContractingValue')));
+      summaryRow('Pedido de reserva', currentMode('reserveRequest') === 'global' ? 'Global' : 'Padrão');
 
     const events = eventsData();
     const schedules = schedulesTotal();
@@ -2267,30 +1736,6 @@
             </div>`;
         }).join('');
 
-    const paymentMethod = findPaymentMethod(currentMode('paymentMethod'));
-    const parcelas = parcelasData();
-    const parcelamentoRows =
-      summaryRow('Forma de pagamento', paymentMethod ? paymentMethod[1] : '—') +
-      summaryRow('Data prevista para entrega (Kit)', val('kitDate') ? formatDateBR(val('kitDate')) : '—') +
-      (currentMode('paymentMethod') === 'bilheteria'
-        ? summaryRow('Reversão de bilheteria', val('boxOfficeShare') ? `${val('boxOfficeShare')}%` : '—') +
-          summaryRow('Mínimo garantido', val('boxOfficeMinimum') === '' ? '—' : brl(Number(val('boxOfficeMinimum'))))
-        : '') +
-      (currentMode('paymentMethod') === 'outros'
-        ? summaryRow('Descrição do pagamento', excerpt(val('paymentOtherDescription')))
-        : '') +
-      (usesParcelas()
-        ? parcelas.map((parcela) => parcela.subs.map((sub) => {
-            const subprefeitura = findSubprefeitura(sub.subprefeituraId);
-            return summaryRow(
-              `${parcelaLabel(parcela.index)} · ${subprefeitura ? subprefeitura[1] : 'subprefeitura —'}`,
-              sub.amount === '' ? '—' : brl(Number(sub.amount))
-            );
-          }).join('') || summaryRow(parcelaLabel(parcela.index), '—')).join('') +
-          summaryRow('Total das parcelas', brl(parcelasTotal()))
-        : '') +
-      summaryRow('Observação do pagamento', val('paymentObservation') || '—');
-
     el('summaryContent').innerHTML = `
       ${summaryGroup('Evento da Emenda', statusById['sec-evento'], eventoRows + summaryRow('Local habilitado', place ? place.name : '—'))}
       ${summaryGroup('Contrato', statusById['sec-contrato'], contratoRows)}
@@ -2305,7 +1750,6 @@
         summaryRow('Despesas extraordinárias', brl(extraordinary)) +
         summaryRow('Valor do contrato', contractValue === null ? '—' : brl(contractValue)) +
         summaryRow('Justificativa', val('contractValueJustification') || '—'))}
-      ${summaryGroup('Parcelamento', statusById['sec-parcelamento'], parcelamentoRows)}
       <div class="summary-total">
         ${summaryRow('Eventos planejados', String(events.length))}
         ${summaryRow('Datas programadas', String(schedulesCount))}
@@ -2352,8 +1796,7 @@
   function focusFirstError(result) {
     const first = result.visible[0];
     if (!first) return;
-    /* Justificativas guardam o valor num textarea oculto: o foco vai para a área editável. */
-    const node = document.querySelector(`[data-rte-input="${first.field}"]`) || el(first.field) || el(result.section.id);
+    const node = el(first.field) || el(result.section.id);
     if (!node) return;
     node.scrollIntoView({ behavior: 'smooth', block: 'center' });
     if (typeof node.focus === 'function') node.focus({ preventScroll: true });
@@ -2484,7 +1927,6 @@
   renderRequestNumber();
   renderRequestStatus();
   addFiscalRow();
-  initRichTexts();
   snapshotAll();
   refresh();
 </script>

@@ -384,6 +384,53 @@ textarea{resize:vertical;min-height:72px}
 .row-actions{display:flex;justify-content:flex-end;margin-top:6px}
 .aet-info{font-size:12px;color:var(--c-text-secondary);margin-top:6px}
 
+/* chips de status (restaurados: ficaram de fora na extração do CSS inline) */
+body[data-page="criacao-emenda"] .chip{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+body[data-page="criacao-emenda"] .chip[data-status="empty"]{background:var(--st-empty-bg);color:var(--st-empty);border:1px solid var(--st-empty)}
+body[data-page="criacao-emenda"] .chip[data-status="partial"]{background:var(--st-partial-bg);color:var(--st-partial);border:1px solid #91caff}
+body[data-page="criacao-emenda"] .chip[data-status="invalid"]{background:var(--st-invalid-bg);color:var(--st-invalid);border:1px solid #ffccc7}
+body[data-page="criacao-emenda"] .chip[data-status="valid"]{background:var(--st-valid-bg);color:#389e0d;border:1px solid #b7eb8f}
+body[data-page="criacao-emenda"] .chip[data-status="draft"]{background:var(--st-draft-bg);color:var(--st-draft-text);border:1px solid var(--st-draft-border)}
+
+/* editor de texto rico (justificativas do contrato) */
+.rte{border:1px solid var(--c-border);border-radius:var(--radius);background:#fff;overflow:hidden}
+.rte__toolbar{display:flex;align-items:center;gap:2px;flex-wrap:wrap;padding:6px 8px;border-bottom:1px solid var(--c-border-2);background:#fafafa}
+.rte__block{width:auto;min-width:104px;padding:4px 8px;font-size:12px}
+.rte__sep{width:1px;height:18px;background:var(--c-border);margin:0 6px;flex-shrink:0}
+.rte__btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:26px;padding:0;border:1px solid transparent;border-radius:4px;background:none;color:var(--c-text-2);font:inherit;font-size:13px;line-height:1;cursor:pointer}
+.rte__btn:hover{background:#f0f0f0;color:var(--c-text)}
+.rte__btn:focus-visible{outline:none;border-color:var(--c-primary);box-shadow:0 0 0 2px rgba(22,119,255,.15)}
+.rte__btn svg{width:16px;height:16px}
+.rte__area{min-height:132px;max-height:280px;overflow-y:auto;padding:10px 12px;font-size:14px;line-height:1.5}
+.rte__area:focus{outline:none;box-shadow:inset 0 0 0 2px rgba(22,119,255,.15)}
+.rte__area.is-empty::before{content:attr(data-placeholder);color:var(--c-text-3);pointer-events:none}
+.rte__area p{margin:0 0 8px}
+.rte__area ul,.rte__area ol{margin:0 0 8px;padding-left:22px}
+.rte__area h3,.rte__area h4{margin:0 0 8px}
+.rte__area > *:last-child{margin-bottom:0}
+.field.has-error .rte{border-color:var(--c-danger)}
+
+/* parcelamento */
+.pay-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,280px);gap:24px;align-items:start}
+.radio-stack{display:grid;gap:10px;padding:2px 0}
+.radio-stack label{display:inline-flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.radio-stack input{margin:0}
+.info-dot{display:inline-flex;align-items:center;margin-left:4px;color:var(--c-text-3);cursor:help;vertical-align:-2px}
+.info-dot svg{width:14px;height:14px}
+.date-chip{display:inline-flex;align-items:center;margin-top:8px;padding:2px 10px;border-radius:999px;background:var(--c-primary);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600}
+.parcela{border:1px solid var(--c-border);border-radius:var(--radius);padding:16px;margin-bottom:12px;background:#fff}
+.parcela__head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.parcela__title{font-size:14px;font-weight:600}
+.parcela__meta{font-size:12px;color:var(--c-text-secondary)}
+.parcela__foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px}
+.parcela__total{font-size:12px;color:var(--c-text-secondary)}
+.table--parcela .field--cell{margin-bottom:0}
+.table--parcela td{vertical-align:top}
+.table__actions{text-align:right;white-space:nowrap}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid transparent;border-radius:6px;background:none;color:var(--c-text-3);cursor:pointer}
+.icon-btn:hover{background:var(--c-danger-bg);border-color:var(--c-danger-border);color:var(--c-danger)}
+.icon-btn svg{width:16px;height:16px}
+
 @media (max-width:900px){
   body[data-page="criacao-emenda"] .sidenav{position:static;width:100%;padding:12px}
   .sidenav__title{padding-left:4px;padding-right:4px}
@@ -398,8 +445,39 @@ textarea{resize:vertical;min-height:72px}
   .legend__card{width:auto;border:0;padding:0;box-shadow:none;grid-template-columns:repeat(2, 1fr)}
   .legend__item{white-space:normal}
   .row, .list-row{flex-direction:column;align-items:stretch}
+  .pay-grid{grid-template-columns:1fr}
   .radio-inline{flex-wrap:wrap}
   body[data-page="criacao-emenda"] .card__head{flex-direction:column}
   .actionbar{flex-direction:column;gap:8px;align-items:stretch}
   .actionbar__buttons > .btn{flex:1}
 }
+
+/* ==========================================================================
+   pages/gestao-eventos/index.html — page-specific (unique class names,
+   safe unscoped: these selectors do not exist in other pages' markup)
+   ========================================================================== */
+body[data-page="gestao-eventos"] .appbar{position:sticky;top:0;z-index:30;height:var(--appbar-h);background:#fff;border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:16px;padding:0 20px}
+body[data-page="gestao-eventos"] .appbar__title{font-size:15px;font-weight:600;letter-spacing:.2px}
+body[data-page="gestao-eventos"] .appbar__spacer{flex:1}
+
+body[data-page="gestao-eventos"] .layout{max-width:1100px;margin:0 auto;padding:28px 20px 64px}
+body[data-page="gestao-eventos"] .page__head{margin-bottom:20px}
+body[data-page="gestao-eventos"] .page__head h1{font-size:20px}
+body[data-page="gestao-eventos"] .page__head p{margin:6px 0 0;color:var(--c-text-2)}
+
+body[data-page="gestao-eventos"] .btn{border:1px solid var(--c-border);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:#fff;color:var(--c-text);text-decoration:none;display:inline-block}
+body[data-page="gestao-eventos"] .btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+body[data-page="gestao-eventos"] .btn--sm{padding:3px 10px;font-size:12px}
+
+body[data-page="gestao-eventos"] .evt__name{font-weight:600}
+
+body[data-page="gestao-eventos"] .tbl__toggle{width:22px;height:22px;border:1px solid var(--c-border);border-radius:4px;background:#fff;color:var(--c-text-2);font-size:14px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+body[data-page="gestao-eventos"] .tbl__toggle:hover{border-color:var(--c-primary);color:var(--c-primary)}
+body[data-page="gestao-eventos"] .tbl__row.is-expanded{background:#fafafa}
+body[data-page="gestao-eventos"] .tbl__detail-row td{padding:0;background:#fbfbfb;border-bottom:1px solid var(--c-border-2)}
+body[data-page="gestao-eventos"] .tbl__sub-wrap{padding:4px 16px 16px 52px}
+body[data-page="gestao-eventos"] .tbl__sub{background:#fff;border:1px solid var(--c-border-2);border-radius:6px;overflow:hidden}
+body[data-page="gestao-eventos"] .tbl__sub th{background:#fafafa}
+body[data-page="gestao-eventos"] .tbl__sub td,
+body[data-page="gestao-eventos"] .tbl__sub th{padding:8px 12px}
+body[data-page="gestao-eventos"] .tbl__sub tbody tr:last-child td{border-bottom:none}
