@@ -28,42 +28,42 @@
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Evento da Emenda</span>
-            <span class="nav__status">Vazio</span>
+            <span class="nav__status">Salvo</span>
           </span>
         </a>
         <a href="#sec-contrato" class="nav__item" data-section="sec-contrato" data-status="empty">
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Contrato</span>
-            <span class="nav__status">Vazio</span>
+            <span class="nav__status">Salvo</span>
           </span>
         </a>
         <a href="#sec-empresa" class="nav__item" data-section="sec-empresa" data-status="empty">
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Empresa</span>
-            <span class="nav__status">Vazio</span>
+            <span class="nav__status">Salvo</span>
           </span>
         </a>
         <a href="#sec-eventos" class="nav__item" data-section="sec-eventos" data-status="empty">
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Artistas e eventos planejados</span>
-            <span class="nav__status">Vazio</span>
+            <span class="nav__status">Salvo</span>
           </span>
         </a>
         <a href="#sec-valor" class="nav__item" data-section="sec-valor" data-status="empty">
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Valor do contrato</span>
-            <span class="nav__status">Vazio</span>
+            <span class="nav__status">Salvo</span>
           </span>
         </a>
         <a href="#sec-parcelamento" class="nav__item" data-section="sec-parcelamento" data-status="empty">
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Parcelamento</span>
-            <span class="nav__status">Vazio</span>
+            <span class="nav__status">Salvo</span>
           </span>
         </a>
         <a href="#sec-resumo" class="nav__item nav__item--summary" data-section="sec-resumo">
@@ -73,41 +73,35 @@
         </a>
       </div>
 
+      <div class="sidenav__contracts" id="sidenavContracts">
+        <div class="contracts__head">Contratos relacionados</div>
+        <div class="contracts__list" id="contractsList"></div>
+      </div>
+
       <div class="sidenav__legend">
         <button type="button" class="legend__trigger" aria-describedby="legendPanel">
           Legenda<span class="legend__caret" aria-hidden="true">▸</span>
         </button>
         <div class="legend__panel" id="legendPanel" role="tooltip">
           <div class="legend__card">
-            <span class="legend__item"><span class="legend__dot legend__dot--empty">○</span> Vazio — nada preenchido</span>
-            <span class="legend__item"><span class="legend__dot legend__dot--partial">◐</span> Preenchido — falta concluir</span>
-            <span class="legend__item"><span class="legend__dot legend__dot--draft">✎</span> Rascunho — alterações não salvas</span>
-            <span class="legend__item"><span class="legend__dot legend__dot--invalid">!</span> Incorreto — há erros</span>
-            <span class="legend__item"><span class="legend__dot legend__dot--valid">✓</span> Correto — pronto</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--valid">✓</span> Salvo — todas as alterações foram salvas corretamente</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--draft">✎</span> Alterações não salvas — o formulário foi alterado mas não foi salvo</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--invalid">!</span> Incorreto — o formulário está com algum erro</span>
           </div>
         </div>
       </div>
     </nav>
 
     <main class="content">
-      <div class="notice">
-        <span aria-hidden="true">✓</span>
-        <span>
-          <span class="notice__title">Emenda apta à execução — sem etapa de aprovação</span>
-          A emenda indicada pelo vereador já está apta a ser executada. Não há aprovação da coordenadoria:
-          ao criar, os eventos planejados nascem prontos para contratação.
-        </span>
-      </div>
-
       <!-- ============ BLOCO 1 — EventManagement ============ -->
       <section id="sec-evento" class="card" data-status="empty">
         <div class="card__head">
           <div>
             <h2 class="card__title">Evento da Emenda</h2>
-            <p class="card__hint">Um único evento agrupa todos os eventos planejados desta emenda (1 evento : N eventos planejados).</p>
+            <p class="card__hint">Vincule esta emenda a um evento (EventManagement) já existente do vereador. Um único evento agrupa todos os eventos planejados desta emenda (1 evento : N eventos planejados).</p>
             <span class="card__entity">EventManagement</span>
           </div>
-          <span class="chip" data-chip-for="sec-evento" data-status="empty">○ Vazio</span>
+          <span class="chip" data-chip-for="sec-evento" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-evento" class="js-form" data-section="sec-evento" novalidate>
@@ -119,63 +113,13 @@
           </div>
           <div class="readonly-box" id="councilorInfo" style="margin-bottom:16px"></div>
 
-          <div class="choice-list" role="radiogroup" aria-label="Como agrupar o evento desta emenda">
-            <label class="choice" data-choice-for="eventMode" data-choice-value="unified">
-              <input type="radio" name="eventMode" value="unified" checked>
-              <span>
-                <span class="choice__title">Vincular ao evento unificado do vereador</span>
-                <span class="choice__hint">Todas as emendas do vereador no exercício entram no mesmo EventManagement. Recomendado: mantém indicadores, reservas e programação em um só lugar.</span>
-              </span>
-            </label>
-            <label class="choice" data-choice-for="eventMode" data-choice-value="new">
-              <input type="radio" name="eventMode" value="new">
-              <span>
-                <span class="choice__title">Criar um evento próprio para esta emenda</span>
-                <span class="choice__hint">Use quando a emenda tem identidade própria (festival, temporada) e não deve se misturar às demais.</span>
-              </span>
-            </label>
+          <div class="field">
+            <label class="field__label" for="eventManagementId">Evento<span class="req">*</span></label>
+            <select id="eventManagementId" name="eventManagementId"></select>
+            <p class="field__help">Evento guarda-chuva já existente do vereador selecionado. Os eventos planejados desta emenda serão vinculados a ele.</p>
+            <p class="field__error" data-error-for="eventManagementId"></p>
           </div>
-
-          <div class="subform" data-mode-panel="eventMode:unified">
-            <div class="field">
-              <label class="field__label" for="eventManagementId">Evento unificado<span class="req">*</span></label>
-              <select id="eventManagementId" name="eventManagementId"></select>
-              <p class="field__help">Evento guarda-chuva já existente do vereador selecionado. Os eventos planejados desta emenda serão vinculados a ele.</p>
-              <p class="field__error" data-error-for="eventManagementId"></p>
-            </div>
-            <div class="readonly-box" id="eventManagementInfo"></div>
-          </div>
-
-          <div class="subform" data-mode-panel="eventMode:new" hidden>
-            <div class="row">
-              <div class="field">
-                <label class="field__label" for="eventName">Nome do evento<span class="req">*</span></label>
-                <input type="text" id="eventName" name="eventName" placeholder="Ex: Emenda 2026 — Festival de Inverno da Zona Leste">
-                <p class="field__error" data-error-for="eventName"></p>
-              </div>
-              <div class="field">
-                <label class="field__label" for="projectType">Tipo de projeto</label>
-                <input type="text" id="projectType" name="projectType" value="Emenda Parlamentar" disabled>
-                <p class="field__help">Fixo para emendas.</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="field">
-                <label class="field__label" for="eventStartDate">Início da vigência<span class="req">*</span></label>
-                <input type="date" id="eventStartDate" name="eventStartDate">
-                <p class="field__error" data-error-for="eventStartDate"></p>
-              </div>
-              <div class="field">
-                <label class="field__label" for="eventEndDate">Fim da vigência<span class="req">*</span></label>
-                <input type="date" id="eventEndDate" name="eventEndDate">
-                <p class="field__error" data-error-for="eventEndDate"></p>
-              </div>
-            </div>
-            <div class="field">
-              <label class="field__label" for="eventDescription">Descrição</label>
-              <textarea id="eventDescription" name="eventDescription" placeholder="Objeto cultural da emenda, público e território atendidos…"></textarea>
-            </div>
-          </div>
+          <div class="readonly-box" id="eventManagementInfo" style="margin-bottom:16px"></div>
 
           <div class="field">
             <label class="field__label" for="placeId">Local do evento<span class="req">*</span></label>
@@ -199,7 +143,7 @@
             <p class="card__hint">Contrato criado sem artista e sem valor: recebe os dados gerais da contratação. Os eventos planejados desta emenda são anexados a ele (N eventos planejados : 1 contrato).</p>
             <span class="card__entity">ContractingRequest</span>
           </div>
-          <span class="chip" data-chip-for="sec-contrato" data-status="empty">○ Vazio</span>
+          <span class="chip" data-chip-for="sec-contrato" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-contrato" class="js-form" data-section="sec-contrato" novalidate>
@@ -339,7 +283,7 @@
             <p class="card__hint">Empresa agenciadora contratada. A escolha define quais artistas ficam disponíveis para os eventos planejados.</p>
             <span class="card__entity">LegalPerson</span>
           </div>
-          <span class="chip" data-chip-for="sec-empresa" data-status="empty">○ Vazio</span>
+          <span class="chip" data-chip-for="sec-empresa" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-empresa" class="js-form" data-section="sec-empresa" novalidate>
@@ -366,7 +310,7 @@
             <p class="card__hint">Cada evento planejado é criado escolhendo um artista agenciado (1 evento : 1 artista) e definindo o cronograma das apresentações.</p>
             <span class="card__entity">EventPlanned · type = AMENDMENT_EVENT · Artist · EventPlannedSchedule</span>
           </div>
-          <span class="chip" data-chip-for="sec-eventos" data-status="empty">○ Vazio</span>
+          <span class="chip" data-chip-for="sec-eventos" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-eventos" class="js-form" data-section="sec-eventos" novalidate>
@@ -399,7 +343,7 @@
             <p class="card__hint">Valor global a ser empenhado no contrato. Não pode ser menor que a soma dos cachês dos eventos planejados.</p>
             <span class="card__entity">ContractingRequest.amount</span>
           </div>
-          <span class="chip" data-chip-for="sec-valor" data-status="empty">○ Vazio</span>
+          <span class="chip" data-chip-for="sec-valor" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-valor" class="js-form" data-section="sec-valor" novalidate>
@@ -445,7 +389,7 @@
             <p class="card__hint">Como o valor do contrato será pago e, em cada parcela, quanto cabe a cada subprefeitura. A soma das parcelas tem de fechar com o valor do contrato.</p>
             <span class="card__entity">ContractingRequest.paymentForm · ContractInstallment · InstallmentSubprefecture</span>
           </div>
-          <span class="chip" data-chip-for="sec-parcelamento" data-status="empty">○ Vazio</span>
+          <span class="chip" data-chip-for="sec-parcelamento" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-parcelamento" class="js-form" data-section="sec-parcelamento" novalidate>
@@ -606,7 +550,7 @@
        · o contrato recebe os dados gerais da contratação (fiscais, unidade, SEI mãe…).
      ========================================================================== */
 
-  const AMENDMENT_NUMBER = '2026/0087';
+  const AMENDMENT_NUMBER = '2026';
   const CONTRACT_CODE = 'CT-2026-004312';
 
   const COUNCILORS = [
@@ -641,6 +585,22 @@
       linkedEventPlanneds: 4,
     },
   ];
+
+  /* Contratos (ContractingRequest) já vinculados a cada evento unificado — contexto para o usuário ao escolher o evento. */
+  const EVENT_MANAGEMENT_CONTRACTS = {
+    'em-2026-vr1': [
+      { code: 'CT-2026-004102', object: 'Show de abertura — Virada Cultural', status: 'Em execução' },
+      { code: 'CT-2026-004180', object: 'Oficinas de dança comunitária', status: 'Concluído' },
+    ],
+    'em-2026-vr2': [
+      { code: 'CT-2026-003950', object: 'Festival de Inverno da Zona Leste', status: 'Em execução' },
+      { code: 'CT-2026-004050', object: 'Circuito de música instrumental', status: 'Em execução' },
+      { code: 'CT-2026-004210', object: 'Temporada de teatro de rua', status: 'Rascunho' },
+    ],
+    'em-2026-vr3': [
+      { code: 'CT-2026-004260', object: 'Mostra de artes visuais', status: 'Rascunho' },
+    ],
+  };
 
   const PLACES = [
     { id: 'pl-1', name: 'Teatro Municipal', district: 'Sé', capacity: 1500 },
@@ -760,11 +720,11 @@
   ];
 
   const STATUS_META = {
-    empty:   { icon: '○', label: 'Vazio' },
-    partial: { icon: '◐', label: 'Preenchido' },
-    draft:   { icon: '✎', label: 'Rascunho' },
+    empty:   { icon: '○', label: 'Salvo' },
+    partial: { icon: '◐', label: 'Salvo' },
+    draft:   { icon: '✎', label: 'Alterações não salvas' },
     invalid: { icon: '!', label: 'Incorreto' },
-    valid:   { icon: '✓', label: 'Correto' },
+    valid:   { icon: '✓', label: 'Salvo' },
   };
 
   /* Status da emenda (ciclo de vida). Sem aprovação: rascunho → criada. */
@@ -904,38 +864,19 @@
       id: 'sec-evento',
       formId: 'form-evento',
       label: 'Evento da Emenda',
-      filled: () => Boolean(
-        val('councilorId') ||
-        (currentMode('eventMode') === 'unified' && val('eventManagementId')) ||
-        (currentMode('eventMode') === 'new' && (val('eventName') || val('eventStartDate') || val('eventEndDate') || val('eventDescription'))) ||
-        selectedPlaceIds().length > 0
-      ),
+      filled: () => Boolean(val('councilorId') || val('eventManagementId') || selectedPlaceIds().length > 0),
       validate() {
         const errors = [];
         const councilorId = val('councilorId');
         if (!councilorId) errors.push(missing('councilorId', 'Informe o vereador responsável pela emenda parlamentar.'));
 
-        if (currentMode('eventMode') === 'unified') {
-          const eventManagementId = val('eventManagementId');
-          if (!eventManagementId) {
-            errors.push(missing('eventManagementId', 'Selecione o evento unificado do vereador.'));
-          } else {
-            const item = EVENT_MANAGEMENTS.find((event) => event.id === eventManagementId);
-            if (councilorId && item && item.councilorId !== councilorId) {
-              errors.push(wrong('eventManagementId', 'Este evento pertence a outro vereador. Selecione um evento do vereador informado.'));
-            }
-          }
+        const eventManagementId = val('eventManagementId');
+        if (!eventManagementId) {
+          errors.push(missing('eventManagementId', 'Selecione o evento unificado do vereador.'));
         } else {
-          const name = val('eventName');
-          if (!name) errors.push(missing('eventName', 'Informe o nome do evento.'));
-          else if (name.length < 5) errors.push(soft('eventName', 'O nome do evento deve ter ao menos 5 caracteres.'));
-
-          const startDate = val('eventStartDate');
-          const endDate = val('eventEndDate');
-          if (!startDate) errors.push(missing('eventStartDate', 'Informe o início da vigência.'));
-          if (!endDate) errors.push(missing('eventEndDate', 'Informe o fim da vigência.'));
-          if (startDate && endDate && endDate < startDate) {
-            errors.push(wrong('eventEndDate', 'O fim da vigência não pode ser anterior ao início.'));
+          const item = EVENT_MANAGEMENTS.find((event) => event.id === eventManagementId);
+          if (councilorId && item && item.councilorId !== councilorId) {
+            errors.push(wrong('eventManagementId', 'Este evento pertence a outro vereador. Selecione um evento do vereador informado.'));
           }
         }
 
@@ -1246,6 +1187,11 @@
   const takeSnapshot = (section) => snapshots.set(section.id, serializeSection(section));
   const snapshotAll = () => SECTIONS.forEach(takeSnapshot);
 
+  /* Vereador e evento unificado chegam pré-vinculados (emenda já nasce associada
+     ao vereador autor); o usuário só troca se precisar. Aplica só na 1ª carga,
+     pois a seleção manual do usuário depois não deve ser sobrescrita. */
+  let eventoDefaultsApplied = false;
+
   /* ---------------- selects dinâmicos ---------------- */
   /** Reescreve as opções só quando elas mudam, preservando o valor atual. */
   function fillSelect(selectEl, options, placeholder) {
@@ -1277,7 +1223,11 @@
   const artistOptions = () => companyArtists(val('companyId')).map((artist) => [artist.id, `${artist.nameGroup} (${artist.artistType})`]);
 
   function refreshDynamicOptions() {
-    fillSelect(el('councilorId'), COUNCILORS.map((councilor) => [councilor.id, councilor.name]), 'Selecione o vereador…');
+    const councilorSelect = el('councilorId');
+    fillSelect(councilorSelect, COUNCILORS.map((councilor) => [councilor.id, councilor.name]), 'Selecione o vereador…');
+    if (!eventoDefaultsApplied && !councilorSelect.value && COUNCILORS.length) {
+      councilorSelect.value = COUNCILORS[0].id;
+    }
 
     const councilorId = val('councilorId');
     const managements = councilorEventManagements(councilorId);
@@ -1294,6 +1244,10 @@
       ),
       councilorId ? 'Selecione o evento unificado…' : 'Informe o vereador primeiro'
     );
+    if (!eventoDefaultsApplied && !managementSelect.value && managements.length) {
+      managementSelect.value = managements[0].id;
+    }
+    eventoDefaultsApplied = true;
 
     fillSelect(el('placeId'), placeOptions(), 'Selecione o local…');
 
@@ -1390,6 +1344,27 @@
         <div class="kv"><span class="kv__k">Vereador do evento</span><span class="kv__v">${councilor ? escapeHtml(councilor.name) : '—'}</span></div>
         <div class="kv"><span class="kv__k">Eventos planejados já vinculados</span><span class="kv__v">${item.linkedEventPlanneds}</span></div>`
       : '<div class="kv"><span class="kv__k">Selecione um evento para ver os detalhes.</span><span class="kv__v">—</span></div>';
+  }
+
+  /* Lista, abaixo do menu de navegação, os contratos já vinculados ao evento unificado escolhido. */
+  function renderRelatedContracts() {
+    const eventManagementId = val('eventManagementId');
+    const contracts = EVENT_MANAGEMENT_CONTRACTS[eventManagementId] || [];
+    const list = el('contractsList');
+
+    if (!eventManagementId) {
+      list.innerHTML = '<p class="contracts__empty">Selecione o evento para ver os contratos já vinculados a ele.</p>';
+      return;
+    }
+    if (contracts.length === 0) {
+      list.innerHTML = '<p class="contracts__empty">Nenhum outro contrato vinculado a este evento ainda.</p>';
+      return;
+    }
+    list.innerHTML = contracts.map((contract) => `
+      <div class="contract-item">
+        <span class="contract-item__code">${escapeHtml(contract.code)}</span>
+        <span class="contract-item__status">${escapeHtml(contract.status)}</span>
+      </div>`).join('');
   }
 
   function renderContractInfo() {
@@ -2103,8 +2078,8 @@
     if (status === 'valid') return 'Bloco salvo e correto.';
     if (status === 'draft') {
       return errors.length === 0
-        ? 'Rascunho — alterações não salvas.'
-        : `Rascunho — alterações não salvas e ${pending(errors.length)} a concluir.`;
+        ? 'Alterações não salvas.'
+        : `Alterações não salvas e ${pending(errors.length)} a concluir.`;
     }
     if (status === 'empty') return 'Nenhum campo preenchido.';
     if (status === 'invalid') {
@@ -2138,6 +2113,7 @@
     refreshDynamicOptions();
     renderCouncilorInfo();
     renderEventManagementInfo();
+    renderRelatedContracts();
     renderContractInfo();
     renderCompanyPanel();
     renderArtistsPanel();
@@ -2186,18 +2162,12 @@
     const statusById = Object.fromEntries(results.map((result) => [result.section.id, result.status]));
 
     const councilor = findCouncilor(val('councilorId'));
-    const eventMode = currentMode('eventMode');
     const eventManagement = EVENT_MANAGEMENTS.find((item) => item.id === val('eventManagementId'));
     const place = findPlace(val('placeId'));
     const eventoRows =
       summaryRow('Vereador responsável', councilor ? councilor.name : '—') +
-      (eventMode === 'unified'
-        ? summaryRow('Agrupamento', 'Evento unificado do vereador') +
-          summaryRow('Evento', eventManagement ? eventManagement.eventName : '—') +
-          summaryRow('Vigência', eventManagement ? eventManagement.period : '—')
-        : summaryRow('Agrupamento', 'Evento próprio desta emenda') +
-          summaryRow('Nome', val('eventName') || '—') +
-          summaryRow('Vigência', val('eventStartDate') && val('eventEndDate') ? `${val('eventStartDate')} a ${val('eventEndDate')}` : '—'));
+      summaryRow('Evento', eventManagement ? eventManagement.eventName : '—') +
+      summaryRow('Vigência', eventManagement ? eventManagement.period : '—');
 
     const inspectorsHtml = currentMode('inspectorMode') === 'multiple'
       ? (fiscalRowsData().filter((row) => row.fiscalId || row.placeId).map((row) => {
@@ -2485,6 +2455,7 @@
   renderRequestStatus();
   addFiscalRow();
   initRichTexts();
+  refresh();
   snapshotAll();
   refresh();
 </script>
