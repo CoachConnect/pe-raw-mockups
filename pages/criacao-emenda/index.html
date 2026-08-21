@@ -10,6 +10,7 @@
   <div class="layout">
     <nav class="sidenav" aria-label="Blocos da criação da emenda">
       <div class="sidenav__title">Criação de Emenda</div>
+      <span class="sidenav__updated">Atualizado em 21/08/2026 13:46</span>
       <div class="sidenav__order">
         <div class="order__head">
           <span class="order__label">Emenda</span>
@@ -364,12 +365,15 @@
             </div>
           </div>
 
-          <div class="stack-actions" style="margin-bottom:16px">
-            <button type="button" id="btnFillContractValue" class="btn btn--secondary btn--sm">Usar a soma dos eventos planejados</button>
+          <div class="field">
+            <label class="field__label" for="budgetAllocationId">Dotação<span class="req">*</span></label>
+            <select id="budgetAllocationId" name="budgetAllocationId"></select>
+            <p class="field__help">Dotação orçamentária que suportará o empenho do contrato. Selecione "Definir depois" caso ainda não esteja definida.</p>
+            <p class="field__error" data-error-for="budgetAllocationId"></p>
           </div>
 
           <div class="field">
-            <label class="field__label" for="contractValueJustification">Justificativa do valor</label>
+            <label class="field__label" for="contractValueJustification">Observação</label>
             <textarea id="contractValueJustification" name="contractValueJustification" placeholder="Base de cálculo, referências de preço, memória de cálculo das despesas extraordinárias…"></textarea>
             <p class="field__error" data-error-for="contractValueJustification"></p>
           </div>
@@ -638,6 +642,14 @@
     ['emenda', 'Emenda parlamentar'],
   ];
 
+  /* Dotações orçamentárias disponíveis para o empenho do contrato. */
+  const BUDGET_ALLOCATIONS = [
+    ['do-1', '02.10.00 · Manutenção de Serviços Administrativos'],
+    ['do-2', '13.395.0002 · Fomento à Cultura'],
+    ['do-3', '13.392.0003 · Ações Culturais'],
+  ];
+  const BUDGET_ALLOCATION_LATER = ['later', 'Definir depois'];
+
   /* Subprefeituras que podem receber valor dentro de cada parcela. */
   const SUBPREFEITURAS = [
     ['sub-se', 'Sé'],
@@ -762,6 +774,7 @@
   const findLegalFoundation = (id) => LEGAL_FOUNDATIONS.find(([value]) => value === id);
   const findSubprefeitura = (id) => SUBPREFEITURAS.find(([value]) => value === id);
   const findPaymentMethod = (id) => PAYMENT_METHODS.find(([value]) => value === id);
+  const findBudgetAllocation = (id) => [...BUDGET_ALLOCATIONS, BUDGET_ALLOCATION_LATER].find(([value]) => value === id);
   const formatDateBR = (iso) => {
     if (!iso) return '—';
     const [year, month, day] = iso.split('-');
@@ -1057,12 +1070,14 @@
       id: 'sec-valor',
       formId: 'form-valor',
       label: 'Valor do contrato',
-      filled: () => Boolean(val('contractValue') || val('extraordinaryValue') || val('contractValueJustification')),
+      filled: () => Boolean(val('contractValue') || val('extraordinaryValue') || val('contractValueJustification') || val('budgetAllocationId')),
       validate() {
         const errors = [];
         const value = contractValueAmount();
         const extraordinary = extraordinaryAmount();
         const minimum = requiredContractValue();
+
+        if (!val('budgetAllocationId')) errors.push(missing('budgetAllocationId', 'Selecione a dotação (ou "Definir depois").'));
 
         if (val('extraordinaryValue') !== '' && !(extraordinary >= 0)) {
           errors.push(wrong('extraordinaryValue', 'O valor das despesas extraordinárias não pode ser negativo.'));
@@ -1273,6 +1288,7 @@
     fillSelect(el('requestingUnitId'), CONTRACT_UNITS.map((unit) => [unit.id, unit.name]), 'Selecione a unidade…');
     fillSelect(el('initialResponsibleId'), INITIAL_RESPONSIBLES.map((person) => [person.id, `${person.name} (${person.unit})`]), 'Selecione o responsável…');
     fillSelect(el('legalFoundation'), LEGAL_FOUNDATIONS, 'Selecione o fundamento…');
+    fillSelect(el('budgetAllocationId'), [...BUDGET_ALLOCATIONS, BUDGET_ALLOCATION_LATER], 'Selecione a dotação…');
 
     /* Eventos planejados: artista (1:1), atração e cronograma */
     const artists = artistOptions();
@@ -1776,18 +1792,6 @@
     showToast('Contrato descartado.');
   });
 
-  /* ---------------- valor do contrato ---------------- */
-  el('btnFillContractValue').addEventListener('click', () => {
-    const minimum = requiredContractValue();
-    if (!(minimum > 0)) {
-      showToast('Nenhum cachê informado nos eventos planejados.');
-      return;
-    }
-    el('contractValue').value = String(minimum);
-    refresh();
-    showToast(`Valor do contrato definido em ${brl(minimum)} (cachês + despesas extraordinárias).`);
-  });
-
   /* ---------------- parcelamento (parcelas x subprefeituras) ---------------- */
   const TRASH_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -2207,6 +2211,7 @@
     const schedules = schedulesTotal();
     const extraordinary = extraordinaryAmount();
     const contractValue = contractValueAmount();
+    const budgetAllocation = findBudgetAllocation(val('budgetAllocationId'));
     const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
 
     const company = selectedCompany();
@@ -2274,7 +2279,8 @@
         summaryRow('Soma dos cachês', brl(schedules)) +
         summaryRow('Despesas extraordinárias', brl(extraordinary)) +
         summaryRow('Valor do contrato', contractValue === null ? '—' : brl(contractValue)) +
-        summaryRow('Justificativa', val('contractValueJustification') || '—'))}
+        summaryRow('Dotação', budgetAllocation ? budgetAllocation[1] : '—') +
+        summaryRow('Observação', val('contractValueJustification') || '—'))}
       ${summaryGroup('Parcelamento', statusById['sec-parcelamento'], parcelamentoRows)}
       <div class="summary-total">
         ${summaryRow('Eventos planejados', String(events.length))}

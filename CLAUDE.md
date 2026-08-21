@@ -22,3 +22,7 @@ python3 -m http.server 8000          # then http://localhost:8000 — use when t
 - `pages/*.html` (flat) — earlier explorations kept for reference, not linked from the index. Don't update these when changing a promoted page; they are 
 - `pages/<slug>/versions/v{version_number}.html` the old version for updated page to preserve history
 
+## Updates
+
+Toda vez que uma das páginas listagem na index sobre alteração, atualiza a data de ultima atualização em dia/mes/ano e hora.
+
