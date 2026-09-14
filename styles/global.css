@@ -17,6 +17,7 @@
   --st-invalid:#ff4d4f; --st-invalid-bg:#fff2f0;
   --st-valid:#52c41a; --st-valid-bg:#f6ffed;
   --st-draft:#722ed1; --st-draft-bg:#f9f0ff; --st-draft-border:#d3adf7; --st-draft-text:#531dab;
+  --st-readonly:#8c8c8c; --st-readonly-bg:#f5f5f5; --st-readonly-border:#d9d9d9;
   --radius:8px;
   --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
@@ -74,6 +75,7 @@ body[data-page="criacao-emenda"] .card[data-status="partial"]{border-left-color:
 body[data-page="criacao-emenda"] .card[data-status="invalid"]{border-left-color:var(--st-invalid)}
 body[data-page="criacao-emenda"] .card[data-status="valid"]{border-left-color:var(--st-valid)}
 body[data-page="criacao-emenda"] .card[data-status="draft"]{border-left-color:var(--st-draft)}
+body[data-page="criacao-emenda"] .card[data-status="readonly"]{border-left-color:var(--st-readonly);background:#fcfcfc}
 body[data-page="criacao-emenda"] .card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
 body[data-page="criacao-emenda"] .card__title{font-size:16px;font-weight:600;margin:0 0 4px}
 body[data-page="criacao-emenda"] .card__hint{font-size:13px;color:var(--c-text-secondary);margin:0}
@@ -253,12 +255,14 @@ body[data-page="acompanhamento"] .appbar{position:sticky;top:0;z-index:30;height
 .nav__item[data-status="invalid"] .nav__icon{background:var(--st-invalid-bg);color:var(--st-invalid);border:1px solid var(--st-invalid)}
 .nav__item[data-status="valid"] .nav__icon{background:var(--st-valid);color:#fff;border:1px solid var(--st-valid)}
 .nav__item[data-status="draft"] .nav__icon{background:var(--st-draft-bg);color:var(--st-draft);border:1px solid var(--st-draft)}
+.nav__item[data-status="readonly"] .nav__icon{background:var(--st-readonly-bg);color:var(--st-readonly);border:1px dashed var(--st-readonly)}
 
 .nav__item[data-status="empty"] .nav__status{color:var(--st-empty)}
 .nav__item[data-status="partial"] .nav__status{color:var(--st-partial)}
 .nav__item[data-status="invalid"] .nav__status{color:var(--st-invalid)}
 .nav__item[data-status="valid"] .nav__status{color:var(--st-valid)}
 .nav__item[data-status="draft"] .nav__status{color:var(--st-draft)}
+.nav__item[data-status="readonly"] .nav__status{color:var(--st-readonly)}
 
 .sidenav__legend{position:relative;border-top:1px solid var(--c-border);margin-top:8px;padding:12px 16px 8px}
 /* O detalhe da legenda é referência ocasional: abre em popover no hover/foco
@@ -277,6 +281,7 @@ body[data-page="acompanhamento"] .appbar{position:sticky;top:0;z-index:30;height
 .legend__dot--draft{background:var(--st-draft-bg);color:var(--st-draft);border:1px solid var(--st-draft)}
 .legend__dot--invalid{background:var(--st-invalid-bg);color:var(--st-invalid);border:1px solid var(--st-invalid)}
 .legend__dot--valid{background:var(--st-valid);color:#fff;border:1px solid var(--st-valid)}
+.legend__dot--readonly{background:var(--st-readonly-bg);color:var(--st-readonly);border:1px dashed var(--st-readonly)}
 
 /* contratos relacionados ao evento unificado escolhido */
 .sidenav__contracts{padding:12px 16px;border-top:1px solid var(--c-border)}
@@ -402,6 +407,7 @@ body[data-page="criacao-emenda"] .chip[data-status="partial"]{background:var(--s
 body[data-page="criacao-emenda"] .chip[data-status="invalid"]{background:var(--st-invalid-bg);color:var(--st-invalid);border:1px solid #ffccc7}
 body[data-page="criacao-emenda"] .chip[data-status="valid"]{background:var(--st-valid-bg);color:#389e0d;border:1px solid #b7eb8f}
 body[data-page="criacao-emenda"] .chip[data-status="draft"]{background:var(--st-draft-bg);color:var(--st-draft-text);border:1px solid var(--st-draft-border)}
+body[data-page="criacao-emenda"] .chip[data-status="readonly"]{background:var(--st-readonly-bg);color:var(--st-readonly);border:1px solid var(--st-readonly-border)}
 
 /* editor de texto rico (justificativas do contrato) */
 .rte{border:1px solid var(--c-border);border-radius:var(--radius);background:#fff;overflow:hidden}

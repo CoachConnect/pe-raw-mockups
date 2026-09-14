@@ -20,23 +20,16 @@
         <span class="chip order__status" id="requestStatus" data-status="draft">✎ Emenda em rascunho</span>
       </div>
       <div class="sidenav__progress">
-        <span class="progress__text" id="progressText" role="status">0 de 6 blocos corretos</span>
+        <span class="progress__text" id="progressText" role="status">0 de 5 blocos corretos</span>
         <div class="progress__track"><div class="progress__bar" id="progressBar"></div></div>
       </div>
 
       <div class="sidenav__nav" id="sidenavNav">
-        <a href="#sec-evento" class="nav__item" data-section="sec-evento" data-status="empty">
-          <span class="nav__icon" aria-hidden="true">○</span>
+        <a href="#sec-evento" class="nav__item" data-section="sec-evento" data-status="readonly">
+          <span class="nav__icon" aria-hidden="true">◎</span>
           <span class="nav__text">
             <span class="nav__label">Evento da Emenda</span>
-            <span class="nav__status">Salvo</span>
-          </span>
-        </a>
-        <a href="#sec-contrato" class="nav__item" data-section="sec-contrato" data-status="empty">
-          <span class="nav__icon" aria-hidden="true">○</span>
-          <span class="nav__text">
-            <span class="nav__label">Contrato</span>
-            <span class="nav__status">Salvo</span>
+            <span class="nav__status">Somente leitura</span>
           </span>
         </a>
         <a href="#sec-empresa" class="nav__item" data-section="sec-empresa" data-status="empty">
@@ -50,6 +43,13 @@
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Artistas e eventos planejados</span>
+            <span class="nav__status">Salvo</span>
+          </span>
+        </a>
+        <a href="#sec-contrato" class="nav__item" data-section="sec-contrato" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Contrato</span>
             <span class="nav__status">Salvo</span>
           </span>
         </a>
@@ -88,75 +88,100 @@
             <span class="legend__item"><span class="legend__dot legend__dot--valid">✓</span> Salvo — todas as alterações foram salvas corretamente</span>
             <span class="legend__item"><span class="legend__dot legend__dot--draft">✎</span> Alterações não salvas — o formulário foi alterado mas não foi salvo</span>
             <span class="legend__item"><span class="legend__dot legend__dot--invalid">!</span> Incorreto — o formulário está com algum erro</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--readonly">◎</span> Somente leitura — bloco de consulta, sem campos para preencher</span>
           </div>
         </div>
       </div>
     </nav>
 
     <main class="content">
-      <!-- ============ BLOCO 1 — EventManagement ============ -->
-      <section id="sec-evento" class="card" data-status="empty">
+      <!-- ============ BLOCO 1 — EventManagement (somente leitura) ============ -->
+      <section id="sec-evento" class="card" data-status="readonly" aria-label="Evento da Emenda — somente leitura">
         <div class="card__head">
           <div>
             <h2 class="card__title">Evento da Emenda</h2>
-            <p class="card__hint">Vincule esta emenda a um evento (EventManagement) já existente do vereador. Um único evento agrupa todos os eventos planejados desta emenda (1 evento : N eventos planejados).</p>
+            <p class="card__hint">Vereador autor, evento unificado (EventManagement) e local habilitado já chegam vinculados à emenda. Bloco de consulta: não há campo para preencher nem alteração a salvar.</p>
             <span class="card__entity">EventManagement</span>
           </div>
-          <span class="chip" data-chip-for="sec-evento" data-status="empty">○ Salvo</span>
+          <span class="chip" data-status="readonly">◎ Somente leitura</span>
         </div>
 
-        <form id="form-evento" class="js-form" data-section="sec-evento" novalidate>
-          <div class="field">
-            <label class="field__label" for="councilorId">Vereador responsável pela emenda<span class="req">*</span></label>
-            <select id="councilorId" name="councilorId"></select>
-            <p class="field__help">Autor da emenda parlamentar. Gravado no evento (EventManagement) no momento da criação e propagado aos eventos planejados.</p>
-            <p class="field__error" data-error-for="councilorId"></p>
-          </div>
-          <div class="readonly-box" id="councilorInfo" style="margin-bottom:16px"></div>
+        <div id="eventoReadonly"></div>
+      </section>
 
-          <div class="field">
-            <label class="field__label" for="eventManagementId">Evento<span class="req">*</span></label>
-            <select id="eventManagementId" name="eventManagementId"></select>
-            <p class="field__help">Evento guarda-chuva já existente do vereador selecionado. Os eventos planejados desta emenda serão vinculados a ele.</p>
-            <p class="field__error" data-error-for="eventManagementId"></p>
+      <!-- ============ BLOCO 2 — LegalPerson (empresa) ============ -->
+      <section id="sec-empresa" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Empresa</h2>
+            <p class="card__hint">Empresa agenciadora contratada. A escolha define quais artistas ficam disponíveis para os eventos planejados.</p>
+            <span class="card__entity">LegalPerson</span>
           </div>
-          <div class="readonly-box" id="eventManagementInfo" style="margin-bottom:16px"></div>
+          <span class="chip" data-chip-for="sec-empresa" data-status="empty">○ Salvo</span>
+        </div>
 
-          <div class="field">
-            <label class="field__label" for="placeId">Local do evento<span class="req">*</span></label>
-            <select id="placeId" name="placeId"></select>
-            <p class="field__help">Único local habilitado para esta emenda. A programação de cada evento planejado e os fiscais do contrato só podem usar este local.</p>
-            <p class="field__error" data-error-for="placeId"></p>
+        <form id="form-empresa" class="js-form" data-section="sec-empresa" novalidate>
+          <input type="hidden" id="companyId" name="companyId" value="">
+          <div id="companyPanel"></div>
+          <p class="block-error" data-error-for="companyBlock"></p>
+          <div class="stack-actions">
+            <button type="button" id="btnOpenCompanyModal" class="btn btn--secondary btn--sm">Selecionar empresa</button>
+            <button type="button" id="btnClearCompany" class="btn btn--danger-link" hidden>Remover empresa</button>
           </div>
 
           <div class="card__foot">
-            <span class="card__foot-msg" data-foot-for="sec-evento" data-status="empty">Nenhum campo preenchido.</span>
-            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-evento" disabled>Salvar alterações</button>
+            <span class="card__foot-msg" data-foot-for="sec-empresa" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-empresa" disabled>Salvar alterações</button>
           </div>
         </form>
       </section>
 
-      <!-- ============ BLOCO 2 — ContractingRequest ============ -->
+      <!-- ============ BLOCO 3 — Artistas agenciados + EventPlanneds ============ -->
+      <section id="sec-eventos" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Artistas e eventos planejados</h2>
+            <p class="card__hint">Cada evento planejado é criado escolhendo um artista agenciado (1 evento : 1 artista) e definindo o cronograma das apresentações.</p>
+            <span class="card__entity">EventPlanned · type = AMENDMENT_EVENT · Artist · EventPlannedSchedule</span>
+          </div>
+          <span class="chip" data-chip-for="sec-eventos" data-status="empty">○ Salvo</span>
+        </div>
+
+        <form id="form-eventos" class="js-form" data-section="sec-eventos" novalidate>
+          <div class="sub" style="margin-top:0;padding-top:0;border-top:none">
+            <div class="sub__head"><span class="sub__title">Artistas agenciados pela empresa</span></div>
+            <div id="artistsPanel"></div>
+          </div>
+
+          <div class="sub">
+            <div class="sub__head">
+              <span class="sub__title">Eventos planejados (mínimo 1)</span>
+              <button type="button" id="btnAddEvent" class="btn btn--secondary btn--sm">+ Adicionar evento planejado</button>
+            </div>
+            <div id="eventsList"></div>
+            <p class="block-error" data-error-for="eventsBlock"></p>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-eventos" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-eventos" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 4 — ContractingRequest ============ -->
       <section id="sec-contrato" class="card" data-status="empty">
         <div class="card__head">
           <div>
             <h2 class="card__title">Contrato</h2>
-            <p class="card__hint">Contrato criado sem artista e sem valor: recebe os dados gerais da contratação. Os eventos planejados desta emenda são anexados a ele (N eventos planejados : 1 contrato).</p>
+            <p class="card__hint">Dados gerais da contratação. Os eventos planejados definidos no bloco anterior são anexados a este contrato (N eventos planejados : 1 contrato).</p>
             <span class="card__entity">ContractingRequest</span>
           </div>
           <span class="chip" data-chip-for="sec-contrato" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-contrato" class="js-form" data-section="sec-contrato" novalidate>
-          <input type="hidden" id="contractCode" name="contractCode" value="">
-          <div class="readonly-box" id="contractInfo"></div>
-          <p class="block-error" data-error-for="contractBlock"></p>
-          <div class="stack-actions" style="margin:12px 0 20px">
-            <button type="button" id="btnCreateContract" class="btn btn--secondary btn--sm">Criar contrato</button>
-            <button type="button" id="btnDiscardContract" class="btn btn--danger-link" hidden>Descartar contrato</button>
-          </div>
-
-          <div class="sub" style="margin-top:0">
+          <div class="sub" style="margin-top:0;padding-top:0;border-top:none">
             <div class="sub__head"><span class="sub__title">Dados gerais</span></div>
 
             <div class="field">
@@ -272,66 +297,6 @@
           <div class="card__foot">
             <span class="card__foot-msg" data-foot-for="sec-contrato" data-status="empty">Nenhum campo preenchido.</span>
             <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-contrato" disabled>Salvar alterações</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- ============ BLOCO 3 — LegalPerson (empresa) ============ -->
-      <section id="sec-empresa" class="card" data-status="empty">
-        <div class="card__head">
-          <div>
-            <h2 class="card__title">Empresa</h2>
-            <p class="card__hint">Empresa agenciadora contratada. A escolha define quais artistas ficam disponíveis para os eventos planejados.</p>
-            <span class="card__entity">LegalPerson</span>
-          </div>
-          <span class="chip" data-chip-for="sec-empresa" data-status="empty">○ Salvo</span>
-        </div>
-
-        <form id="form-empresa" class="js-form" data-section="sec-empresa" novalidate>
-          <input type="hidden" id="companyId" name="companyId" value="">
-          <div id="companyPanel"></div>
-          <p class="block-error" data-error-for="companyBlock"></p>
-          <div class="stack-actions">
-            <button type="button" id="btnOpenCompanyModal" class="btn btn--secondary btn--sm">Selecionar empresa</button>
-            <button type="button" id="btnClearCompany" class="btn btn--danger-link" hidden>Remover empresa</button>
-          </div>
-
-          <div class="card__foot">
-            <span class="card__foot-msg" data-foot-for="sec-empresa" data-status="empty">Nenhum campo preenchido.</span>
-            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-empresa" disabled>Salvar alterações</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- ============ BLOCO 4 — Artistas agenciados + EventPlanneds ============ -->
-      <section id="sec-eventos" class="card" data-status="empty">
-        <div class="card__head">
-          <div>
-            <h2 class="card__title">Artistas e eventos planejados</h2>
-            <p class="card__hint">Cada evento planejado é criado escolhendo um artista agenciado (1 evento : 1 artista) e definindo o cronograma das apresentações.</p>
-            <span class="card__entity">EventPlanned · type = AMENDMENT_EVENT · Artist · EventPlannedSchedule</span>
-          </div>
-          <span class="chip" data-chip-for="sec-eventos" data-status="empty">○ Salvo</span>
-        </div>
-
-        <form id="form-eventos" class="js-form" data-section="sec-eventos" novalidate>
-          <div class="sub" style="margin-top:0;padding-top:0;border-top:none">
-            <div class="sub__head"><span class="sub__title">Artistas agenciados pela empresa</span></div>
-            <div id="artistsPanel"></div>
-          </div>
-
-          <div class="sub">
-            <div class="sub__head">
-              <span class="sub__title">Eventos planejados (mínimo 1)</span>
-              <button type="button" id="btnAddEvent" class="btn btn--secondary btn--sm">+ Adicionar evento planejado</button>
-            </div>
-            <div id="eventsList"></div>
-            <p class="block-error" data-error-for="eventsBlock"></p>
-          </div>
-
-          <div class="card__foot">
-            <span class="card__foot-msg" data-foot-for="sec-eventos" data-status="empty">Nenhum campo preenchido.</span>
-            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-eventos" disabled>Salvar alterações</button>
           </div>
         </form>
       </section>
@@ -557,6 +522,15 @@
   const AMENDMENT_NUMBER = '2026';
   const CONTRACT_CODE = 'CT-2026-004312';
 
+  /* Vereador autor, evento unificado (EventManagement) e local habilitado já
+     chegam definidos na abertura da emenda. O bloco "Evento da Emenda" apenas
+     exibe esses dados — não é um dos blocos de preenchimento. */
+  const AMENDMENT_CONTEXT = {
+    councilorId: 'vr-1',
+    eventManagementId: 'em-2026-vr1',
+    placeId: 'pl-1',
+  };
+
   const COUNCILORS = [
     { id: 'vr-1', name: 'Ana Beatriz Lima', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 420000 },
     { id: 'vr-2', name: 'Carlos Eduardo Ramos', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 1150000 },
@@ -767,6 +741,7 @@
   const findCompany = (id) => COMPANIES.find((company) => company.id === id);
   const findArtist = (id) => ARTISTS.find((artist) => artist.id === id);
   const findCouncilor = (id) => COUNCILORS.find((councilor) => councilor.id === id);
+  const findEventManagement = (id) => EVENT_MANAGEMENTS.find((item) => item.id === id);
   const findInspector = (id) => INSPECTORS.find((inspector) => inspector.id === id);
   const findContractUnit = (id) => CONTRACT_UNITS.find((unit) => unit.id === id);
   const findInitialResponsible = (id) => INITIAL_RESPONSIBLES.find((person) => person.id === id);
@@ -794,8 +769,6 @@
     return artist ? artist.eventTypes.find((eventType) => eventType.id === aetId) : undefined;
   };
   const companyArtists = (companyId) => ARTISTS.filter((artist) => artist.companyId === companyId);
-  const councilorEventManagements = (councilorId) =>
-    EVENT_MANAGEMENTS.filter((item) => !councilorId || item.councilorId === councilorId);
 
   /**
    * Tipos de erro, por momento em que ficam visíveis:
@@ -808,7 +781,7 @@
   const wrong = (field, message) => ({ field, message, kind: 'live' });
 
   /* ---------------- leitura do DOM (fonte da verdade) ---------------- */
-  const selectedPlaceIds = () => (val('placeId') ? [val('placeId')] : []);
+  const selectedPlaceIds = () => [AMENDMENT_CONTEXT.placeId];
 
   function fiscalRowsData() {
     return Array.from(document.querySelectorAll('#fiscalRows .fiscal-row')).map((row) => ({
@@ -872,115 +845,6 @@
 
   /* ---------------- definição dos blocos ---------------- */
   const SECTIONS = [
-    {
-      id: 'sec-evento',
-      formId: 'form-evento',
-      label: 'Evento da Emenda',
-      filled: () => Boolean(val('councilorId') || val('eventManagementId') || selectedPlaceIds().length > 0),
-      validate() {
-        const errors = [];
-        const councilorId = val('councilorId');
-        if (!councilorId) errors.push(missing('councilorId', 'Informe o vereador responsável pela emenda parlamentar.'));
-
-        const eventManagementId = val('eventManagementId');
-        if (!eventManagementId) {
-          errors.push(missing('eventManagementId', 'Selecione o evento unificado do vereador.'));
-        } else {
-          const item = EVENT_MANAGEMENTS.find((event) => event.id === eventManagementId);
-          if (councilorId && item && item.councilorId !== councilorId) {
-            errors.push(wrong('eventManagementId', 'Este evento pertence a outro vereador. Selecione um evento do vereador informado.'));
-          }
-        }
-
-        if (!val('placeId')) errors.push(missing('placeId', 'Selecione o local do evento.'));
-        return errors;
-      },
-    },
-    {
-      id: 'sec-contrato',
-      formId: 'form-contrato',
-      label: 'Contrato',
-      filled: () => Boolean(
-        val('contractCode') || val('parentProccessSEI') || val('contractObservation') ||
-        val('contractObject') || val('requestingUnitId') || val('initialResponsibleId') ||
-        val('legalFoundation') || val('fiscalSingleId') ||
-        val('justContracting') || val('justContractorChoice') || val('justContractingValue') ||
-        fiscalRowsData().some((row) => row.fiscalId || row.substituteId || row.placeId)
-      ),
-      validate() {
-        const errors = [];
-        const placeIds = selectedPlaceIds();
-
-        if (!val('contractCode')) {
-          errors.push(missing('contractBlock', 'Crie o contrato para vincular os eventos planejados desta emenda.'));
-        }
-
-        if (currentMode('inspectorMode') === 'multiple') {
-          const rows = fiscalRowsData();
-          const touched = rows.filter((row) => row.fiscalId || row.substituteId || row.placeId);
-          if (touched.length === 0) {
-            errors.push(missing('fiscalRows', 'Informe ao menos um fiscal por local.'));
-          }
-
-          const seenPlaces = new Set();
-          rows.forEach((row) => {
-            if (!row.fiscalId) errors.push(missing(`fiscalId-${row.rowId}`, 'Selecione o fiscal.'));
-            if (!row.placeId) {
-              errors.push(missing(`fiscalPlace-${row.rowId}`, 'Selecione o local.'));
-            } else {
-              if (!placeIds.includes(row.placeId)) {
-                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Local não está habilitado no evento da emenda.'));
-              }
-              if (seenPlaces.has(row.placeId)) {
-                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Este local já tem fiscal designado.'));
-              }
-              seenPlaces.add(row.placeId);
-            }
-            if (row.substituteId && row.substituteId === row.fiscalId) {
-              errors.push(wrong(`fiscalSubstitute-${row.rowId}`, 'O suplente deve ser diferente do fiscal.'));
-            }
-          });
-        } else {
-          if (!val('fiscalSingleId')) errors.push(missing('fiscalSingleId', 'Selecione o fiscal do contrato.'));
-          if (val('substituteSingleId') && val('substituteSingleId') === val('fiscalSingleId')) {
-            errors.push(wrong('substituteSingleId', 'O suplente deve ser diferente do fiscal.'));
-          }
-        }
-
-        if (!val('registrationResponsible')) errors.push(missing('registrationResponsible', 'Informe o responsável pelo cadastro.'));
-        if (!val('requestingUnitId')) errors.push(missing('requestingUnitId', 'Selecione a unidade requisitante.'));
-        if (!val('initialResponsibleId')) errors.push(missing('initialResponsibleId', 'Selecione o responsável pela solicitação inicial.'));
-        if (!val('legalFoundation')) errors.push(missing('legalFoundation', 'Selecione o fundamento legal da contratação.'));
-
-        const object = val('contractObject');
-        if (!object) errors.push(missing('contractObject', 'Informe o objeto do contrato.'));
-        else if (object.length < 5) errors.push(soft('contractObject', 'O objeto deve ter ao menos 5 caracteres.'));
-
-        const sei = val('parentProccessSEI');
-        if (!sei) errors.push(missing('parentProccessSEI', 'Informe o processo SEI mãe.'));
-        else if (!/^\d{5}\.\d{6}\/\d{4}-\d{2}$/.test(sei)) {
-          errors.push(wrong('parentProccessSEI', 'Formato esperado: 00000.000000/0000-00.'));
-        }
-
-        /* Justificativas: obrigatórias no processo, exceto a do valor da contratação. */
-        if (!val('justContracting')) {
-          errors.push(missing('justContracting', 'Escreva a justificativa da contratação.'));
-        } else if (rteText('justContracting').length < 20) {
-          errors.push(soft('justContracting', 'A justificativa da contratação está curta demais (mínimo 20 caracteres).'));
-        }
-
-        if (!val('justContractorChoice')) {
-          errors.push(missing('justContractorChoice', 'Escreva a justificativa da escolha do contratado.'));
-        } else if (rteText('justContractorChoice').length < 20) {
-          errors.push(soft('justContractorChoice', 'A justificativa da escolha do contratado está curta demais (mínimo 20 caracteres).'));
-        }
-
-        if (val('justContractingValue') && rteText('justContractingValue').length < 20) {
-          errors.push(soft('justContractingValue', 'A justificativa do valor da contratação está curta demais (mínimo 20 caracteres).'));
-        }
-        return errors;
-      },
-    },
     {
       id: 'sec-empresa',
       formId: 'form-empresa',
@@ -1062,6 +926,87 @@
           });
         });
 
+        return errors;
+      },
+    },
+    {
+      id: 'sec-contrato',
+      formId: 'form-contrato',
+      label: 'Contrato',
+      filled: () => Boolean(
+        val('parentProccessSEI') || val('contractObservation') ||
+        val('contractObject') || val('requestingUnitId') || val('initialResponsibleId') ||
+        val('legalFoundation') || val('fiscalSingleId') ||
+        val('justContracting') || val('justContractorChoice') || val('justContractingValue') ||
+        fiscalRowsData().some((row) => row.fiscalId || row.substituteId || row.placeId)
+      ),
+      validate() {
+        const errors = [];
+        const placeIds = selectedPlaceIds();
+
+        if (currentMode('inspectorMode') === 'multiple') {
+          const rows = fiscalRowsData();
+          const touched = rows.filter((row) => row.fiscalId || row.substituteId || row.placeId);
+          if (touched.length === 0) {
+            errors.push(missing('fiscalRows', 'Informe ao menos um fiscal por local.'));
+          }
+
+          const seenPlaces = new Set();
+          rows.forEach((row) => {
+            if (!row.fiscalId) errors.push(missing(`fiscalId-${row.rowId}`, 'Selecione o fiscal.'));
+            if (!row.placeId) {
+              errors.push(missing(`fiscalPlace-${row.rowId}`, 'Selecione o local.'));
+            } else {
+              if (!placeIds.includes(row.placeId)) {
+                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Local não está habilitado no evento da emenda.'));
+              }
+              if (seenPlaces.has(row.placeId)) {
+                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Este local já tem fiscal designado.'));
+              }
+              seenPlaces.add(row.placeId);
+            }
+            if (row.substituteId && row.substituteId === row.fiscalId) {
+              errors.push(wrong(`fiscalSubstitute-${row.rowId}`, 'O suplente deve ser diferente do fiscal.'));
+            }
+          });
+        } else {
+          if (!val('fiscalSingleId')) errors.push(missing('fiscalSingleId', 'Selecione o fiscal do contrato.'));
+          if (val('substituteSingleId') && val('substituteSingleId') === val('fiscalSingleId')) {
+            errors.push(wrong('substituteSingleId', 'O suplente deve ser diferente do fiscal.'));
+          }
+        }
+
+        if (!val('registrationResponsible')) errors.push(missing('registrationResponsible', 'Informe o responsável pelo cadastro.'));
+        if (!val('requestingUnitId')) errors.push(missing('requestingUnitId', 'Selecione a unidade requisitante.'));
+        if (!val('initialResponsibleId')) errors.push(missing('initialResponsibleId', 'Selecione o responsável pela solicitação inicial.'));
+        if (!val('legalFoundation')) errors.push(missing('legalFoundation', 'Selecione o fundamento legal da contratação.'));
+
+        const object = val('contractObject');
+        if (!object) errors.push(missing('contractObject', 'Informe o objeto do contrato.'));
+        else if (object.length < 5) errors.push(soft('contractObject', 'O objeto deve ter ao menos 5 caracteres.'));
+
+        const sei = val('parentProccessSEI');
+        if (!sei) errors.push(missing('parentProccessSEI', 'Informe o processo SEI mãe.'));
+        else if (!/^\d{5}\.\d{6}\/\d{4}-\d{2}$/.test(sei)) {
+          errors.push(wrong('parentProccessSEI', 'Formato esperado: 00000.000000/0000-00.'));
+        }
+
+        /* Justificativas: obrigatórias no processo, exceto a do valor da contratação. */
+        if (!val('justContracting')) {
+          errors.push(missing('justContracting', 'Escreva a justificativa da contratação.'));
+        } else if (rteText('justContracting').length < 20) {
+          errors.push(soft('justContracting', 'A justificativa da contratação está curta demais (mínimo 20 caracteres).'));
+        }
+
+        if (!val('justContractorChoice')) {
+          errors.push(missing('justContractorChoice', 'Escreva a justificativa da escolha do contratado.'));
+        } else if (rteText('justContractorChoice').length < 20) {
+          errors.push(soft('justContractorChoice', 'A justificativa da escolha do contratado está curta demais (mínimo 20 caracteres).'));
+        }
+
+        if (val('justContractingValue') && rteText('justContractingValue').length < 20) {
+          errors.push(soft('justContractingValue', 'A justificativa do valor da contratação está curta demais (mínimo 20 caracteres).'));
+        }
         return errors;
       },
     },
@@ -1201,11 +1146,6 @@
   const takeSnapshot = (section) => snapshots.set(section.id, serializeSection(section));
   const snapshotAll = () => SECTIONS.forEach(takeSnapshot);
 
-  /* Vereador e evento unificado chegam pré-vinculados (emenda já nasce associada
-     ao vereador autor); o usuário só troca se precisar. Aplica só na 1ª carga,
-     pois a seleção manual do usuário depois não deve ser sobrescrita. */
-  let eventoDefaultsApplied = false;
-
   /* ---------------- selects dinâmicos ---------------- */
   /** Reescreve as opções só quando elas mudam, preservando o valor atual. */
   function fillSelect(selectEl, options, placeholder) {
@@ -1228,7 +1168,6 @@
     return [...options, [currentValue, labelFor(currentValue)]];
   }
 
-  const placeOptions = () => PLACES.map((place) => [place.id, `${place.name} — ${place.district} (${place.capacity} lugares)`]);
   const inspectorOptions = () => INSPECTORS.map((inspector) => [inspector.id, `${inspector.name} (${inspector.unit})`]);
   const enabledPlaceOptions = () => selectedPlaceIds().map((id) => {
     const place = findPlace(id);
@@ -1237,34 +1176,6 @@
   const artistOptions = () => companyArtists(val('companyId')).map((artist) => [artist.id, `${artist.nameGroup} (${artist.artistType})`]);
 
   function refreshDynamicOptions() {
-    const councilorSelect = el('councilorId');
-    fillSelect(councilorSelect, COUNCILORS.map((councilor) => [councilor.id, councilor.name]), 'Selecione o vereador…');
-    if (!eventoDefaultsApplied && !councilorSelect.value && COUNCILORS.length) {
-      councilorSelect.value = COUNCILORS[0].id;
-    }
-
-    const councilorId = val('councilorId');
-    const managements = councilorEventManagements(councilorId);
-    const managementSelect = el('eventManagementId');
-    fillSelect(
-      managementSelect,
-      withStale(
-        managements.map((item) => [item.id, item.eventName]),
-        managementSelect.value,
-        (id) => {
-          const item = EVENT_MANAGEMENTS.find((event) => event.id === id);
-          return `${item ? item.eventName : id} — de outro vereador`;
-        }
-      ),
-      councilorId ? 'Selecione o evento unificado…' : 'Informe o vereador primeiro'
-    );
-    if (!eventoDefaultsApplied && !managementSelect.value && managements.length) {
-      managementSelect.value = managements[0].id;
-    }
-    eventoDefaultsApplied = true;
-
-    fillSelect(el('placeId'), placeOptions(), 'Selecione o local…');
-
     /* Fiscais do contrato */
     const inspectors = inspectorOptions();
     const enabledPlaces = enabledPlaceOptions();
@@ -1336,41 +1247,52 @@
   }
 
   /* ---------------- painéis de leitura ---------------- */
-  function renderCouncilorInfo() {
-    const councilor = findCouncilor(val('councilorId'));
-    el('councilorInfo').innerHTML = councilor
-      ? `
+  /**
+   * Bloco 1 — somente leitura. Vereador, evento unificado e local habilitado
+   * vêm de AMENDMENT_CONTEXT e não mudam durante o preenchimento, então este
+   * painel é montado uma única vez na carga.
+   */
+  function renderEventoReadonly() {
+    const councilor = findCouncilor(AMENDMENT_CONTEXT.councilorId);
+    const eventManagement = findEventManagement(AMENDMENT_CONTEXT.eventManagementId);
+    const place = findPlace(AMENDMENT_CONTEXT.placeId);
+
+    el('eventoReadonly').innerHTML = `
+      <div class="sub__head"><span class="sub__title">Vereador responsável pela emenda</span></div>
+      <div class="readonly-box">
         <div class="kv"><span class="kv__k">Vereador</span><span class="kv__v">${escapeHtml(councilor.name)}</span></div>
         <div class="kv"><span class="kv__k">Mandato</span><span class="kv__v">${escapeHtml(councilor.mandate)}</span></div>
         <div class="kv"><span class="kv__k">Teto de emendas do exercício</span><span class="kv__v money">${brl(councilor.amendmentCeiling)}</span></div>
         <div class="kv"><span class="kv__k">Já comprometido</span><span class="kv__v money">${brl(councilor.usedAmount)}</span></div>
         <div class="kv"><span class="kv__k">Saldo disponível</span><span class="kv__v money">${brl(councilor.amendmentCeiling - councilor.usedAmount)}</span></div>
-        <div class="kv"><span class="kv__k">Eventos unificados do vereador</span><span class="kv__v">${councilorEventManagements(councilor.id).length}</span></div>`
-      : '<div class="kv"><span class="kv__k">Selecione o vereador para ver mandato e saldo de emendas.</span><span class="kv__v">—</span></div>';
+      </div>
+
+      <div class="sub">
+        <div class="sub__head"><span class="sub__title">Evento unificado (EventManagement)</span></div>
+        <div class="readonly-box">
+          <div class="kv"><span class="kv__k">Evento</span><span class="kv__v">${escapeHtml(eventManagement.eventName)}</span></div>
+          <div class="kv"><span class="kv__k">Tipo de projeto</span><span class="kv__v">${escapeHtml(eventManagement.projectType)}</span></div>
+          <div class="kv"><span class="kv__k">Vigência</span><span class="kv__v">${escapeHtml(eventManagement.period)}</span></div>
+          <div class="kv"><span class="kv__k">Eventos planejados já vinculados</span><span class="kv__v">${eventManagement.linkedEventPlanneds}</span></div>
+        </div>
+      </div>
+
+      <div class="sub">
+        <div class="sub__head"><span class="sub__title">Local habilitado</span></div>
+        <div class="readonly-box">
+          <div class="kv"><span class="kv__k">Local</span><span class="kv__v">${escapeHtml(place.name)}</span></div>
+          <div class="kv"><span class="kv__k">Distrito</span><span class="kv__v">${escapeHtml(place.district)}</span></div>
+          <div class="kv"><span class="kv__k">Capacidade</span><span class="kv__v">${plural(place.capacity, 'lugar', 'lugares')}</span></div>
+        </div>
+        <p class="field__help">Único local habilitado para esta emenda. A programação de cada evento planejado e os fiscais do contrato só podem usar este local.</p>
+      </div>`;
   }
 
-  function renderEventManagementInfo() {
-    const item = EVENT_MANAGEMENTS.find((event) => event.id === val('eventManagementId'));
-    const councilor = item ? findCouncilor(item.councilorId) : null;
-    el('eventManagementInfo').innerHTML = item
-      ? `
-        <div class="kv"><span class="kv__k">Tipo de projeto</span><span class="kv__v">${escapeHtml(item.projectType)}</span></div>
-        <div class="kv"><span class="kv__k">Vigência</span><span class="kv__v">${escapeHtml(item.period)}</span></div>
-        <div class="kv"><span class="kv__k">Vereador do evento</span><span class="kv__v">${councilor ? escapeHtml(councilor.name) : '—'}</span></div>
-        <div class="kv"><span class="kv__k">Eventos planejados já vinculados</span><span class="kv__v">${item.linkedEventPlanneds}</span></div>`
-      : '<div class="kv"><span class="kv__k">Selecione um evento para ver os detalhes.</span><span class="kv__v">—</span></div>';
-  }
-
-  /* Lista, abaixo do menu de navegação, os contratos já vinculados ao evento unificado escolhido. */
+  /* Lista, abaixo do menu de navegação, os contratos já vinculados ao evento unificado da emenda. */
   function renderRelatedContracts() {
-    const eventManagementId = val('eventManagementId');
-    const contracts = EVENT_MANAGEMENT_CONTRACTS[eventManagementId] || [];
+    const contracts = EVENT_MANAGEMENT_CONTRACTS[AMENDMENT_CONTEXT.eventManagementId] || [];
     const list = el('contractsList');
 
-    if (!eventManagementId) {
-      list.innerHTML = '<p class="contracts__empty">Selecione o evento para ver os contratos já vinculados a ele.</p>';
-      return;
-    }
     if (contracts.length === 0) {
       list.innerHTML = '<p class="contracts__empty">Nenhum outro contrato vinculado a este evento ainda.</p>';
       return;
@@ -1380,26 +1302,6 @@
         <span class="contract-item__code">${escapeHtml(contract.code)}</span>
         <span class="contract-item__status">${escapeHtml(contract.status)}</span>
       </div>`).join('');
-  }
-
-  function renderContractInfo() {
-    const code = val('contractCode');
-    const events = eventsData();
-    const unit = findContractUnit(val('requestingUnitId'));
-    const value = contractValueAmount();
-
-    el('contractInfo').innerHTML = code
-      ? `
-        <div class="kv"><span class="kv__k">Código do contrato</span><span class="kv__v kv__v--mono">${escapeHtml(code)}</span></div>
-        <div class="kv"><span class="kv__k">Status</span><span class="kv__v">Rascunho</span></div>
-        <div class="kv"><span class="kv__k">Objeto do contrato</span><span class="kv__v">${escapeHtml(val('contractObject') || '—')}</span></div>
-        <div class="kv"><span class="kv__k">Unidade requisitante</span><span class="kv__v">${escapeHtml(unit ? unit.name : '—')}</span></div>
-        <div class="kv"><span class="kv__k">Eventos planejados vinculados</span><span class="kv__v">${events.length}</span></div>
-        <div class="kv"><span class="kv__k">Valor do contrato</span><span class="kv__v money">${value === null ? '—' : brl(value)}</span></div>`
-      : '<p class="hint-empty" style="margin:0">Nenhum contrato criado. O contrato nasce sem artista e sem valor — recebe os dados gerais aqui e os eventos planejados no bloco seguinte.</p>';
-
-    el('btnCreateContract').hidden = Boolean(code);
-    el('btnDiscardContract').hidden = !code;
   }
 
   function renderCompanyPanel() {
@@ -1778,19 +1680,6 @@
     });
   }
 
-  /* ---------------- contrato ---------------- */
-  el('btnCreateContract').addEventListener('click', () => {
-    el('contractCode').value = CONTRACT_CODE;
-    refresh();
-    showToast(`Contrato ${CONTRACT_CODE} criado (mock) — status Rascunho, sem artista e sem valor.`);
-  });
-
-  el('btnDiscardContract').addEventListener('click', () => {
-    el('contractCode').value = '';
-    refresh();
-    showToast('Contrato descartado.');
-  });
-
   /* ---------------- parcelamento (parcelas x subprefeituras) ---------------- */
   const TRASH_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -2114,10 +2003,6 @@
   function refresh() {
     syncModePanels();
     refreshDynamicOptions();
-    renderCouncilorInfo();
-    renderEventManagementInfo();
-    renderRelatedContracts();
-    renderContractInfo();
     renderCompanyPanel();
     renderArtistsPanel();
     renumberEvents();
@@ -2126,7 +2011,6 @@
     renumberParcelas();
     renderKitDateChip();
     renderPaymentInfo();
-    renderRequestCouncilor();
     el('eventsEmpty').hidden = eventsData().length > 0;
     el('btnAddEvent').disabled = !val('companyId');
 
@@ -2164,13 +2048,13 @@
   function renderSummary(results) {
     const statusById = Object.fromEntries(results.map((result) => [result.section.id, result.status]));
 
-    const councilor = findCouncilor(val('councilorId'));
-    const eventManagement = EVENT_MANAGEMENTS.find((item) => item.id === val('eventManagementId'));
-    const place = findPlace(val('placeId'));
+    const councilor = findCouncilor(AMENDMENT_CONTEXT.councilorId);
+    const eventManagement = findEventManagement(AMENDMENT_CONTEXT.eventManagementId);
+    const place = findPlace(AMENDMENT_CONTEXT.placeId);
     const eventoRows =
-      summaryRow('Vereador responsável', councilor ? councilor.name : '—') +
-      summaryRow('Evento', eventManagement ? eventManagement.eventName : '—') +
-      summaryRow('Vigência', eventManagement ? eventManagement.period : '—');
+      summaryRow('Vereador responsável', councilor.name) +
+      summaryRow('Evento', eventManagement.eventName) +
+      summaryRow('Vigência', eventManagement.period);
 
     const inspectorsHtml = currentMode('inspectorMode') === 'multiple'
       ? (fiscalRowsData().filter((row) => row.fiscalId || row.placeId).map((row) => {
@@ -2192,7 +2076,7 @@
     const initialResponsible = findInitialResponsible(val('initialResponsibleId'));
     const foundation = findLegalFoundation(val('legalFoundation'));
     const contratoRows =
-      summaryRow('Código', val('contractCode') || '—') +
+      summaryRow('Código', CONTRACT_CODE) +
       summaryRow('Objeto do contrato', val('contractObject') || '—') +
       summaryRow('Múltiplos fiscais por local', currentMode('inspectorMode') === 'multiple' ? 'Sim' : 'Não') +
       inspectorsHtml +
@@ -2266,14 +2150,14 @@
       summaryRow('Observação do pagamento', val('paymentObservation') || '—');
 
     el('summaryContent').innerHTML = `
-      ${summaryGroup('Evento da Emenda', statusById['sec-evento'], eventoRows + summaryRow('Local habilitado', place ? place.name : '—'))}
-      ${summaryGroup('Contrato', statusById['sec-contrato'], contratoRows)}
+      ${summaryGroup('Evento da Emenda', undefined, eventoRows + summaryRow('Local habilitado', place.name))}
       ${summaryGroup('Empresa', statusById['sec-empresa'],
         summaryRow('Razão social', company ? company.companyName : '—') +
         summaryRow('CNPJ', company ? company.cnpj : '—') +
         summaryRow('Artistas agenciados', company ? String(companyArtists(company.id).length) : '—'))}
       ${summaryGroup('Artistas e eventos planejados', statusById['sec-eventos'], '')}
       ${eventsHtml}
+      ${summaryGroup('Contrato', statusById['sec-contrato'], contratoRows)}
       ${summaryGroup('Valor do contrato', statusById['sec-valor'],
         summaryRow('Soma dos cachês', brl(schedules)) +
         summaryRow('Despesas extraordinárias', brl(extraordinary)) +
@@ -2392,8 +2276,8 @@
     requestStatus = 'created';
     renderRequestStatus();
     const events = eventsData();
-    const councilor = findCouncilor(val('councilorId'));
-    showToast(`Emenda criada (mock) — ${plural(events.length, 'evento planejado', 'eventos planejados')} do vereador ${councilor.name} vinculados ao contrato ${val('contractCode')} de ${brl(contractValueAmount())}.`);
+    const councilor = findCouncilor(AMENDMENT_CONTEXT.councilorId);
+    showToast(`Emenda criada (mock) — ${plural(events.length, 'evento planejado', 'eventos planejados')} do vereador ${councilor.name} vinculados ao contrato ${CONTRACT_CODE} de ${brl(contractValueAmount())}.`);
   });
 
   /* ---------------- toast ---------------- */
@@ -2432,10 +2316,7 @@
   }
 
   function renderRequestCouncilor() {
-    const councilor = findCouncilor(val('councilorId'));
-    el('requestCouncilor').textContent = councilor
-      ? `Vereador: ${councilor.name}`
-      : 'Vereador: —';
+    el('requestCouncilor').textContent = `Vereador: ${findCouncilor(AMENDMENT_CONTEXT.councilorId).name}`;
   }
 
   function renderRequestStatus() {
@@ -2458,6 +2339,9 @@
 
   renderRequestNumber();
   renderRequestStatus();
+  renderRequestCouncilor();
+  renderEventoReadonly();
+  renderRelatedContracts();
   addFiscalRow();
   initRichTexts();
   refresh();
