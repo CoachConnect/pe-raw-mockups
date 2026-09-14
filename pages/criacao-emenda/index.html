@@ -32,10 +32,10 @@
             <span class="nav__status">Somente leitura</span>
           </span>
         </a>
-        <a href="#sec-empresa" class="nav__item" data-section="sec-empresa" data-status="empty">
+        <a href="#sec-proponente" class="nav__item" data-section="sec-proponente" data-status="empty">
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
-            <span class="nav__label">Empresa</span>
+            <span class="nav__label">Proponente</span>
             <span class="nav__status">Salvo</span>
           </span>
         </a>
@@ -109,29 +109,39 @@
         <div id="eventoReadonly"></div>
       </section>
 
-      <!-- ============ BLOCO 2 — LegalPerson (empresa) ============ -->
-      <section id="sec-empresa" class="card" data-status="empty">
+      <!-- ============ BLOCO 2 — Proponente (LegalPerson ou PhysicalPerson) ============ -->
+      <section id="sec-proponente" class="card" data-status="empty">
         <div class="card__head">
           <div>
-            <h2 class="card__title">Empresa</h2>
-            <p class="card__hint">Empresa agenciadora contratada. A escolha define quais artistas ficam disponíveis para os eventos planejados.</p>
-            <span class="card__entity">LegalPerson</span>
+            <h2 class="card__title">Proponente</h2>
+            <p class="card__hint">Proponente contratado. Pessoa Jurídica agencia artistas; Pessoa Física é o próprio artista. A escolha define quais artistas ficam disponíveis para os eventos planejados.</p>
+            <span class="card__entity">LegalPerson · PhysicalPerson</span>
           </div>
-          <span class="chip" data-chip-for="sec-empresa" data-status="empty">○ Salvo</span>
+          <span class="chip" data-chip-for="sec-proponente" data-status="empty">○ Salvo</span>
         </div>
 
-        <form id="form-empresa" class="js-form" data-section="sec-empresa" novalidate>
-          <input type="hidden" id="companyId" name="companyId" value="">
-          <div id="companyPanel"></div>
-          <p class="block-error" data-error-for="companyBlock"></p>
+        <form id="form-proponente" class="js-form" data-section="sec-proponente" novalidate>
+          <input type="hidden" id="proponentId" name="proponentId" value="">
+
+          <div class="field">
+            <label class="field__label" for="proponentTypePJ">Tipo de proponente<span class="req">*</span></label>
+            <div class="radio-inline" role="radiogroup" aria-label="Tipo de proponente">
+              <label><input type="radio" id="proponentTypePJ" name="proponentType" value="PJ" checked> Pessoa Jurídica</label>
+              <label><input type="radio" id="proponentTypePF" name="proponentType" value="PF"> Pessoa Física</label>
+            </div>
+            <p class="field__help">Pessoa Jurídica: a empresa agencia um ou mais artistas. Pessoa Física: o proponente é o próprio artista. Trocar o tipo limpa o proponente já selecionado.</p>
+          </div>
+
+          <div id="proponentPanel"></div>
+          <p class="block-error" data-error-for="proponentBlock"></p>
           <div class="stack-actions">
-            <button type="button" id="btnOpenCompanyModal" class="btn btn--secondary btn--sm">Selecionar empresa</button>
-            <button type="button" id="btnClearCompany" class="btn btn--danger-link" hidden>Remover empresa</button>
+            <button type="button" id="btnOpenProponentModal" class="btn btn--secondary btn--sm">Selecionar proponente</button>
+            <button type="button" id="btnClearProponent" class="btn btn--danger-link" hidden>Remover proponente</button>
           </div>
 
           <div class="card__foot">
-            <span class="card__foot-msg" data-foot-for="sec-empresa" data-status="empty">Nenhum campo preenchido.</span>
-            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-empresa" disabled>Salvar alterações</button>
+            <span class="card__foot-msg" data-foot-for="sec-proponente" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-proponente" disabled>Salvar alterações</button>
           </div>
         </form>
       </section>
@@ -141,15 +151,16 @@
         <div class="card__head">
           <div>
             <h2 class="card__title">Artistas e eventos planejados</h2>
-            <p class="card__hint">Cada evento planejado é criado escolhendo um artista agenciado (1 evento : 1 artista) e definindo o cronograma das apresentações.</p>
+            <p class="card__hint">Cada evento planejado é criado escolhendo um artista do proponente (1 evento : 1 artista) e definindo o cronograma das apresentações.</p>
             <span class="card__entity">EventPlanned · type = AMENDMENT_EVENT · Artist · EventPlannedSchedule</span>
           </div>
           <span class="chip" data-chip-for="sec-eventos" data-status="empty">○ Salvo</span>
         </div>
 
         <form id="form-eventos" class="js-form" data-section="sec-eventos" novalidate>
-          <div class="sub" style="margin-top:0;padding-top:0;border-top:none">
-            <div class="sub__head"><span class="sub__title">Artistas agenciados pela empresa</span></div>
+          <!-- Catálogo de agenciados: só existe para proponente PJ. Em PF o artista é o próprio proponente. -->
+          <div class="sub" id="artistsSub" style="margin-top:0;padding-top:0;border-top:none">
+            <div class="sub__head"><span class="sub__title">Artistas agenciados pelo proponente</span></div>
             <div id="artistsPanel"></div>
           </div>
 
@@ -280,7 +291,7 @@
 
             <div class="field">
               <span class="field__label" id="lbl-justContractorChoice">Justificativa da Escolha do Contratado<span class="req">*</span></span>
-              <div class="rte" data-rte-for="justContractorChoice" data-placeholder="Por que esta empresa/artista: exclusividade, notória especialização, aderência ao objeto…"></div>
+              <div class="rte" data-rte-for="justContractorChoice" data-placeholder="Por que este proponente/artista: exclusividade, notória especialização, aderência ao objeto…"></div>
               <textarea id="justContractorChoice" name="justContractorChoice" hidden></textarea>
               <p class="field__error" data-error-for="justContractorChoice"></p>
             </div>
@@ -466,14 +477,14 @@
     </div>
   </div>
 
-  <!-- ============ MODAL DE EMPRESAS ============ -->
-  <div class="modal" id="companyModal" hidden>
+  <!-- ============ MODAL DE PROPONENTES (a lista muda conforme PF/PJ) ============ -->
+  <div class="modal" id="proponentModal" hidden>
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="companyModalTitle">
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="proponentModalTitle">
       <div class="modal__head">
-        <h3 class="modal__title" id="companyModalTitle">Selecionar empresa</h3>
-        <p class="modal__hint">Empresas cadastradas com artistas agenciados. Selecione uma para continuar.</p>
-        <input type="search" id="companySearch" placeholder="Buscar por razão social, nome fantasia ou CNPJ…" aria-label="Buscar empresa">
+        <h3 class="modal__title" id="proponentModalTitle">Selecionar proponente</h3>
+        <p class="modal__hint" id="proponentModalHint">Proponentes cadastrados. Selecione um para continuar.</p>
+        <input type="search" id="proponentSearch" placeholder="Buscar por razão social, nome fantasia ou CNPJ…" aria-label="Buscar proponente">
       </div>
       <div class="modal__body">
         <div class="table__scroll">
@@ -481,21 +492,21 @@
             <thead>
               <tr>
                 <th style="width:36px"><span class="sr-only">Seleção</span></th>
-                <th>Razão social / Nome fantasia</th>
-                <th>CNPJ</th>
-                <th>Artistas</th>
+                <th id="proponentColName">Razão social / Nome fantasia</th>
+                <th id="proponentColDoc">CNPJ</th>
+                <th id="proponentColArtists">Artistas</th>
               </tr>
             </thead>
-            <tbody id="companyRows"></tbody>
+            <tbody id="proponentRows"></tbody>
           </table>
         </div>
-        <p class="hint-empty" id="companyEmpty" hidden>Nenhuma empresa encontrada para a busca.</p>
+        <p class="hint-empty" id="proponentEmpty" hidden>Nenhum proponente encontrado para a busca.</p>
       </div>
       <div class="modal__foot">
-        <span class="modal__foot-msg" id="companyModalMsg">Nenhuma empresa selecionada.</span>
+        <span class="modal__foot-msg" id="proponentModalMsg">Nenhum proponente selecionado.</span>
         <div class="modal__foot-actions">
           <button type="button" class="btn btn--secondary" data-modal-close>Cancelar</button>
-          <button type="button" id="btnConfirmCompany" class="btn btn--primary" disabled>Selecionar empresa</button>
+          <button type="button" id="btnConfirmProponent" class="btn btn--primary" disabled>Selecionar proponente</button>
         </div>
       </div>
     </div>
@@ -649,57 +660,93 @@
   ];
   const PAYMENT_WITH_INSTALLMENTS = ['unica', 'parcelado'];
 
-  const COMPANIES = [
-    { id: 'lp-1', companyName: 'Produções Culturais Horizonte Ltda', tradingName: 'Horizonte Produções', cnpj: '12.345.678/0001-90' },
-    { id: 'lp-2', companyName: 'Agência Palco Aberto Eireli', tradingName: 'Palco Aberto', cnpj: '98.765.432/0001-11' },
-    { id: 'lp-3', companyName: 'Coletivo Sonora Gestão Artística Ltda', tradingName: 'Sonora Gestão', cnpj: '45.678.901/0001-23' },
+  /**
+   * Proponentes: PJ (LegalPerson) agencia artistas; PF (PhysicalPerson) é o próprio
+   * artista — por isso todo proponente PF tem exatamente um registro em ARTISTS
+   * apontando para ele, e o bloco de eventos planejados não exibe catálogo de agenciados.
+   */
+  const PROPONENT_TYPES = [
+    ['PJ', 'Pessoa Jurídica'],
+    ['PF', 'Pessoa Física'],
+  ];
+  const DEFAULT_PROPONENT_TYPE = 'PJ';
+
+  const PROPONENTS = [
+    { id: 'lp-1', type: 'PJ', companyName: 'Produções Culturais Horizonte Ltda', tradingName: 'Horizonte Produções', cnpj: '12.345.678/0001-90' },
+    { id: 'lp-2', type: 'PJ', companyName: 'Agência Palco Aberto Eireli', tradingName: 'Palco Aberto', cnpj: '98.765.432/0001-11' },
+    { id: 'lp-3', type: 'PJ', companyName: 'Coletivo Sonora Gestão Artística Ltda', tradingName: 'Sonora Gestão', cnpj: '45.678.901/0001-23' },
+    { id: 'pf-1', type: 'PF', personName: 'Joana Prado', socialName: 'Joana Prado', cpf: '123.456.789-09' },
+    { id: 'pf-2', type: 'PF', personName: 'Marcos Tavares de Oliveira', socialName: 'Marcos Tavares', cpf: '987.654.321-00' },
+    { id: 'pf-3', type: 'PF', personName: 'Rita Nogueira Campos', socialName: 'Rita Campos', cpf: '456.789.012-34' },
   ];
 
   const ARTISTS = [
     {
-      id: 'ar-1', companyId: 'lp-1', nameGroup: 'Cia. de Dança Movimento', artistType: 'Grupo/Coletivo',
+      id: 'ar-1', proponentId: 'lp-1', nameGroup: 'Cia. de Dança Movimento', artistType: 'Grupo/Coletivo',
       eventTypes: [
         { id: 'aet-1', nameEvent: 'Espetáculo "Corpo Urbano"', durationInMinutes: 70, valueSuggestion: 18000 },
         { id: 'aet-2', nameEvent: 'Oficina de dança contemporânea', durationInMinutes: 120, valueSuggestion: 6500 },
       ],
     },
     {
-      id: 'ar-2', companyId: 'lp-1', nameGroup: 'Quarteto Mário de Andrade', artistType: 'Grupo/Coletivo',
+      id: 'ar-2', proponentId: 'lp-1', nameGroup: 'Quarteto Mário de Andrade', artistType: 'Grupo/Coletivo',
       eventTypes: [
         { id: 'aet-3', nameEvent: 'Concerto de câmara', durationInMinutes: 90, valueSuggestion: 22000 },
       ],
     },
     {
-      id: 'ar-3', companyId: 'lp-1', nameGroup: 'Joana Prado', artistType: 'Pessoa física',
+      id: 'ar-3', proponentId: 'lp-1', nameGroup: 'Joana Prado', artistType: 'Pessoa física',
       eventTypes: [
         { id: 'aet-4', nameEvent: 'Show "Raiz e Verso"', durationInMinutes: 80, valueSuggestion: 14000 },
         { id: 'aet-5', nameEvent: 'Bate-papo com público escolar', durationInMinutes: 60, valueSuggestion: 3800 },
       ],
     },
     {
-      id: 'ar-4', companyId: 'lp-2', nameGroup: 'Trupe Circo do Beco', artistType: 'Grupo/Coletivo',
+      id: 'ar-4', proponentId: 'lp-2', nameGroup: 'Trupe Circo do Beco', artistType: 'Grupo/Coletivo',
       eventTypes: [
         { id: 'aet-6', nameEvent: 'Espetáculo circense "Beco Alto"', durationInMinutes: 60, valueSuggestion: 16500 },
       ],
     },
     {
-      id: 'ar-5', companyId: 'lp-2', nameGroup: 'Bloco Afro Ilú Obá', artistType: 'Grupo/Coletivo',
+      id: 'ar-5', proponentId: 'lp-2', nameGroup: 'Bloco Afro Ilú Obá', artistType: 'Grupo/Coletivo',
       eventTypes: [
         { id: 'aet-7', nameEvent: 'Cortejo percussivo', durationInMinutes: 100, valueSuggestion: 25000 },
         { id: 'aet-8', nameEvent: 'Vivência de percussão', durationInMinutes: 90, valueSuggestion: 7200 },
       ],
     },
     {
-      id: 'ar-6', companyId: 'lp-3', nameGroup: 'Sonora Big Band', artistType: 'Grupo/Coletivo',
+      id: 'ar-6', proponentId: 'lp-3', nameGroup: 'Sonora Big Band', artistType: 'Grupo/Coletivo',
       eventTypes: [
         { id: 'aet-9', nameEvent: 'Show "Sopros da Cidade"', durationInMinutes: 95, valueSuggestion: 31000 },
       ],
     },
     {
-      id: 'ar-7', companyId: 'lp-3', nameGroup: 'Duo Cordas do Centro', artistType: 'Grupo/Coletivo',
+      id: 'ar-7', proponentId: 'lp-3', nameGroup: 'Duo Cordas do Centro', artistType: 'Grupo/Coletivo',
       eventTypes: [
         { id: 'aet-10', nameEvent: 'Recital de cordas', durationInMinutes: 60, valueSuggestion: 9500 },
         { id: 'aet-11', nameEvent: 'Apresentação didática', durationInMinutes: 50, valueSuggestion: 4200 },
+      ],
+    },
+
+    /* Artistas dos proponentes PF — o proponente é o próprio artista (1 : 1). */
+    {
+      id: 'ar-8', proponentId: 'pf-1', nameGroup: 'Joana Prado', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-12', nameEvent: 'Show "Raiz e Verso"', durationInMinutes: 80, valueSuggestion: 14000 },
+        { id: 'aet-13', nameEvent: 'Bate-papo com público escolar', durationInMinutes: 60, valueSuggestion: 3800 },
+      ],
+    },
+    {
+      id: 'ar-9', proponentId: 'pf-2', nameGroup: 'Marcos Tavares', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-14', nameEvent: 'Sarau "Versos da Quebrada"', durationInMinutes: 70, valueSuggestion: 8200 },
+      ],
+    },
+    {
+      id: 'ar-10', proponentId: 'pf-3', nameGroup: 'Rita Campos', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-15', nameEvent: 'Recital de piano solo', durationInMinutes: 65, valueSuggestion: 11000 },
+        { id: 'aet-16', nameEvent: 'Oficina de musicalização', durationInMinutes: 90, valueSuggestion: 4600 },
       ],
     },
   ];
@@ -738,7 +785,7 @@
   const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
 
   const findPlace = (id) => PLACES.find((place) => place.id === id);
-  const findCompany = (id) => COMPANIES.find((company) => company.id === id);
+  const findProponent = (id) => PROPONENTS.find((proponent) => proponent.id === id);
   const findArtist = (id) => ARTISTS.find((artist) => artist.id === id);
   const findCouncilor = (id) => COUNCILORS.find((councilor) => councilor.id === id);
   const findEventManagement = (id) => EVENT_MANAGEMENTS.find((item) => item.id === id);
@@ -768,7 +815,7 @@
     const artist = findArtist(artistId);
     return artist ? artist.eventTypes.find((eventType) => eventType.id === aetId) : undefined;
   };
-  const companyArtists = (companyId) => ARTISTS.filter((artist) => artist.companyId === companyId);
+  const proponentArtists = (proponentId) => ARTISTS.filter((artist) => artist.proponentId === proponentId);
 
   /**
    * Tipos de erro, por momento em que ficam visíveis:
@@ -792,7 +839,24 @@
     }));
   }
 
-  const selectedCompany = () => findCompany(val('companyId'));
+  const selectedProponent = () => findProponent(val('proponentId'));
+
+  /* ---------------- proponente: PF x PJ ---------------- */
+  /**
+   * O tipo do proponente é a chave do bloco: PJ agencia artistas (catálogo + escolha
+   * por evento), PF é o próprio artista (um único artista, já vinculado ao proponente
+   * nos dados — por isso o restante do fluxo não precisa de caminho separado).
+   */
+  const proponentType = () => currentMode('proponentType') || DEFAULT_PROPONENT_TYPE;
+  const isIndividualProponent = () => proponentType() === 'PF';
+  const proponentsByType = (type) => PROPONENTS.filter((proponent) => proponent.type === type);
+  const proponentName = (proponent) => (proponent.type === 'PF' ? proponent.personName : proponent.companyName);
+  const proponentShortName = (proponent) => (proponent.type === 'PF' ? proponent.socialName : proponent.tradingName);
+  const proponentDocument = (proponent) => (proponent.type === 'PF' ? proponent.cpf : proponent.cnpj);
+  const proponentDocumentLabel = (proponent) => (proponent.type === 'PF' ? 'CPF' : 'CNPJ');
+  const proponentTypeLabel = (type) => (PROPONENT_TYPES.find((item) => item[0] === type) || [, '—'])[1];
+  /** Artista do proponente PF — ele mesmo. Null enquanto nenhum PF estiver selecionado. */
+  const individualArtist = () => (isIndividualProponent() ? proponentArtists(val('proponentId'))[0] || null : null);
 
   function parcelasData() {
     return Array.from(document.querySelectorAll('#parcelasList .parcela')).map((node, index) => ({
@@ -846,12 +910,21 @@
   /* ---------------- definição dos blocos ---------------- */
   const SECTIONS = [
     {
-      id: 'sec-empresa',
-      formId: 'form-empresa',
-      label: 'Empresa',
-      filled: () => Boolean(val('companyId')),
+      id: 'sec-proponente',
+      formId: 'form-proponente',
+      label: 'Proponente',
+      filled: () => Boolean(val('proponentId')),
       validate() {
-        if (!val('companyId')) return [missing('companyBlock', 'Selecione a empresa agenciadora.')];
+        if (!val('proponentId')) {
+          return [missing('proponentBlock', isIndividualProponent()
+            ? 'Selecione o proponente pessoa física.'
+            : 'Selecione o proponente pessoa jurídica.')];
+        }
+        /* Guarda contra estado inconsistente: proponente salvo com tipo diferente do escolhido. */
+        const proponent = selectedProponent();
+        if (proponent && proponent.type !== proponentType()) {
+          return [wrong('proponentBlock', `O proponente selecionado é ${proponentTypeLabel(proponent.type)} e não corresponde ao tipo escolhido.`)];
+        }
         return [];
       },
     },
@@ -862,15 +935,15 @@
       filled: () => eventsData().length > 0,
       validate() {
         const errors = [];
-        const companyId = val('companyId');
+        const proponentId = val('proponentId');
         const placeIds = selectedPlaceIds();
 
-        if (!companyId) {
-          errors.push(missing('eventsBlock', 'Selecione a empresa no bloco anterior para listar os artistas agenciados.'));
+        if (!proponentId) {
+          errors.push(missing('eventsBlock', 'Selecione o proponente no bloco anterior para liberar os artistas.'));
           return errors;
         }
 
-        const allowedArtistIds = companyArtists(companyId).map((artist) => artist.id);
+        const allowedArtistIds = proponentArtists(proponentId).map((artist) => artist.id);
         const events = eventsData();
         if (events.length === 0) {
           errors.push(missing('eventsBlock', 'Adicione ao menos um evento planejado — escolha o artista e defina o cronograma.'));
@@ -883,7 +956,9 @@
           if (!event.artistId) {
             errors.push(missing(`epArtist-${event.epId}`, 'Selecione o artista deste evento planejado.'));
           } else if (!allowedArtistIds.includes(event.artistId)) {
-            errors.push(wrong(`epArtist-${event.epId}`, 'Artista não é agenciado pela empresa selecionada.'));
+            errors.push(wrong(`epArtist-${event.epId}`, isIndividualProponent()
+              ? 'Artista não corresponde ao proponente pessoa física selecionado.'
+              : 'Artista não é agenciado pelo proponente selecionado.'));
           }
 
           if (!event.aetId) errors.push(missing(`epAet-${event.epId}`, 'Selecione a atração do artista.'));
@@ -1160,7 +1235,7 @@
 
   /**
    * Mantém no select um valor que saiu da lista de origem (local removido do
-   * evento, artista de outra empresa). Sem isso a seleção sumiria em silêncio e
+   * evento, artista de outro proponente). Sem isso a seleção sumiria em silêncio e
    * o erro cruzado viraria um genérico "campo obrigatório".
    */
   function withStale(options, currentValue, labelFor) {
@@ -1173,7 +1248,7 @@
     const place = findPlace(id);
     return [id, `${place.name} — ${place.district}`];
   });
-  const artistOptions = () => companyArtists(val('companyId')).map((artist) => [artist.id, `${artist.nameGroup} (${artist.artistType})`]);
+  const artistOptions = () => proponentArtists(val('proponentId')).map((artist) => [artist.id, `${artist.nameGroup} (${artist.artistType})`]);
 
   function refreshDynamicOptions() {
     /* Fiscais do contrato */
@@ -1209,10 +1284,23 @@
         artistSelect,
         withStale(artists, artistSelect.value, (id) => {
           const artist = findArtist(id);
-          return `${artist ? artist.nameGroup : id} — fora dos agenciados da empresa`;
+          return `${artist ? artist.nameGroup : id} — fora dos artistas do proponente`;
         }),
-        artists.length ? 'Selecione o artista…' : 'Nenhum artista agenciado disponível'
+        artists.length
+          ? 'Selecione o artista…'
+          : (isIndividualProponent() ? 'Selecione o proponente pessoa física primeiro' : 'Nenhum artista agenciado disponível')
       );
+
+      /* Proponente PF: o artista é ele mesmo — o campo vem preenchido e travado. */
+      const lockedArtist = individualArtist();
+      if (lockedArtist && artistSelect.value !== lockedArtist.id) artistSelect.value = lockedArtist.id;
+      artistSelect.disabled = Boolean(lockedArtist);
+      const artistHelp = artistSelect.parentElement.querySelector('.field__help');
+      if (artistHelp) {
+        artistHelp.textContent = lockedArtist
+          ? 'Proponente pessoa física: o artista é o próprio proponente.'
+          : 'Um evento planejado tem exatamente um artista.';
+      }
 
       const artist = findArtist(artistSelect.value);
       const eventTypes = artist ? artist.eventTypes.map((item) => [item.id, item.nameEvent]) : [];
@@ -1304,39 +1392,70 @@
       </div>`).join('');
   }
 
-  function renderCompanyPanel() {
-    const company = selectedCompany();
-    el('companyPanel').innerHTML = company
-      ? `
-        <div class="readonly-box" style="margin-bottom:12px">
-          <div class="kv"><span class="kv__k">Razão social</span><span class="kv__v">${escapeHtml(company.companyName)}</span></div>
-          <div class="kv"><span class="kv__k">Nome fantasia</span><span class="kv__v">${escapeHtml(company.tradingName)}</span></div>
-          <div class="kv"><span class="kv__k">CNPJ</span><span class="kv__v kv__v--mono">${escapeHtml(company.cnpj)}</span></div>
-          <div class="kv"><span class="kv__k">Artistas agenciados</span><span class="kv__v">${companyArtists(company.id).length}</span></div>
-        </div>`
-      : '<p class="hint-empty" style="margin-bottom:12px">Nenhuma empresa selecionada. Abra a lista de empresas para escolher a agenciadora desta emenda.</p>';
+  /**
+   * Painel do proponente. PJ mostra os dados da empresa e quantos artistas ela agencia;
+   * PF mostra os dados da pessoa e quantas atrações ela tem cadastradas — nesse caso o
+   * proponente é o próprio artista, então não há "agenciados" a contar.
+   */
+  function renderProponentPanel() {
+    const proponent = selectedProponent();
+    const individual = proponent && proponent.type === 'PF';
 
-    el('btnOpenCompanyModal').textContent = company ? 'Trocar empresa' : 'Selecionar empresa';
-    el('btnClearCompany').hidden = !company;
+    if (!proponent) {
+      el('proponentPanel').innerHTML = `<p class="hint-empty" style="margin-bottom:12px">${
+        isIndividualProponent()
+          ? 'Nenhuma pessoa física selecionada. Abra a lista de proponentes para escolher o artista contratado desta emenda.'
+          : 'Nenhuma pessoa jurídica selecionada. Abra a lista de proponentes para escolher a empresa agenciadora desta emenda.'
+      }</p>`;
+    } else if (individual) {
+      const artist = proponentArtists(proponent.id)[0];
+      el('proponentPanel').innerHTML = `
+        <div class="readonly-box" style="margin-bottom:12px">
+          <div class="kv"><span class="kv__k">Tipo</span><span class="kv__v">Pessoa Física — o proponente é o próprio artista</span></div>
+          <div class="kv"><span class="kv__k">Nome civil</span><span class="kv__v">${escapeHtml(proponent.personName)}</span></div>
+          <div class="kv"><span class="kv__k">Nome artístico</span><span class="kv__v">${escapeHtml(proponent.socialName)}</span></div>
+          <div class="kv"><span class="kv__k">CPF</span><span class="kv__v kv__v--mono">${escapeHtml(proponent.cpf)}</span></div>
+          <div class="kv"><span class="kv__k">Atrações cadastradas</span><span class="kv__v">${artist ? artist.eventTypes.length : 0}</span></div>
+        </div>`;
+    } else {
+      el('proponentPanel').innerHTML = `
+        <div class="readonly-box" style="margin-bottom:12px">
+          <div class="kv"><span class="kv__k">Tipo</span><span class="kv__v">Pessoa Jurídica — empresa agenciadora</span></div>
+          <div class="kv"><span class="kv__k">Razão social</span><span class="kv__v">${escapeHtml(proponent.companyName)}</span></div>
+          <div class="kv"><span class="kv__k">Nome fantasia</span><span class="kv__v">${escapeHtml(proponent.tradingName)}</span></div>
+          <div class="kv"><span class="kv__k">CNPJ</span><span class="kv__v kv__v--mono">${escapeHtml(proponent.cnpj)}</span></div>
+          <div class="kv"><span class="kv__k">Artistas agenciados</span><span class="kv__v">${proponentArtists(proponent.id).length}</span></div>
+        </div>`;
+    }
+
+    el('btnOpenProponentModal').textContent = proponent ? 'Trocar proponente' : 'Selecionar proponente';
+    el('btnClearProponent').hidden = !proponent;
   }
 
   /**
-   * Catálogo dos artistas agenciados, agora dentro do bloco de eventos: serve de
-   * referência ao montar cada evento planejado e mostra quantos eventos já usam
-   * cada artista. Somente leitura — a seleção acontece no próprio evento.
+   * Catálogo dos artistas agenciados, dentro do bloco de eventos: serve de referência
+   * ao montar cada evento planejado e mostra quantos eventos já usam cada artista.
+   * Somente leitura — a seleção acontece no próprio evento. Só existe para proponente
+   * PJ: em PF o artista é o próprio proponente e o catálogo inteiro fica oculto.
    */
   function renderArtistsPanel() {
-    const companyId = val('companyId');
+    const proponentId = val('proponentId');
     const panel = el('artistsPanel');
 
-    if (!companyId) {
-      panel.innerHTML = '<p class="hint-empty">Selecione a empresa no bloco Empresa para listar os artistas agenciados.</p>';
+    el('artistsSub').hidden = isIndividualProponent();
+    if (isIndividualProponent()) {
+      panel.innerHTML = '';
       return;
     }
 
-    const artists = companyArtists(companyId);
+    if (!proponentId) {
+      panel.innerHTML = '<p class="hint-empty">Selecione o proponente no bloco Proponente para listar os artistas agenciados.</p>';
+      return;
+    }
+
+    const artists = proponentArtists(proponentId);
     if (artists.length === 0) {
-      panel.innerHTML = '<p class="hint-empty">Esta empresa não possui artistas agenciados.</p>';
+      panel.innerHTML = '<p class="hint-empty">Este proponente não possui artistas agenciados.</p>';
       return;
     }
 
@@ -1832,75 +1951,131 @@
       <div class="kv"><span class="kv__k">Entrega do kit / pagamento previsto</span><span class="kv__v">${val('kitDate') ? `${formatDateBR(val('kitDate'))} · pagamento em 30 dias` : '—'}</span></div>${structureRow}`;
   }
 
-  /* ---------------- modal de empresas ---------------- */
-  let pendingCompanyId = null;
+  /* ---------------- modal de proponentes ---------------- */
+  let pendingProponentId = null;
 
-  function renderCompanyRows() {
-    const term = el('companySearch').value.trim().toLowerCase();
-    const rows = COMPANIES.filter((company) => !term ||
-      `${company.companyName} ${company.tradingName} ${company.cnpj}`.toLowerCase().includes(term));
+  /**
+   * A lista sempre mostra apenas proponentes do tipo escolhido no bloco — o rótulo das
+   * colunas e o campo de busca acompanham (razão social/CNPJ em PJ, nome/CPF em PF).
+   */
+  function renderProponentRows() {
+    const type = proponentType();
+    const individual = type === 'PF';
+    const term = el('proponentSearch').value.trim().toLowerCase();
+    const rows = proponentsByType(type).filter((proponent) => !term ||
+      `${proponentName(proponent)} ${proponentShortName(proponent)} ${proponentDocument(proponent)}`.toLowerCase().includes(term));
 
-    el('companyRows').innerHTML = rows.map((company) => `
-      <tr data-company-id="${escapeHtml(company.id)}" class="${pendingCompanyId === company.id ? 'is-picked' : ''}">
-        <td><input type="radio" name="companyPick" value="${escapeHtml(company.id)}" ${pendingCompanyId === company.id ? 'checked' : ''} aria-label="Selecionar ${escapeHtml(company.companyName)}"></td>
+    el('proponentRows').innerHTML = rows.map((proponent) => `
+      <tr data-proponent-id="${escapeHtml(proponent.id)}" class="${pendingProponentId === proponent.id ? 'is-picked' : ''}">
+        <td><input type="radio" name="proponentPick" value="${escapeHtml(proponent.id)}" ${pendingProponentId === proponent.id ? 'checked' : ''} aria-label="Selecionar ${escapeHtml(proponentName(proponent))}"></td>
         <td>
-          <span style="font-weight:500">${escapeHtml(company.companyName)}</span><br>
-          <span class="ep__meta">${escapeHtml(company.tradingName)}</span>
+          <span style="font-weight:500">${escapeHtml(proponentName(proponent))}</span><br>
+          <span class="ep__meta">${escapeHtml(proponentShortName(proponent))}</span>
         </td>
-        <td class="money">${escapeHtml(company.cnpj)}</td>
-        <td>${companyArtists(company.id).length}</td>
+        <td class="money">${escapeHtml(proponentDocument(proponent))}</td>
+        <td>${individual
+          ? (proponentArtists(proponent.id)[0] || { eventTypes: [] }).eventTypes.length
+          : proponentArtists(proponent.id).length}</td>
       </tr>`).join('');
 
-    el('companyEmpty').hidden = rows.length > 0;
-    const picked = findCompany(pendingCompanyId);
-    el('companyModalMsg').textContent = picked ? `Selecionada: ${picked.companyName}` : 'Nenhuma empresa selecionada.';
-    el('btnConfirmCompany').disabled = !pendingCompanyId;
+    el('proponentEmpty').hidden = rows.length > 0;
+    const picked = findProponent(pendingProponentId);
+    el('proponentModalMsg').textContent = picked
+      ? `Selecionado: ${proponentName(picked)}`
+      : 'Nenhum proponente selecionado.';
+    el('btnConfirmProponent').disabled = !pendingProponentId;
   }
 
-  function openCompanyModal() {
-    pendingCompanyId = val('companyId') || null;
-    el('companySearch').value = '';
-    renderCompanyRows();
-    el('companyModal').hidden = false;
-    el('companySearch').focus();
+  function syncProponentModalChrome() {
+    const individual = isIndividualProponent();
+    el('proponentModalTitle').textContent = individual
+      ? 'Selecionar proponente pessoa física'
+      : 'Selecionar proponente pessoa jurídica';
+    el('proponentModalHint').textContent = individual
+      ? 'Pessoas físicas cadastradas como artistas. A pessoa escolhida é o artista dos eventos planejados.'
+      : 'Empresas cadastradas com artistas agenciados. Selecione uma para continuar.';
+    el('proponentSearch').placeholder = individual
+      ? 'Buscar por nome ou CPF…'
+      : 'Buscar por razão social, nome fantasia ou CNPJ…';
+    el('proponentColName').textContent = individual ? 'Nome civil / Nome artístico' : 'Razão social / Nome fantasia';
+    el('proponentColDoc').textContent = individual ? 'CPF' : 'CNPJ';
+    el('proponentColArtists').textContent = individual ? 'Atrações' : 'Artistas';
+    el('proponentEmpty').textContent = individual
+      ? 'Nenhuma pessoa física encontrada para a busca.'
+      : 'Nenhuma empresa encontrada para a busca.';
   }
 
-  function closeCompanyModal() {
-    el('companyModal').hidden = true;
-    el('btnOpenCompanyModal').focus();
+  function openProponentModal() {
+    pendingProponentId = val('proponentId') || null;
+    el('proponentSearch').value = '';
+    syncProponentModalChrome();
+    renderProponentRows();
+    el('proponentModal').hidden = false;
+    el('proponentSearch').focus();
   }
 
-  el('btnOpenCompanyModal').addEventListener('click', openCompanyModal);
-  el('companySearch').addEventListener('input', renderCompanyRows);
+  function closeProponentModal() {
+    el('proponentModal').hidden = true;
+    el('btnOpenProponentModal').focus();
+  }
 
-  el('companyRows').addEventListener('click', (event) => {
-    const row = event.target.closest('tr[data-company-id]');
+  el('btnOpenProponentModal').addEventListener('click', openProponentModal);
+  el('proponentSearch').addEventListener('input', renderProponentRows);
+
+  el('proponentRows').addEventListener('click', (event) => {
+    const row = event.target.closest('tr[data-proponent-id]');
     if (!row) return;
-    pendingCompanyId = row.dataset.companyId;
-    renderCompanyRows();
+    pendingProponentId = row.dataset.proponentId;
+    renderProponentRows();
   });
 
-  el('btnConfirmCompany').addEventListener('click', () => {
-    if (!pendingCompanyId) return;
-    const changed = pendingCompanyId !== val('companyId');
-    el('companyId').value = pendingCompanyId;
-    closeCompanyModal();
+  el('btnConfirmProponent').addEventListener('click', () => {
+    if (!pendingProponentId) return;
+    const changed = pendingProponentId !== val('proponentId');
+    el('proponentId').value = pendingProponentId;
+    closeProponentModal();
     refresh();
-    const company = findCompany(pendingCompanyId);
-    showToast(changed
-      ? `Empresa "${company.tradingName}" selecionada — ${plural(companyArtists(company.id).length, 'artista agenciado', 'artistas agenciados')} disponíveis.`
-      : `Empresa "${company.tradingName}" mantida.`);
+    const proponent = findProponent(pendingProponentId);
+    const shortName = proponentShortName(proponent);
+    if (!changed) {
+      showToast(`Proponente "${shortName}" mantido.`);
+    } else if (proponent.type === 'PF') {
+      const artist = proponentArtists(proponent.id)[0];
+      showToast(`Proponente "${shortName}" selecionado — é o próprio artista, com ${plural(artist ? artist.eventTypes.length : 0, 'atração cadastrada', 'atrações cadastradas')}.`);
+    } else {
+      showToast(`Proponente "${shortName}" selecionado — ${plural(proponentArtists(proponent.id).length, 'artista agenciado', 'artistas agenciados')} disponíveis.`);
+    }
   });
 
-  el('btnClearCompany').addEventListener('click', () => {
-    el('companyId').value = '';
+  el('btnClearProponent').addEventListener('click', () => {
+    el('proponentId').value = '';
     refresh();
-    showToast('Empresa removida — os artistas dos eventos planejados ficam pendentes.');
+    showToast('Proponente removido — os artistas dos eventos planejados ficam pendentes.');
   });
 
-  document.querySelectorAll('[data-modal-close]').forEach((node) => node.addEventListener('click', closeCompanyModal));
+  /* Trocar PF/PJ invalida o proponente escolhido: as listas não se cruzam. */
+  document.querySelectorAll('input[name="proponentType"]').forEach((node) => {
+    node.addEventListener('change', () => {
+      const hadProponent = Boolean(val('proponentId'));
+      el('proponentId').value = '';
+      /* Em PF o artista é travado no proponente; em PJ volta a ser escolha por evento. */
+      document.querySelectorAll('#eventsList select[data-role="artist"]').forEach((select) => { select.value = ''; });
+      if (!el('proponentModal').hidden) {
+        pendingProponentId = null;
+        syncProponentModalChrome();
+        el('proponentSearch').value = '';
+        renderProponentRows();
+      }
+      refresh();
+      if (hadProponent) {
+        showToast(`Tipo alterado para ${proponentTypeLabel(proponentType())} — selecione o proponente novamente.`);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-modal-close]').forEach((node) => node.addEventListener('click', closeProponentModal));
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !el('companyModal').hidden) closeCompanyModal();
+    if (event.key === 'Escape' && !el('proponentModal').hidden) closeProponentModal();
   });
 
   /* ---------------- modos (radio) ---------------- */
@@ -2003,7 +2178,7 @@
   function refresh() {
     syncModePanels();
     refreshDynamicOptions();
-    renderCompanyPanel();
+    renderProponentPanel();
     renderArtistsPanel();
     renumberEvents();
     renderContractValueInfo();
@@ -2012,7 +2187,7 @@
     renderKitDateChip();
     renderPaymentInfo();
     el('eventsEmpty').hidden = eventsData().length > 0;
-    el('btnAddEvent').disabled = !val('companyId');
+    el('btnAddEvent').disabled = !val('proponentId');
 
     const results = SECTIONS.map(evaluate);
 
@@ -2097,7 +2272,7 @@
     const budgetAllocation = findBudgetAllocation(val('budgetAllocationId'));
     const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
 
-    const company = selectedCompany();
+    const proponent = selectedProponent();
 
     const eventsHtml = events.length === 0
       ? summaryRow('Eventos planejados', '—')
@@ -2151,10 +2326,13 @@
 
     el('summaryContent').innerHTML = `
       ${summaryGroup('Evento da Emenda', undefined, eventoRows + summaryRow('Local habilitado', place.name))}
-      ${summaryGroup('Empresa', statusById['sec-empresa'],
-        summaryRow('Razão social', company ? company.companyName : '—') +
-        summaryRow('CNPJ', company ? company.cnpj : '—') +
-        summaryRow('Artistas agenciados', company ? String(companyArtists(company.id).length) : '—'))}
+      ${summaryGroup('Proponente', statusById['sec-proponente'],
+        summaryRow('Tipo', proponentTypeLabel(proponentType())) +
+        summaryRow(proponent && proponent.type === 'PF' ? 'Nome civil' : 'Razão social', proponent ? proponentName(proponent) : '—') +
+        summaryRow(proponent ? proponentDocumentLabel(proponent) : 'Documento', proponent ? proponentDocument(proponent) : '—') +
+        (proponent && proponent.type === 'PF'
+          ? summaryRow('Atrações cadastradas', String((proponentArtists(proponent.id)[0] || { eventTypes: [] }).eventTypes.length))
+          : summaryRow('Artistas agenciados', proponent ? String(proponentArtists(proponent.id).length) : '—')))}
       ${summaryGroup('Artistas e eventos planejados', statusById['sec-eventos'], '')}
       ${eventsHtml}
       ${summaryGroup('Contrato', statusById['sec-contrato'], contratoRows)}
