@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Criação de Emenda — v5</title>
+<title>Criação de Emenda — v4</title>
 <link rel="stylesheet" href="../../styles/global.css">
 <style>
   .modal__panel--narrow{width:min(640px, 100%)}
@@ -19,11 +19,6 @@
   .pcard__value--mono{font-family:var(--mono)}
   .pcard__tag{justify-self:end;padding:2px 8px;border-radius:6px;font-size:12px;white-space:nowrap;background:var(--c-danger-bg);color:var(--c-danger-text);border:1px solid var(--c-danger-border)}
   .pcard__tag--pf{background:var(--c-primary-bg);color:#0958d9;border-color:var(--c-primary-border)}
-  details.ep > summary{list-style:none;cursor:pointer}
-  details.ep > summary::-webkit-details-marker{display:none}
-  details.ep > summary .ep__title::before{content:"▸";display:inline-block;width:1.1em;color:var(--c-text-secondary)}
-  details.ep[open] > summary .ep__title::before{content:"▾"}
-  details.ep:not([open]) > summary{margin-bottom:0}
   .pdetail{display:grid;gap:16px}
   .pdetail__section h4{font-size:13px;font-weight:600;margin:0 0 8px}
   .pdetail__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;padding:12px 14px;border:1px solid var(--c-border);border-radius:var(--radius);background:#fafafa;font-size:13px}
@@ -36,7 +31,7 @@
   <div class="layout">
     <nav id="sidenav" class="sidenav" aria-label="Blocos da criação da emenda">
       <div class="sidenav__title">Criação de Emenda</div>
-      <span class="sidenav__updated">Atualizado em 23/09/2026 15:18</span>
+      <span class="sidenav__updated">Atualizado em 23/09/2026 14:50</span>
       <div class="sidenav__order">
         <div class="order__head">
           <span class="order__label">Emenda</span>
@@ -357,7 +352,7 @@
             <div class="field">
               <label class="field__label" for="contractValue">Valor do contrato (R$)<span class="req">*</span></label>
               <input type="number" id="contractValue" name="contractValue" min="0" step="0.01" placeholder="0,00">
-              <p class="field__help" id="contractValueHelp">Sugestão: soma dos cachês + despesas extraordinárias. Pode ser editado.</p>
+              <p class="field__help">Valor total do contrato, incluindo cachês e eventuais despesas extraordinárias.</p>
               <p class="field__error" data-error-for="contractValue"></p>
             </div>
             <div class="field">
@@ -1661,23 +1656,11 @@
       </div>`;
   }
 
-  /*
-   * O valor do contrato nasce da soma dos cachês + despesas (uma vez só: se o operador apagar o
-   * campo, ele fica vazio). Depois disso é editável; se divergir da soma atual, o bloco avisa —
-   * na tela real, mudar um cachê depois de salvar o valor deixa o bloco Pendente com este aviso.
-   */
-  let contractValueSuggested = false;
-
   function renderContractValueInfo() {
     const schedules = schedulesTotal();
     const extraordinary = extraordinaryAmount();
     const minimum = requiredContractValue();
-    if (!contractValueSuggested && val('contractValue') === '' && minimum > 0) {
-      el('contractValue').value = minimum.toFixed(2);
-      contractValueSuggested = true;
-    }
     const value = contractValueAmount();
-    el('contractValueHelp').textContent = `Sugestão: soma dos cachês + despesas extraordinárias (${brl(minimum)}). Pode ser editado.`;
     const events = eventsData();
     const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
     const balance = value === null ? null : value - minimum;
@@ -1687,10 +1670,7 @@
       <div class="kv"><span class="kv__k">Soma dos cachês</span><span class="kv__v money">${brl(schedules)}</span></div>
       <div class="kv"><span class="kv__k">Despesas extraordinárias</span><span class="kv__v money">${brl(extraordinary)}</span></div>
       <div class="kv"><span class="kv__k">Mínimo do contrato</span><span class="kv__v money">${brl(minimum)}</span></div>
-      <div class="kv"><span class="kv__k">Margem sobre o mínimo</span><span class="kv__v money ${balance === null ? '' : (balance < 0 ? 'kv__v--warn' : 'kv__v--ok')}">${balance === null ? '—' : brl(balance)}</span></div>
-      ${value !== null && Math.abs(value - minimum) > 0.005
-        ? `<div class="alert alert--warn"><span>O valor do contrato (${brl(value)}) difere da soma atual dos cachês + despesas (${brl(minimum)}). Se um cachê mudar depois de o valor ser salvo, o bloco volta a <strong>Pendente</strong> com este aviso — revise e salve.</span></div>`
-        : ''}`;
+      <div class="kv"><span class="kv__k">Margem sobre o mínimo</span><span class="kv__v money ${balance === null ? '' : (balance < 0 ? 'kv__v--warn' : 'kv__v--ok')}">${balance === null ? '—' : brl(balance)}</span></div>`;
   }
 
   /* ---------------- justificativas: editor de texto rico ---------------- */
@@ -1904,19 +1884,17 @@
   function addEvent() {
     eventCount += 1;
     const epId = String(eventCount);
-    /* Cada evento planejado é um collapse (<details>): o cabeçalho resume artista, datas e valor. */
-    const card = document.createElement('details');
+    const card = document.createElement('article');
     card.className = 'ep';
-    card.open = true;
     card.dataset.epId = epId;
     card.innerHTML = `
-      <summary class="ep__head">
+      <div class="ep__head">
         <div>
           <div class="ep__title" data-ep-title>Evento planejado</div>
           <div class="ep__meta" data-ep-meta></div>
         </div>
         <button type="button" class="btn btn--danger-link js-remove-event">Remover evento</button>
-      </summary>
+      </div>
       <div class="row">
         <div class="field">
           <label class="field__label" for="epArtist-${epId}">Artista<span class="req">*</span></label>
