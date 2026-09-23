@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalhe do Evento — Mockups PE</title>
+<link rel="stylesheet" href="../../styles/global.css">
+</head>
+<body data-page="detalhe-evento">
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="appbar">
+  <a class="appbar__back" href="../gestao-eventos/index.html"><span aria-hidden="true">&larr;</span> Eventos</a>
+  <span class="appbar__id">
+    <span class="appbar__num">Nº 2026/0148</span>
+    <span class="appbar__name" id="appbarEventName">Virada Cultural — Palco Anhangabaú</span>
+  </span>
+  <span class="appbar__spacer"></span>
+  <span class="appbar__updated">Atualizado em 21/09/2026 19:30</span>
+  <span class="pill pill--ok">Vigente</span>
+</header>
+
+<div class="layout" id="conteudo">
+
+  <!-- ============ ÍNDICE DE SEÇÕES ============ -->
+  <nav class="toc" aria-label="Seções do evento">
+    <div class="toc__title">Evento</div>
+    <a href="#sec-dados" class="is-active" data-section="sec-dados">Dados da emenda</a>
+    <a href="#sec-locais" data-section="sec-locais">Locais do evento</a>
+    <a href="#sec-reserva" data-section="sec-reserva">Reserva orçamentária</a>
+    <a href="#sec-pedidos" data-section="sec-pedidos">Pedidos de contratação</a>
+  </nav>
+
+  <!-- ============ CONTEÚDO ============ -->
+  <main class="doc">
+
+    <div class="page__head">
+      <nav class="crumbs" aria-label="Trilha de navegação">
+        <a href="../gestao-eventos/index.html">Gestão de eventos</a>
+        <span aria-hidden="true">/</span>
+        <span>Detalhe do evento</span>
+      </nav>
+      <div class="evt__head">
+        <div class="evt__ident">
+          <h1 class="evt__title" id="eventTitle">Virada Cultural — Palco Anhangabaú</h1>
+          <p class="evt__sub">Emenda parlamentar · <span id="eventPlaceCount">2 locais vinculados</span></p>
+        </div>
+        <a class="btn btn--primary" href="../criacao-emenda/index.html">Novo pedido de contratação</a>
+      </div>
+    </div>
+
+    <!-- ============ 1 — DADOS DA EMENDA ============ -->
+    <section class="card" id="sec-dados" aria-labelledby="dadosEmendaTitle">
+      <div class="card__head">
+        <h2 class="card__title" id="dadosEmendaTitle">Dados da emenda</h2>
+        <span class="card__code">Emenda nº 2026/0148</span>
+        <button type="button" class="btn btn--sm" id="editEmendaOpen">Editar</button>
+      </div>
+      <div class="card__body">
+        <dl class="kv">
+          <div>
+            <dt>Nome do evento</dt>
+            <dd id="kvEventName">Virada Cultural — Palco Anhangabaú</dd>
+          </div>
+          <div>
+            <dt>Vereador responsável</dt>
+            <dd id="kvCouncilor">Ricardo Nunes</dd>
+          </div>
+          <div>
+            <dt>Vigência</dt>
+            <dd><span id="kvStart">01/03/2026</span> <span class="kv__range" aria-hidden="true">&rarr;</span> <span id="kvEnd">30/06/2026</span></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ============ 2 — LOCAIS DO EVENTO ============ -->
+    <section class="card" id="sec-locais" aria-labelledby="locaisTitle">
+      <div class="card__head">
+        <div>
+          <h2 class="card__title" id="locaisTitle">Locais do evento</h2>
+          <p class="card__hint">Equipamentos culturais onde o evento será realizado.</p>
+        </div>
+        <button type="button" class="btn btn--sm" id="addLocalOpen">+ Adicionar local</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--locais">
+          <caption class="sr-only">Locais vinculados ao evento</caption>
+          <thead>
+            <tr>
+              <th>Local</th>
+              <th>Subprefeitura</th>
+              <th class="num" style="width:110px">Capacidade</th>
+              <th style="width:130px">Data de uso</th>
+              <th class="act" style="width:70px">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="locaisBody">
+            <tr>
+              <td><span class="loc__name">Praça das Artes</span></td>
+              <td>República</td>
+              <td class="num">400</td>
+              <td>15/04/2026</td>
+              <td class="act"><button type="button" class="icon-btn js-remove-local" title="Excluir local" aria-label="Excluir local Praça das Artes"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><span class="loc__name">Teatro Municipal</span></td>
+              <td>Sé</td>
+              <td class="num">1500</td>
+              <td>16/04/2026</td>
+              <td class="act"><button type="button" class="icon-btn js-remove-local" title="Excluir local" aria-label="Excluir local Teatro Municipal"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="empty locais__empty" id="locaisEmpty" hidden>Nenhum local vinculado a este evento.</p>
+    </section>
+
+    <!-- ============ 3 — RESERVA ORÇAMENTÁRIA ============ -->
+    <section class="card" id="sec-reserva" aria-labelledby="reservaTitle">
+      <div class="card__head">
+        <div>
+          <h2 class="card__title" id="reservaTitle">Reserva orçamentária</h2>
+          <p class="card__hint">Reservas para o planejamento de contratações artísticas desta emenda.</p>
+        </div>
+        <button type="button" class="btn btn--primary btn--sm" id="addReservaBtn">Adicionar nova reserva</button>
+      </div>
+      <div class="card__body">
+        <div class="reservas" id="reservasList">
+
+          <article class="reserva">
+            <header class="reserva__head">
+              <div class="reserva__ident">
+                <span class="reserva__name">Coordenação de Programação Cultural 2026</span>
+                <span class="reserva__meta">Reserva nº 2026/RO-0311 · Exercício 2026 · Fonte 00 — Tesouro Municipal</span>
+              </div>
+              <div class="reserva__actions">
+                <button type="button" class="icon-btn icon-btn--link js-open-reserva" title="Abrir reserva no SOF" aria-label="Abrir reserva no SOF"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M9.4 2.6h4v4M13.4 2.6 7.6 8.4M12.2 9.6v3.2a.8.8 0 0 1-.8.8H3.2a.8.8 0 0 1-.8-.8V4.6a.8.8 0 0 1 .8-.8h3.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <span class="reserva__sep" aria-hidden="true"></span>
+                <button type="button" class="icon-btn icon-btn--danger js-remove-reserva" title="Remover reserva" aria-label="Remover reserva"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+              </div>
+            </header>
+
+            <div class="reserva__row">
+              <span class="reserva__ico reserva__ico--doc" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M4 2.6h5l3 3v7.8H4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9 2.6v3h3M5.8 9h4.4M5.8 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+              <span class="reserva__label">Dotação orçamentária</span>
+              <span class="reserva__value mono">13.395.0002 · Fomento à Cultura</span>
+            </div>
+
+            <div class="reserva__row">
+              <span class="reserva__ico reserva__ico--money" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.6v6.8M9.7 6.2a1.9 1.9 0 0 0-3.4 1.1c0 1.8 3.4.6 3.4 2.4a1.9 1.9 0 0 1-3.4 1.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+              <span class="reserva__label">Saldo inicial</span>
+              <span class="reserva__value money">R$ 45.000,00</span>
+            </div>
+
+            <div class="reserva__row">
+              <span class="reserva__ico reserva__ico--free" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="2.4" y="4" width="11.2" height="8" rx="1.6" stroke="currentColor" stroke-width="1.3"/><path d="M10.4 8h2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+              <span class="reserva__label">Saldo disponível</span>
+              <span class="reserva__value money reserva__value--free">R$ 27.400,00</span>
+            </div>
+
+            <div class="reserva__row reserva__row--meter">
+              <span class="reserva__ico reserva__ico--pct" aria-hidden="true">%</span>
+              <span class="reserva__label">Utilização</span>
+              <span class="reserva__meter">
+                <span class="progress__track"><span class="progress__bar" style="width:39%"></span></span>
+              </span>
+              <span class="reserva__pct">39%</span>
+            </div>
+          </article>
+
+        </div>
+        <p class="empty" id="reservasEmpty" hidden>Nenhuma reserva vinculada a esta emenda.</p>
+      </div>
+    </section>
+
+    <!-- ============ 4 — PEDIDOS DE CONTRATAÇÃO ============ -->
+    <section class="card" id="sec-pedidos" aria-labelledby="pedidosTitle">
+      <div class="card__head">
+        <h2 class="card__title" id="pedidosTitle">Pedidos de contratação</h2>
+        <span class="pill pill--neutral">3 pedidos</span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--pedidos">
+          <caption class="sr-only">Pedidos de contratação vinculados a este evento</caption>
+          <thead>
+            <tr>
+              <th style="width:110px">Nº pedido</th>
+              <th>Proponente contratado</th>
+              <th class="num" style="width:130px">Valor</th>
+              <th style="width:190px">Status do pedido</th>
+              <th class="act" style="width:150px">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">#11159</td>
+              <td>Suspiros e Burbujas (Circo)</td>
+              <td class="num money">R$ 5.500,00</td>
+              <td><span class="pill pill--warn">Pedido Enviado</span></td>
+              <td class="act"><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td>
+            </tr>
+            <tr>
+              <td class="mono">#11160</td>
+              <td>Banda Fanfarra Popular</td>
+              <td class="num money">R$ 3.200,00</td>
+              <td><span class="pill pill--ok">Empenhado</span></td>
+              <td class="act"><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td>
+            </tr>
+            <tr>
+              <td class="mono">#11161</td>
+              <td>Estrutura de Som e Palco</td>
+              <td class="num money">R$ 8.900,00</td>
+              <td><span class="pill pill--neutral">Rascunho</span></td>
+              <td class="act"><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">Total dos pedidos</td>
+              <td class="num money">R$ 17.600,00</td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MODAL: editar dados da emenda ============ -->
+<div class="modal" id="editEmendaModal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel modal__panel--sm" role="dialog" aria-modal="true" aria-labelledby="editEmendaTitle">
+    <div class="modal__head">
+      <h3 class="modal__title" id="editEmendaTitle">Editar dados da emenda</h3>
+      <p class="modal__hint">As alterações valem para o evento e para os pedidos ainda em rascunho.</p>
+    </div>
+    <div class="modal__body">
+      <form id="editEmendaForm">
+        <div class="field">
+          <label class="field__label" for="editEventName">Nome do evento<span class="req">*</span></label>
+          <input type="text" id="editEventName" value="Virada Cultural — Palco Anhangabaú">
+        </div>
+        <div class="field">
+          <label class="field__label" for="editCouncilor">Vereador responsável<span class="req">*</span></label>
+          <select id="editCouncilor">
+            <option selected>Ricardo Nunes</option>
+            <option>Camila Souza</option>
+            <option>Fábio Penna</option>
+            <option>Marta Lima</option>
+            <option>Diego Alves</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label class="field__label" for="editStart">Início da vigência<span class="req">*</span></label>
+            <input type="date" id="editStart" value="2026-03-01">
+          </div>
+          <div class="field">
+            <label class="field__label" for="editEnd">Fim da vigência<span class="req">*</span></label>
+            <input type="date" id="editEnd" value="2026-06-30">
+          </div>
+        </div>
+        <p class="modal__error" id="editEmendaError" hidden></p>
+      </form>
+    </div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg">A dotação é alterada no card de reserva orçamentária.</span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn btn--sm" data-modal-close>Cancelar</button>
+        <button type="button" class="btn btn--primary btn--sm" id="editEmendaSave">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: adicionar local ============ -->
+<div class="modal" id="addLocalModal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel modal__panel--sm" role="dialog" aria-modal="true" aria-labelledby="addLocalTitle">
+    <div class="modal__head">
+      <h3 class="modal__title" id="addLocalTitle">Adicionar local ao evento</h3>
+      <p class="modal__hint">Selecione um equipamento cultural e a data de uso.</p>
+    </div>
+    <div class="modal__body">
+      <form id="addLocalForm">
+        <div class="field">
+          <label class="field__label" for="addLocalPlace">Local<span class="req">*</span></label>
+          <select id="addLocalPlace">
+            <option value="">Selecione o local…</option>
+            <option value="Teatro Municipal|Sé|1500">Teatro Municipal — Sé (1500 lugares)</option>
+            <option value="Centro Cultural São Paulo|Liberdade|800">Centro Cultural São Paulo — Liberdade (800 lugares)</option>
+            <option value="Casa de Cultura Itaquera|Itaquera|220">Casa de Cultura Itaquera — Itaquera (220 lugares)</option>
+            <option value="Praça das Artes|República|400">Praça das Artes — República (400 lugares)</option>
+            <option value="Biblioteca Mário de Andrade|República|180">Biblioteca Mário de Andrade — República (180 lugares)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="addLocalDate">Data de uso<span class="req">*</span></label>
+          <input type="date" id="addLocalDate">
+          <p class="field__help">Deve estar dentro da vigência da emenda (01/03/2026 a 30/06/2026).</p>
+        </div>
+        <p class="modal__error" id="addLocalError" hidden></p>
+      </form>
+    </div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg"></span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn btn--sm" data-modal-close>Cancelar</button>
+        <button type="button" class="btn btn--primary btn--sm" id="addLocalSave">Adicionar local</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+
+  const el = (id) => document.getElementById(id);
+  const TRASH_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* ---------------- toast ---------------- */
+  let toastTimer = null;
+  function showToast(message) {
+    const toastEl = el('toast');
+    toastEl.textContent = message;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 4000);
+  }
+
+  /* ---------------- modais ---------------- */
+  function openModal(id) {
+    el(id).hidden = false;
+    const firstField = el(id).querySelector('input, select');
+    if (firstField) firstField.focus();
+  }
+  function closeModal(id) {
+    el(id).hidden = true;
+  }
+  document.querySelectorAll('.modal').forEach(function (modal) {
+    modal.querySelectorAll('[data-modal-close]').forEach(function (node) {
+      node.addEventListener('click', function () { closeModal(modal.id); });
+    });
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll('.modal:not([hidden])').forEach(function (modal) { closeModal(modal.id); });
+  });
+  function showError(id, message) {
+    const errorEl = el(id);
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  }
+
+  /* ---------------- datas ---------------- */
+  function toBr(isoDate) {
+    if (!isoDate) return '—';
+    const parts = isoDate.split('-');
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  /* ---------------- editar dados da emenda ---------------- */
+  el('editEmendaOpen').addEventListener('click', function () { openModal('editEmendaModal'); });
+  el('editEmendaSave').addEventListener('click', function () {
+    const name = el('editEventName').value.trim();
+    const start = el('editStart').value;
+    const end = el('editEnd').value;
+
+    if (!name || !start || !end) {
+      showError('editEmendaError', 'Preencha todos os campos obrigatórios.');
+      return;
+    }
+    if (end < start) {
+      showError('editEmendaError', 'O fim da vigência deve ser posterior ao início.');
+      return;
+    }
+    el('editEmendaError').hidden = true;
+
+    const councilor = el('editCouncilor').value;
+    el('eventTitle').textContent = name;
+    el('appbarEventName').textContent = name;
+    el('kvEventName').textContent = name;
+    el('kvCouncilor').textContent = councilor;
+    el('kvStart').textContent = toBr(start);
+    el('kvEnd').textContent = toBr(end);
+    document.title = name + ' — Mockups PE';
+
+    closeModal('editEmendaModal');
+    showToast('Dados da emenda atualizados (mock).');
+  });
+
+  /* ---------------- locais do evento ---------------- */
+  function refreshLocais() {
+    const total = el('locaisBody').querySelectorAll('tr').length;
+    el('locaisEmpty').hidden = total > 0;
+    el('eventPlaceCount').textContent = total === 1 ? '1 local vinculado' : total + ' locais vinculados';
+  }
+
+  function bindRemoveLocal(button) {
+    button.addEventListener('click', function () {
+      const row = button.closest('tr');
+      const name = row.querySelector('.loc__name').textContent;
+      row.remove();
+      refreshLocais();
+      showToast('Local "' + name + '" excluído do evento (mock).');
+    });
+  }
+  el('locaisBody').querySelectorAll('.js-remove-local').forEach(bindRemoveLocal);
+
+  el('addLocalOpen').addEventListener('click', function () { openModal('addLocalModal'); });
+  el('addLocalSave').addEventListener('click', function () {
+    const place = el('addLocalPlace').value;
+    const date = el('addLocalDate').value;
+
+    if (!place || !date) {
+      showError('addLocalError', 'Selecione o local e a data de uso.');
+      return;
+    }
+    el('addLocalError').hidden = true;
+
+    const data = place.split('|');
+    const name = data[0];
+    const row = document.createElement('tr');
+    row.innerHTML =
+      '<td><span class="loc__name">' + name + '</span></td>' +
+      '<td>' + data[1] + '</td>' +
+      '<td class="num">' + data[2] + '</td>' +
+      '<td>' + toBr(date) + '</td>' +
+      '<td class="act"><button type="button" class="icon-btn js-remove-local" title="Excluir local" aria-label="Excluir local ' + name + '">' + TRASH_ICON + '</button></td>';
+    el('locaisBody').appendChild(row);
+    bindRemoveLocal(row.querySelector('.js-remove-local'));
+    refreshLocais();
+
+    el('addLocalForm').reset();
+    closeModal('addLocalModal');
+    showToast('Local "' + name + '" adicionado ao evento (mock).');
+  });
+
+  refreshLocais();
+
+  /* ---------------- reservas ---------------- */
+  function refreshReservas() {
+    const total = el('reservasList').querySelectorAll('.reserva').length;
+    el('reservasEmpty').hidden = total > 0;
+  }
+  document.querySelectorAll('.js-open-reserva').forEach(function (button) {
+    button.addEventListener('click', function () { showToast('Abrindo a reserva no SOF (mock).'); });
+  });
+  document.querySelectorAll('.js-remove-reserva').forEach(function (button) {
+    button.addEventListener('click', function () {
+      const card = button.closest('.reserva');
+      const name = card.querySelector('.reserva__name').textContent;
+      card.remove();
+      refreshReservas();
+      showToast('Reserva "' + name + '" removida da emenda (mock).');
+    });
+  });
+  el('addReservaBtn').addEventListener('click', function () {
+    showToast('Seleção de nova reserva orçamentária (mock).');
+  });
+  refreshReservas();
+
+  /* ---------------- scroll spy ---------------- */
+  const tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[data-section]'));
+  const observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      tocLinks.forEach(function (link) {
+        const active = link.dataset.section === entry.target.id;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    });
+  }, { rootMargin: '-25% 0px -60% 0px' });
+
+  tocLinks.forEach(function (link) {
+    const sectionEl = el(link.dataset.section);
+    if (sectionEl) observer.observe(sectionEl);
+  });
+})();
+</script>
+</body>
+</html>
