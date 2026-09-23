@@ -3,35 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Criação de Emenda — v4</title>
+<title>Criação de Emenda — v3</title>
 <link rel="stylesheet" href="../../styles/global.css">
-<style>
-  .modal__panel--narrow{width:min(640px, 100%)}
-  .psearch{display:flex;gap:8px}
-  .psearch input{flex:1}
-  .psearch__btn{width:36px;padding:0;font-size:16px}
-  .pcard-list{display:grid;gap:12px}
-  .pcard{display:grid;grid-template-columns:1fr 1fr auto;gap:16px;align-items:start;width:100%;padding:14px 16px;border:1px solid var(--c-border);border-radius:12px;background:#fff;text-align:left;font:inherit;color:inherit}
-  button.pcard{cursor:pointer}
-  button.pcard:hover,button.pcard:focus-visible{border-color:var(--c-primary);box-shadow:0 0 0 2px var(--c-primary-bg)}
-  .pcard__label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
-  .pcard__value{display:block;font-size:13px;color:var(--c-text-2)}
-  .pcard__value--mono{font-family:var(--mono)}
-  .pcard__tag{justify-self:end;padding:2px 8px;border-radius:6px;font-size:12px;white-space:nowrap;background:var(--c-danger-bg);color:var(--c-danger-text);border:1px solid var(--c-danger-border)}
-  .pcard__tag--pf{background:var(--c-primary-bg);color:#0958d9;border-color:var(--c-primary-border)}
-  .pdetail{display:grid;gap:16px}
-  .pdetail__section h4{font-size:13px;font-weight:600;margin:0 0 8px}
-  .pdetail__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;padding:12px 14px;border:1px solid var(--c-border);border-radius:var(--radius);background:#fafafa;font-size:13px}
-  body[data-page="criacao-emenda"] .pdetail__grid .kv{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:2px}
-  body[data-page="criacao-emenda"] .pdetail__grid .kv__v{text-align:left;font-weight:500}
-  @media (max-width:560px){.pcard{grid-template-columns:1fr}.pcard__tag{justify-self:start}}
-</style>
 </head>
 <body data-page="criacao-emenda">
   <div class="layout">
     <nav id="sidenav" class="sidenav" aria-label="Blocos da criação da emenda">
       <div class="sidenav__title">Criação de Emenda</div>
-      <span class="sidenav__updated">Atualizado em 23/09/2026 14:50</span>
+      <span class="sidenav__updated">Atualizado em 21/08/2026 13:46</span>
       <div class="sidenav__order">
         <div class="order__head">
           <span class="order__label">Emenda</span>
@@ -157,7 +136,6 @@
           <p class="block-error" data-error-for="proponentBlock"></p>
           <div class="stack-actions">
             <button type="button" id="btnOpenProponentModal" class="btn btn--secondary btn--sm">Selecionar proponente</button>
-            <button type="button" id="btnProponentDetails" class="btn btn--secondary btn--sm" hidden>Ver dados do proponente</button>
             <button type="button" id="btnClearProponent" class="btn btn--danger-link" hidden>Remover proponente</button>
           </div>
 
@@ -499,44 +477,36 @@
     </div>
   </div>
 
-  <!-- ============ MODAL DE BUSCA DO PROPONENTE (card por resultado, igual ao cadastro de filmes) ============ -->
+  <!-- ============ MODAL DE PROPONENTES (a lista muda conforme PF/PJ) ============ -->
   <div class="modal" id="proponentModal" hidden>
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel modal__panel--narrow" role="dialog" aria-modal="true" aria-labelledby="proponentModalTitle">
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="proponentModalTitle">
       <div class="modal__head">
-        <h3 class="modal__title" id="proponentModalTitle">Procure por uma empresa registrada</h3>
-        <p class="modal__hint" id="proponentModalHint">Busque por nome fantasia, razão social, CNPJ ou nome do representante legal.</p>
-        <form class="psearch" id="proponentSearchForm" role="search">
-          <input type="search" id="proponentSearch" placeholder="Nome fantasia, razão social, CNPJ ou representante legal" aria-label="Buscar proponente">
-          <button type="submit" class="btn btn--primary psearch__btn" aria-label="Buscar">⌕</button>
-        </form>
+        <h3 class="modal__title" id="proponentModalTitle">Selecionar proponente</h3>
+        <p class="modal__hint" id="proponentModalHint">Proponentes cadastrados. Selecione um para continuar.</p>
+        <input type="search" id="proponentSearch" placeholder="Buscar por razão social, nome fantasia ou CNPJ…" aria-label="Buscar proponente">
       </div>
       <div class="modal__body">
-        <div class="pcard-list" id="proponentResults"></div>
-        <p class="hint-empty" id="proponentEmpty" hidden></p>
+        <div class="table__scroll">
+          <table class="table table--pick">
+            <thead>
+              <tr>
+                <th style="width:36px"><span class="sr-only">Seleção</span></th>
+                <th id="proponentColName">Razão social / Nome fantasia</th>
+                <th id="proponentColDoc">CNPJ</th>
+                <th id="proponentColArtists">Artistas</th>
+              </tr>
+            </thead>
+            <tbody id="proponentRows"></tbody>
+          </table>
+        </div>
+        <p class="hint-empty" id="proponentEmpty" hidden>Nenhum proponente encontrado para a busca.</p>
       </div>
       <div class="modal__foot">
-        <span class="modal__foot-msg" id="proponentModalMsg">Clique no card para selecionar o proponente.</span>
+        <span class="modal__foot-msg" id="proponentModalMsg">Nenhum proponente selecionado.</span>
         <div class="modal__foot-actions">
           <button type="button" class="btn btn--secondary" data-modal-close>Cancelar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============ MODAL DE DADOS DO PROPONENTE (mesmos campos da aba Proponente do fluxo legado) ============ -->
-  <div class="modal" id="proponentDetailModal" hidden>
-    <div class="modal__backdrop" data-detail-close></div>
-    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="proponentDetailTitle">
-      <div class="modal__head">
-        <h3 class="modal__title" id="proponentDetailTitle">Dados do proponente</h3>
-        <p class="modal__hint" id="proponentDetailHint"></p>
-      </div>
-      <div class="modal__body" id="proponentDetailBody"></div>
-      <div class="modal__foot">
-        <span class="modal__foot-msg">Somente leitura — os dados vêm do cadastro do proponente.</span>
-        <div class="modal__foot-actions">
-          <button type="button" class="btn btn--secondary" data-detail-close>Fechar</button>
+          <button type="button" id="btnConfirmProponent" class="btn btn--primary" disabled>Selecionar proponente</button>
         </div>
       </div>
     </div>
@@ -701,61 +671,13 @@
   ];
   const DEFAULT_PROPONENT_TYPE = 'PJ';
 
-  /*
-   * Os campos de detalhe espelham a aba "Proponente" do fluxo legado do pedido de contratação
-   * (ProponentDataLegalPerson / ProponentDataNaturalPerson): empresa, representantes legais e
-   * dados bancários na PJ; dados pessoais, contatos, endereço e dados bancários na PF.
-   */
   const PROPONENTS = [
-    {
-      id: 'lp-1', type: 'PJ', companyName: 'Produções Culturais Horizonte Ltda', tradingName: 'Horizonte Produções', cnpj: '12.345.678/0001-90',
-      ccm: '4.567.890-1', address: 'Rua Augusta, 1500 — Consolação, São Paulo/SP — 01304-001',
-      representatives: [
-        { principal: true, name: 'Carlos Eduardo Menezes', socialName: '—', cpf: '321.654.987-00', rg: '32.165.498-7', email: 'carlos@horizonte.art.br', emailSecondary: '—', phone: '(11) 98888-1111', phoneSecondary: '(11) 3333-1111' },
-        { principal: false, name: 'Beatriz Lima Souza', socialName: 'Bia Lima', cpf: '741.852.963-00', rg: '74.185.296-3', email: 'bia@horizonte.art.br', emailSecondary: '—', phone: '(11) 97777-2222', phoneSecondary: '—', address: 'Rua Frei Caneca, 320 — São Paulo/SP' },
-      ],
-      bankAccounts: [{ bank: '001 — Banco do Brasil', agency: '1234-5', account: '98765-4' }],
-    },
-    {
-      id: 'lp-2', type: 'PJ', companyName: 'Agência Palco Aberto Eireli', tradingName: 'Palco Aberto', cnpj: '98.765.432/0001-11',
-      ccm: '1.234.567-8', address: 'Av. São João, 473 — República, São Paulo/SP — 01035-000',
-      representatives: [
-        { principal: true, name: 'Representante Teste', socialName: '—', cpf: '689.404.230-62', rg: '12.345.678-9', email: 'contato@palcoaberto.com.br', emailSecondary: 'financeiro@palcoaberto.com.br', phone: '(11) 96666-3333', phoneSecondary: '—' },
-      ],
-      bankAccounts: [],
-    },
-    {
-      id: 'lp-3', type: 'PJ', companyName: 'Coletivo Sonora Gestão Artística Ltda', tradingName: 'Sonora Gestão', cnpj: '45.678.901/0001-23',
-      ccm: '7.890.123-4', address: 'Rua Treze de Maio, 88 — Bela Vista, São Paulo/SP — 01327-000',
-      representatives: [
-        { principal: true, name: 'Marta Regina Alves', socialName: '—', cpf: '159.357.456-00', rg: '15.935.745-6', email: 'marta@sonora.art.br', emailSecondary: '—', phone: '(11) 95555-4444', phoneSecondary: '—' },
-      ],
-      bankAccounts: [{ bank: '341 — Itaú Unibanco', agency: '0987', account: '12345-6' }, { bank: '104 — Caixa Econômica Federal', agency: '4321', account: '00012345-7' }],
-    },
-    {
-      id: 'pf-1', type: 'PF', personName: 'Joana Prado', socialName: 'Joana Prado', cpf: '123.456.789-09',
-      artisticName: 'Joana Prado', birthDate: '14/03/1988', rg: '23.456.789-0', pcd: 'Não', ccm: '—', inss: '123.45678.90-1', visa: '—', pisPasep: '123.45678.90-1', rne: '—', passport: '—',
-      nationality: 'Brasileira', maritalStatus: 'Solteira', race: 'Parda', gender: 'Mulher cisgênero', education: 'Superior completo',
-      email: 'joana.prado@email.com', emailSecondary: '—', phone: '(11) 99999-0001', phoneSecondary: '—',
-      address: 'Rua Cardeal Arcoverde, 900 — Pinheiros, São Paulo/SP — 05407-001',
-      bankAccounts: [{ bank: '260 — Nu Pagamentos', agency: '0001', account: '1234567-8' }],
-    },
-    {
-      id: 'pf-2', type: 'PF', personName: 'Marcos Tavares de Oliveira', socialName: 'Marcos Tavares', cpf: '987.654.321-00',
-      artisticName: 'Marcos Tavares', birthDate: '02/11/1979', rg: '98.765.432-1', pcd: 'Não', ccm: '2.345.678-9', inss: '—', visa: '—', pisPasep: '—', rne: '—', passport: '—',
-      nationality: 'Brasileira', maritalStatus: 'Casado', race: 'Preta', gender: 'Homem cisgênero', education: 'Médio completo',
-      email: 'marcos.tavares@email.com', emailSecondary: '—', phone: '(11) 98888-0002', phoneSecondary: '—',
-      address: 'Av. Celso Garcia, 2100 — Belém, São Paulo/SP — 03015-000',
-      bankAccounts: [],
-    },
-    {
-      id: 'pf-3', type: 'PF', personName: 'Rita Nogueira Campos', socialName: 'Rita Campos', cpf: '456.789.012-34',
-      artisticName: 'Rita Campos', birthDate: '27/07/1992', rg: '45.678.901-2', pcd: 'Sim', ccm: '—', inss: '—', visa: '—', pisPasep: '—', rne: '—', passport: '—',
-      nationality: 'Brasileira', maritalStatus: 'Solteira', race: 'Branca', gender: 'Mulher cisgênero', education: 'Pós-graduação',
-      email: 'rita.campos@email.com', emailSecondary: '—', phone: '(11) 97777-0003', phoneSecondary: '—',
-      address: 'Rua Voluntários da Pátria, 45 — Santana, São Paulo/SP — 02011-000',
-      bankAccounts: [{ bank: '237 — Bradesco', agency: '2468', account: '13579-0' }],
-    },
+    { id: 'lp-1', type: 'PJ', companyName: 'Produções Culturais Horizonte Ltda', tradingName: 'Horizonte Produções', cnpj: '12.345.678/0001-90' },
+    { id: 'lp-2', type: 'PJ', companyName: 'Agência Palco Aberto Eireli', tradingName: 'Palco Aberto', cnpj: '98.765.432/0001-11' },
+    { id: 'lp-3', type: 'PJ', companyName: 'Coletivo Sonora Gestão Artística Ltda', tradingName: 'Sonora Gestão', cnpj: '45.678.901/0001-23' },
+    { id: 'pf-1', type: 'PF', personName: 'Joana Prado', socialName: 'Joana Prado', cpf: '123.456.789-09' },
+    { id: 'pf-2', type: 'PF', personName: 'Marcos Tavares de Oliveira', socialName: 'Marcos Tavares', cpf: '987.654.321-00' },
+    { id: 'pf-3', type: 'PF', personName: 'Rita Nogueira Campos', socialName: 'Rita Campos', cpf: '456.789.012-34' },
   ];
 
   const ARTISTS = [
@@ -1485,117 +1407,29 @@
           ? 'Nenhuma pessoa física selecionada. Abra a lista de proponentes para escolher o artista contratado desta emenda.'
           : 'Nenhuma pessoa jurídica selecionada. Abra a lista de proponentes para escolher a empresa agenciadora desta emenda.'
       }</p>`;
-    } else {
-      const artistsInfo = individual
-        ? plural((proponentArtists(proponent.id)[0] || { eventTypes: [] }).eventTypes.length, 'atração cadastrada', 'atrações cadastradas')
-        : plural(proponentArtists(proponent.id).length, 'artista agenciado', 'artistas agenciados');
+    } else if (individual) {
+      const artist = proponentArtists(proponent.id)[0];
       el('proponentPanel').innerHTML = `
-        <div style="margin-bottom:12px">
-          ${proponentCard(proponent, 'div')}
-          <p class="field__help">${escapeHtml(artistsInfo)}${individual ? ' — o proponente é o próprio artista.' : '.'}</p>
+        <div class="readonly-box" style="margin-bottom:12px">
+          <div class="kv"><span class="kv__k">Tipo</span><span class="kv__v">Pessoa Física — o proponente é o próprio artista</span></div>
+          <div class="kv"><span class="kv__k">Nome civil</span><span class="kv__v">${escapeHtml(proponent.personName)}</span></div>
+          <div class="kv"><span class="kv__k">Nome artístico</span><span class="kv__v">${escapeHtml(proponent.socialName)}</span></div>
+          <div class="kv"><span class="kv__k">CPF</span><span class="kv__v kv__v--mono">${escapeHtml(proponent.cpf)}</span></div>
+          <div class="kv"><span class="kv__k">Atrações cadastradas</span><span class="kv__v">${artist ? artist.eventTypes.length : 0}</span></div>
+        </div>`;
+    } else {
+      el('proponentPanel').innerHTML = `
+        <div class="readonly-box" style="margin-bottom:12px">
+          <div class="kv"><span class="kv__k">Tipo</span><span class="kv__v">Pessoa Jurídica — empresa agenciadora</span></div>
+          <div class="kv"><span class="kv__k">Razão social</span><span class="kv__v">${escapeHtml(proponent.companyName)}</span></div>
+          <div class="kv"><span class="kv__k">Nome fantasia</span><span class="kv__v">${escapeHtml(proponent.tradingName)}</span></div>
+          <div class="kv"><span class="kv__k">CNPJ</span><span class="kv__v kv__v--mono">${escapeHtml(proponent.cnpj)}</span></div>
+          <div class="kv"><span class="kv__k">Artistas agenciados</span><span class="kv__v">${proponentArtists(proponent.id).length}</span></div>
         </div>`;
     }
 
     el('btnOpenProponentModal').textContent = proponent ? 'Trocar proponente' : 'Selecionar proponente';
-    el('btnProponentDetails').hidden = !proponent;
     el('btnClearProponent').hidden = !proponent;
-  }
-
-  /*
-   * Card do proponente, o mesmo `LegalPersonCard` / `NaturalPersonCard` do cadastro de filmes:
-   * nome + documento mascarado + tag do tipo. Na PJ o card também traz o representante legal
-   * principal. No modal é um botão (clicar seleciona); no bloco é só leitura.
-   */
-  const maskCnpj = (cnpj) => `${cnpj.replace(/\D/g, '').slice(0, 5)}*/****-**`;
-  const maskCpf = (cpf) => `***.${cpf.slice(4, 11)}-**`;
-  const principalRepresentative = (proponent) => (proponent.representatives || []).find((rep) => rep.principal);
-
-  function proponentCard(proponent, tag) {
-    const individual = proponent.type === 'PF';
-    const representative = principalRepresentative(proponent);
-    const clickable = tag === 'button';
-    const nameCell = individual
-      ? `<span class="pcard__label">Nome social</span>
-         <span class="pcard__value">${escapeHtml(proponent.socialName)}</span>`
-      : `<span class="pcard__label">Razão Social</span>
-         <span class="pcard__value">${escapeHtml(proponent.companyName)}</span>
-         <span class="pcard__value">${escapeHtml(proponent.tradingName)}</span>
-         ${representative ? `<span class="pcard__value">Rep.: ${escapeHtml(representative.name)}</span>` : ''}`;
-    const docCell = individual
-      ? `<span class="pcard__label">CPF/CIN</span><span class="pcard__value pcard__value--mono">${escapeHtml(maskCpf(proponent.cpf))}</span>`
-      : `<span class="pcard__label">CNPJ</span><span class="pcard__value pcard__value--mono">${escapeHtml(maskCnpj(proponent.cnpj))}</span>`;
-
-    return `<${tag} class="pcard" ${clickable ? `type="button" data-proponent-id="${escapeHtml(proponent.id)}" aria-label="Selecionar ${escapeHtml(proponentName(proponent))}"` : ''}>
-      <span>${nameCell}</span>
-      <span>${docCell}</span>
-      <span class="pcard__tag ${individual ? 'pcard__tag--pf' : ''}">${individual ? '👤 Pessoa Física' : '🏢 Pessoa Jurídica'}</span>
-    </${tag}>`;
-  }
-
-  const kv = (label, value) => `<div class="kv"><span class="kv__k">${escapeHtml(label)}</span><span class="kv__v">${escapeHtml(value || '—')}</span></div>`;
-  const detailSection = (title, items) => `<section class="pdetail__section"><h4>${escapeHtml(title)}</h4><div class="pdetail__grid">${items.join('')}</div></section>`;
-
-  function bankSection(accounts) {
-    if (!accounts.length) return `<section class="pdetail__section"><h4>Dados Bancários</h4><p class="hint-empty">Nenhum dado bancário cadastrado</p></section>`;
-    return accounts.map((account, index) => detailSection(accounts.length > 1 ? `Dados Bancários ${index + 1}` : 'Dados Bancários', [
-      kv('Banco', account.bank), kv('Nº da Agência', account.agency), kv('Nº da Conta Corrente', account.account),
-    ])).join('');
-  }
-
-  function representativeItems(rep, companyAddress) {
-    return [
-      kv('Nome do representante', rep.name), kv('Nome social', rep.socialName), kv('CPF/CIN', rep.cpf), kv('RG', rep.rg),
-      kv('E-mail principal', rep.email), kv('E-mail secundário', rep.emailSecondary),
-      kv('Tel/Cel principal', rep.phone), kv('Tel/Cel secundário', rep.phoneSecondary),
-      kv('Endereço', rep.address || companyAddress),
-    ];
-  }
-
-  function renderProponentDetail(proponent) {
-    if (proponent.type === 'PF') {
-      return [
-        detailSection('Informações do artista ou líder do grupo', [
-          kv('Nome completo', proponent.personName), kv('Nome social', proponent.socialName), kv('Data Nascimento', proponent.birthDate),
-          kv('Nome Artístico', proponent.artisticName), kv('CPF/CIN', proponent.cpf), kv('RG', proponent.rg),
-          kv('Pessoa com deficiência?', proponent.pcd), kv('CCM', proponent.ccm), kv('Registro INSS', proponent.inss),
-          kv('Visto', proponent.visa), kv('Pis/Pasep', proponent.pisPasep), kv('RNE ou RNM', proponent.rne),
-          kv('Passaporte', proponent.passport), kv('Nacionalidade', proponent.nationality), kv('Estado civil', proponent.maritalStatus),
-          kv('Raça/Cor', proponent.race), kv('Gênero', proponent.gender), kv('Grau de instrução', proponent.education),
-        ]),
-        detailSection('Contato(s)', [
-          kv('E-mail principal', proponent.email), kv('E-mail secundário', proponent.emailSecondary),
-          kv('Tel/Cel principal', proponent.phone), kv('Tel/Cel secundário', proponent.phoneSecondary),
-        ]),
-        detailSection('Endereço', [kv('Endereço de Referência', proponent.address)]),
-        bankSection(proponent.bankAccounts),
-      ].join('');
-    }
-
-    const representative = principalRepresentative(proponent);
-    const others = proponent.representatives.filter((rep) => !rep.principal);
-    return [
-      detailSection('Informações da empresa', [
-        kv('Razão social', proponent.companyName), kv('CNPJ', proponent.cnpj), kv('Nome fantasia', proponent.tradingName),
-        kv('CCM', proponent.ccm), kv('Endereço', proponent.address),
-      ]),
-      representative ? detailSection('Informações do representante legal', representativeItems(representative, proponent.address)) : '',
-      others.map((rep) => detailSection('Outros Representantes legais', representativeItems(rep, proponent.address))).join(''),
-      bankSection(proponent.bankAccounts),
-    ].join('');
-  }
-
-  function openProponentDetail() {
-    const proponent = selectedProponent();
-    if (!proponent) return;
-    el('proponentDetailTitle').textContent = 'Dados do proponente';
-    el('proponentDetailHint').textContent = `${proponentName(proponent)} — ${proponentTypeLabel(proponent.type)}`;
-    el('proponentDetailBody').innerHTML = `<div class="pdetail">${renderProponentDetail(proponent)}</div>`;
-    el('proponentDetailModal').hidden = false;
-  }
-
-  function closeProponentDetail() {
-    el('proponentDetailModal').hidden = true;
-    el('btnProponentDetails').focus();
   }
 
   /**
@@ -2118,61 +1952,64 @@
   }
 
   /* ---------------- modal de proponentes ---------------- */
-  /*
-   * Busca no estilo do cadastro de filmes: o termo é aplicado ao clicar na lupa (ou Enter) e cada
-   * resultado vira um card; clicar no card seleciona. Sem "Iniciar novo cadastro" — a emenda só
-   * contrata proponente já cadastrado. PJ busca por nome fantasia, razão social, CNPJ e nome do
-   * representante legal; PF por nome, nome social e CPF. Mínimo de 3 caracteres, como o servidor.
+  let pendingProponentId = null;
+
+  /**
+   * A lista sempre mostra apenas proponentes do tipo escolhido no bloco — o rótulo das
+   * colunas e o campo de busca acompanham (razão social/CNPJ em PJ, nome/CPF em PF).
    */
-  const MIN_SEARCH_LENGTH = 3;
-  const digits = (text) => text.replace(/\D/g, '');
-
-  function proponentSearchText(proponent) {
-    if (proponent.type === 'PF') return [proponent.personName, proponent.socialName, proponent.cpf, digits(proponent.cpf)].join(' ');
-    return [
-      proponent.tradingName, proponent.companyName, proponent.cnpj, digits(proponent.cnpj),
-      ...proponent.representatives.map((rep) => rep.name),
-    ].join(' ');
-  }
-
-  function renderProponentResults() {
+  function renderProponentRows() {
+    const type = proponentType();
+    const individual = type === 'PF';
     const term = el('proponentSearch').value.trim().toLowerCase();
-    const empty = el('proponentEmpty');
+    const rows = proponentsByType(type).filter((proponent) => !term ||
+      `${proponentName(proponent)} ${proponentShortName(proponent)} ${proponentDocument(proponent)}`.toLowerCase().includes(term));
 
-    if (term.length < MIN_SEARCH_LENGTH) {
-      el('proponentResults').innerHTML = '';
-      empty.textContent = `Digite ao menos ${MIN_SEARCH_LENGTH} caracteres e clique na lupa para buscar.`;
-      empty.hidden = false;
-      return;
-    }
+    el('proponentRows').innerHTML = rows.map((proponent) => `
+      <tr data-proponent-id="${escapeHtml(proponent.id)}" class="${pendingProponentId === proponent.id ? 'is-picked' : ''}">
+        <td><input type="radio" name="proponentPick" value="${escapeHtml(proponent.id)}" ${pendingProponentId === proponent.id ? 'checked' : ''} aria-label="Selecionar ${escapeHtml(proponentName(proponent))}"></td>
+        <td>
+          <span style="font-weight:500">${escapeHtml(proponentName(proponent))}</span><br>
+          <span class="ep__meta">${escapeHtml(proponentShortName(proponent))}</span>
+        </td>
+        <td class="money">${escapeHtml(proponentDocument(proponent))}</td>
+        <td>${individual
+          ? (proponentArtists(proponent.id)[0] || { eventTypes: [] }).eventTypes.length
+          : proponentArtists(proponent.id).length}</td>
+      </tr>`).join('');
 
-    const rows = proponentsByType(proponentType())
-      .filter((proponent) => proponentSearchText(proponent).toLowerCase().includes(term));
-
-    el('proponentResults').innerHTML = rows.map((proponent) => proponentCard(proponent, 'button')).join('');
-    empty.textContent = isIndividualProponent()
-      ? 'Nenhuma pessoa física encontrada para a busca.'
-      : 'Nenhuma empresa encontrada para a busca.';
-    empty.hidden = rows.length > 0;
+    el('proponentEmpty').hidden = rows.length > 0;
+    const picked = findProponent(pendingProponentId);
+    el('proponentModalMsg').textContent = picked
+      ? `Selecionado: ${proponentName(picked)}`
+      : 'Nenhum proponente selecionado.';
+    el('btnConfirmProponent').disabled = !pendingProponentId;
   }
 
   function syncProponentModalChrome() {
     const individual = isIndividualProponent();
     el('proponentModalTitle').textContent = individual
-      ? 'Procure por uma pessoa física registrada'
-      : 'Procure por uma empresa registrada';
+      ? 'Selecionar proponente pessoa física'
+      : 'Selecionar proponente pessoa jurídica';
     el('proponentModalHint').textContent = individual
-      ? 'Busque por nome, nome social ou CPF. A pessoa escolhida é o artista dos eventos planejados.'
-      : 'Busque por nome fantasia, razão social, CNPJ ou nome do representante legal.';
+      ? 'Pessoas físicas cadastradas como artistas. A pessoa escolhida é o artista dos eventos planejados.'
+      : 'Empresas cadastradas com artistas agenciados. Selecione uma para continuar.';
     el('proponentSearch').placeholder = individual
-      ? 'Nome, nome social ou CPF'
-      : 'Nome fantasia, razão social, CNPJ ou representante legal';
+      ? 'Buscar por nome ou CPF…'
+      : 'Buscar por razão social, nome fantasia ou CNPJ…';
+    el('proponentColName').textContent = individual ? 'Nome civil / Nome artístico' : 'Razão social / Nome fantasia';
+    el('proponentColDoc').textContent = individual ? 'CPF' : 'CNPJ';
+    el('proponentColArtists').textContent = individual ? 'Atrações' : 'Artistas';
+    el('proponentEmpty').textContent = individual
+      ? 'Nenhuma pessoa física encontrada para a busca.'
+      : 'Nenhuma empresa encontrada para a busca.';
   }
 
   function openProponentModal() {
+    pendingProponentId = val('proponentId') || null;
     el('proponentSearch').value = '';
     syncProponentModalChrome();
-    renderProponentResults();
+    renderProponentRows();
     el('proponentModal').hidden = false;
     el('proponentSearch').focus();
   }
@@ -2183,21 +2020,22 @@
   }
 
   el('btnOpenProponentModal').addEventListener('click', openProponentModal);
-  el('btnProponentDetails').addEventListener('click', openProponentDetail);
-  el('proponentSearchForm').addEventListener('submit', (event) => {
-    event.preventDefault();
-    renderProponentResults();
+  el('proponentSearch').addEventListener('input', renderProponentRows);
+
+  el('proponentRows').addEventListener('click', (event) => {
+    const row = event.target.closest('tr[data-proponent-id]');
+    if (!row) return;
+    pendingProponentId = row.dataset.proponentId;
+    renderProponentRows();
   });
 
-  el('proponentResults').addEventListener('click', (event) => {
-    const card = event.target.closest('[data-proponent-id]');
-    if (!card) return;
-    const pickedId = card.dataset.proponentId;
-    const changed = pickedId !== val('proponentId');
-    el('proponentId').value = pickedId;
+  el('btnConfirmProponent').addEventListener('click', () => {
+    if (!pendingProponentId) return;
+    const changed = pendingProponentId !== val('proponentId');
+    el('proponentId').value = pendingProponentId;
     closeProponentModal();
     refresh();
-    const proponent = findProponent(pickedId);
+    const proponent = findProponent(pendingProponentId);
     const shortName = proponentShortName(proponent);
     if (!changed) {
       showToast(`Proponente "${shortName}" mantido.`);
@@ -2223,9 +2061,10 @@
       /* Em PF o artista é travado no proponente; em PJ volta a ser escolha por evento. */
       document.querySelectorAll('#eventsList select[data-role="artist"]').forEach((select) => { select.value = ''; });
       if (!el('proponentModal').hidden) {
+        pendingProponentId = null;
         syncProponentModalChrome();
         el('proponentSearch').value = '';
-        renderProponentResults();
+        renderProponentRows();
       }
       refresh();
       if (hadProponent) {
@@ -2235,11 +2074,8 @@
   });
 
   document.querySelectorAll('[data-modal-close]').forEach((node) => node.addEventListener('click', closeProponentModal));
-  document.querySelectorAll('[data-detail-close]').forEach((node) => node.addEventListener('click', closeProponentDetail));
   document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') return;
-    if (!el('proponentDetailModal').hidden) closeProponentDetail();
-    if (!el('proponentModal').hidden) closeProponentModal();
+    if (event.key === 'Escape' && !el('proponentModal').hidden) closeProponentModal();
   });
 
   /* ---------------- modos (radio) ---------------- */
