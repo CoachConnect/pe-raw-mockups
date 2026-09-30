@@ -3,8 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V1 · Dossiê — Pedido 11159</title>
+<title>V3 · Acompanhamento — Pedido 11231</title>
 <link rel="stylesheet" href="../../styles/global.css">
+<style>
+/* v3: geração de documentos em lote */
+body[data-page="acompanhamento"] .btn--primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+body[data-page="acompanhamento"] .btn--primary:hover{background:var(--c-primary-hover);border-color:var(--c-primary-hover);color:#fff}
+body[data-page="acompanhamento"] .btn:disabled,
+body[data-page="acompanhamento"] .btn:disabled:hover{opacity:.5;cursor:not-allowed;border-color:var(--c-border);color:var(--c-text);background:#fff}
+body[data-page="acompanhamento"] .btn--primary:disabled,
+body[data-page="acompanhamento"] .btn--primary:disabled:hover{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+input[type="checkbox"]:focus-visible,input[type="radio"]:focus-visible{outline:2px solid var(--c-primary);outline-offset:2px}
+.demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:8px 12px;margin-bottom:14px;border:1px dashed var(--st-draft-border);background:var(--st-draft-bg);color:var(--st-draft-text);border-radius:var(--radius);font-size:12px}
+.demo label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.deadline--expired{border-color:var(--c-danger-border);background:var(--c-danger-bg)}
+.deadline--expired .deadline__date{color:var(--c-danger-text)}
+.deadline__lock{display:block;margin-top:4px;color:var(--c-danger-text);font-weight:600;font-size:12px}
+.gen-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:14px}
+.gen-progress{border:1px solid var(--c-primary-border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;background:#fff}
+.gen-progress--done{border-color:var(--c-ok-border)}
+.gen-progress--fail{border-color:var(--c-danger-border)}
+.gen-progress__line{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:8px}
+.gen-progress__title{font-size:14px}
+body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none}
+.gen-progress .progress__track{height:8px;border-radius:4px}
+.gen-progress .progress__bar{background:var(--c-primary);transition:width .4s ease}
+.gen-progress--done .progress__bar{background:var(--c-ok)}
+.gen-progress p{margin:8px 0 0}
+.gen-lots{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px;font-size:12px}
+.gen-lots li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.gen-lots summary{cursor:pointer;font-size:12px;color:var(--c-text-2);margin-top:8px}
+.gen-fails{display:grid;gap:6px;margin-top:10px}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.gen-progress .progress__bar{transition:none}}
+.picks{border:1px solid var(--c-border-2);border-radius:6px;padding:0;margin:0 0 14px;min-width:0}
+.picks legend{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--c-text-2);padding:0 6px;margin-left:8px}
+.pick{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px 10px;padding:10px 12px;border-bottom:1px solid var(--c-border-2)}
+.pick:last-child{border-bottom:0}
+.pick input{margin-top:4px}
+.pick__main{flex:1 1 240px;min-width:0;cursor:pointer}
+.pick__main .file__meta{display:block}
+.pick__pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:flex-end}
+.pick--done{background:#fafafa}
+.pick--done .pick__main{cursor:default;color:var(--c-text-2)}
+.gen-scope{display:flex;flex-direction:column;gap:6px;border:0;padding:0;margin:0 0 10px}
+.gen-scope label,.gen-artists label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}
+.gen-artists{display:grid;gap:6px 14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));padding:10px;border:1px solid var(--c-border-2);border-radius:6px}
+.gen-artists[aria-disabled="true"]{opacity:.5}
+.gen-summary{font-size:13px;color:var(--c-text)}
+.regen-list{margin:10px 0 0;padding-left:18px;font-size:13px}
+.regen-list li{margin-bottom:4px}
+</style>
 </head>
 <body data-page="acompanhamento">
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -12,226 +62,122 @@
 <header class="appbar">
   <button class="appbar__back" type="button">← Voltar</button>
   <div class="appbar__id">
-    <span class="appbar__num">#11159</span>
-    <span class="appbar__name">LAGUZ · Espetáculo de Circo — Suspiros e Burbujas</span>
+    <span class="appbar__num">#11231</span>
+    <span class="appbar__name">Circulando Produções Culturais · Emenda 2026.0417</span>
   </div>
-  <span class="pill pill--warn">Em homologação</span>
-  <span class="pill pill--neutral">Documentação assinada enviada</span>
+  <span class="pill pill--neutral">Emenda parlamentar</span>
+  <span class="pill pill--warn">Aguardando documentação assinada</span>
   <div class="appbar__spacer"></div>
-  <span class="appbar__updated">Atualizado em 21/08/2026 13:46</span>
+  <span class="appbar__updated">Atualizado em 30/09/2026 16:37</span>
 </header>
 
 <div class="ribbon">
   <div class="ribbon__inner">
     <div class="kpi kpi--ok">
       <div class="kpi__label">Valor do contrato</div>
-      <div class="kpi__value">R$ 5.500,00</div>
-      <div class="kpi__hint">Parcela única · abaixo do limite</div>
+      <div class="kpi__value" id="kpi-valor">—</div>
+      <div class="kpi__hint">Parcela única · soma dos artistas</div>
     </div>
     <div class="kpi">
-      <div class="kpi__label">Apresentação</div>
-      <div class="kpi__value">15/04/2026</div>
-      <div class="kpi__hint">14:00 – 15:00 · 1 ocorrência</div>
+      <div class="kpi__label">Artistas</div>
+      <div class="kpi__value" id="kpi-artistas">—</div>
+      <div class="kpi__hint" id="kpi-artistas-hint">—</div>
     </div>
     <div class="kpi">
-      <div class="kpi__label">Unidade requisitante</div>
-      <div class="kpi__value">Centro Cultural Grajaú</div>
-      <div class="kpi__hint">Resp.: Fábio Penna Montanini</div>
+      <div class="kpi__label">Produtor (proponente)</div>
+      <div class="kpi__value">Circulando Produções</div>
+      <div class="kpi__hint">PJ · envia todos os documentos</div>
     </div>
     <div class="kpi kpi--danger">
       <div class="kpi__label">Processo SEI</div>
       <div class="kpi__value">Não informado</div>
       <div class="kpi__hint">Obrigatório para homologar</div>
     </div>
-    <div class="kpi kpi--warn">
-      <div class="kpi__label">Certidões</div>
-      <div class="kpi__value">6 vencem em 19 dias</div>
-      <div class="kpi__hint">13 emitidas · 0 vencidas</div>
+    <div class="kpi kpi--warn" id="kpi-prazo">
+      <div class="kpi__label">Prazo dos documentos</div>
+      <div class="kpi__value" id="kpi-prazo-value">10/10/2026</div>
+      <div class="kpi__hint" id="kpi-prazo-hint">10 dias · prazo único do pedido</div>
     </div>
     <div class="kpi kpi--danger">
       <div class="kpi__label">Pendências</div>
-      <div class="kpi__value">3 bloqueantes</div>
-      <div class="kpi__hint">Referência: 26/02/2026</div>
+      <div class="kpi__value" id="kpi-pendencias">—</div>
+      <div class="kpi__hint" id="kpi-pendencias-hint">—</div>
     </div>
   </div>
 </div>
 
 <div class="layout" id="conteudo">
 
-  <!-- ÍNDICE COM STATUS: substitui os 3 níveis de abas -->
-  <nav class="toc" aria-label="Seções do dossiê">
-    <div class="toc__title">Dossiê</div>
-    <a href="#s-pendencias" class="is-active"><span class="dot dot--danger"></span>Pendências<span class="count">3</span></a>
-    <a href="#s-evento"><span class="dot"></span>Evento e apresentação</a>
-    <a href="#s-artista"><span class="dot dot--warn"></span>Artista<span class="count">1</span></a>
-    <a href="#s-proponente"><span class="dot"></span>Proponente</a>
-    <a href="#s-certidoes"><span class="dot dot--warn"></span>Certidões<span class="count">13</span></a>
-    <a href="#s-contrato"><span class="dot"></span>Contrato e pagamento</a>
-    <a href="#s-documentos"><span class="dot dot--danger"></span>Documentos<span class="count">3</span></a>
+  <nav class="toc" aria-label="Seções do acompanhamento">
+    <div class="toc__title">Pedido</div>
+    <a href="#s-pendencias" class="is-active"><span class="dot dot--danger"></span>Pendências<span class="count" id="toc-pend">—</span></a>
+    <a href="#s-proponente"><span class="dot"></span>Produtor (proponente)</a>
+    <a href="#s-certidoes"><span class="dot dot--warn"></span>Certidões<span class="count">12</span></a>
+    <a href="#s-artistas"><span class="dot dot--danger"></span>Artistas<span class="count" id="toc-art">—</span></a>
+    <a href="#s-contrato"><span class="dot dot--danger"></span>Contrato e pagamento</a>
+    <a href="#s-documentos"><span class="dot dot--danger"></span>Documentos p/ assinatura<span class="count" id="toc-docs">—</span></a>
+    <a href="#s-adicionais"><span class="dot dot--none"></span>Documentos adicionais</a>
     <a href="#s-justificativas"><span class="dot"></span>Justificativas</a>
     <a href="#s-historico" data-open-history><span class="dot dot--none"></span>Histórico</a>
   </nav>
 
   <main class="doc">
 
-    <!-- 1. PENDÊNCIAS — o que o layout atual só revela clicando em 12 abas -->
+    <!-- 1. PENDÊNCIAS: do pedido + resumo por artista -->
     <section class="card" id="s-pendencias">
       <div class="card__head" data-toggle>
         <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Pendências desta análise</h2>
-        <span class="pill pill--danger">3 bloqueantes · 1 aviso</span>
+        <span class="pill pill--danger" id="pend-pill">—</span>
       </div>
       <div class="card__body" style="display:flex;flex-direction:column;gap:10px">
+        <h3 class="subhead">Do pedido</h3>
         <div class="alert alert--danger">
           <span aria-hidden="true">●</span>
-          <span><b>Processo SEI não informado</b>Campo obrigatório em “Dados complementares”. Sem ele o pedido não segue para assinatura.
-            <button class="btn btn--sm" type="button" style="margin-top:8px">Preencher agora</button></span>
-        </div>
-        <div class="alert alert--danger">
-          <span aria-hidden="true">●</span>
-          <span><b>Parcela única com vencimento inválido (31/12/1969)</b>Data nula gravada no processo de pagamento. Corrigir antes de gerar a ordem.
-            <button class="btn btn--sm" type="button" style="margin-top:8px">Abrir parcela</button></span>
-        </div>
-        <div class="alert alert--danger">
-          <span aria-hidden="true">●</span>
-          <span><b>Reabertura em aberto desde 23/02/2026</b>Fabrícia Cibelle Barros da Silva solicitou o cadastro do RG de Felipe Abreu Pereira na ficha técnica. Item ainda não conferido.
-            <button class="btn btn--sm" type="button" style="margin-top:8px">Ir para ficha técnica</button></span>
+          <span><b>Processo SEI não informado</b>Cada pedido tem o seu processo SEI. Sem ele o pedido não segue para homologação.
+            <button class="btn btn--sm" type="button" style="margin-top:8px" data-goto-section="s-contrato">Informar agora</button></span>
         </div>
         <div class="alert alert--warn">
           <span aria-hidden="true">▲</span>
-          <span><b>6 certidões vencem em 19 dias (17/03/2026)</b>CNPJ, FGTS, CCM, CADIN, TCE, E-Sanções, CNJ, CEIS e Listagem de Apenados. Se a assinatura passar dessa data, será preciso reemitir.</span>
+          <span><b>4 certidões do produtor vencem em 25 dias (25/10/2026)</b>CNPJ, FGTS, CCM e CADIN. Se a assinatura passar dessa data, será preciso reemitir.</span>
         </div>
-      </div>
-    </section>
 
-    <!-- 2. EVENTO -->
-    <section class="card" id="s-evento">
-      <div class="card__head" data-toggle>
-        <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h2>Evento e apresentação</h2>
-        <span class="pill pill--ok">Completo</span>
-      </div>
-      <div class="card__body">
-        <dl class="kv kv--3">
-          <div><dt>Nome do evento (objeto)</dt><dd>Espetáculo de Circo — Suspiros e Burbujas (cia itinerante, agenda fev a jun 2026)</dd></div>
-          <div><dt>Unidade requisitante</dt><dd><a href="#s-evento">Centro Cultural Grajaú</a></dd></div>
-          <div><dt>Nome sugerido</dt><dd>Suspiros e Burbujas</dd></div>
-          <div><dt>Data e horário</dt><dd>15/04/2026 · 14:00 – 15:00 <span class="pill pill--neutral">1h</span></dd></div>
-          <div><dt>Tipo de evento</dt><dd>Espetáculo de Circo</dd></div>
-          <div><dt>Categoria</dt><dd>Comédia</dd></div>
-          <div><dt>Público alvo</dt><dd>Criança</dd></div>
-          <div><dt>Classificação indicativa</dt><dd>LIVRE (L)</dd></div>
-          <div><dt>Participações especiais</dt><dd>—</dd></div>
-          <div><dt>Reversão de bilheteria</dt><dd>Não</dd></div>
-          <div><dt>Local</dt><dd>Centro Cultural Grajaú</dd></div>
-          <div><dt>Valor da apresentação</dt><dd>R$ 5.500,00</dd></div>
-        </dl>
-
-        <h3 class="subhead">Sinopse e release</h3>
-        <div class="longtext" data-clamped="true" id="txt-sinopse">
-          <p><b>Sinopse.</b> Romina Sanchez e Felipe Abreu dão vida aos palhaços Burbuja e Suspiro. Eles chegam carregando mais do que malas — trazem histórias, sotaques e uma paixão pelo circo que contagia. Em “Suspiros e Burbujas”, números tradicionais se transformam em cenas vivas: malabares viram dança, bolhas de sabão se tornam poesia no ar, e o público se faz parte essencial da brincadeira.</p>
-          <p>Dessa forma, são percebidas as costuras da arte circense: os ensaios, as tentativas e, principalmente, a alegria de fazer junto. Um espetáculo que celebra o que o circo tem de melhor: a capacidade de unir pessoas através do riso.</p>
-          <p><b>Release.</b> “Suspiros e Burbujas” é um espetáculo circense que encanta com música, acrobacias, malabares e muito humor. Romina da Patagônia, a palhaça Burbuja, é acrobata, acordeonista e mestre em bolhas de sabão gigantes, enquanto Felipe, de Fortaleza, interpreta o palhaço Suspiro, exibindo suas habilidades em acrobacia e malabarismo.</p>
-          <p>Desde 2015, “Suspiros e Burbujas” tem feito parte de renomados festivais no Brasil e na Argentina, incluindo o Encontro de Palhaços Eu Riso (SP), Mostra Sesc Cariri de Culturas (CE), Festival Bonecos, Circo e Artes de Rua dos Inhamuns, Festival de Circo do Ceará (CE), FIC (SP), Festival Sesc Circo (MA), TIC Festival Internacional de Teatro Infantil (CE), Encontro Internacional de Palhaços Circo Volante (MG) e Picadeiro Móvel (RJ).</p>
-        </div>
-        <button class="btn btn--sm btn--ghost longtext__toggle" type="button" data-expand="txt-sinopse">Ler tudo ▾</button>
-
-        <h3 class="subhead">Fotos para divulgação <span class="pill pill--neutral">4 · créditos preenchidos</span></h3>
+        <h3 class="subhead" style="margin-top:14px">Por artista <span class="pill pill--neutral" id="pend-art-count">—</span></h3>
         <div class="tbl-wrap">
           <table class="tbl">
-            <caption class="sr">Fotos para divulgação e seus créditos</caption>
-            <thead><tr><th style="width:64px">Foto</th><th>Arquivo</th><th>Crédito</th><th style="width:120px"></th></tr></thead>
-            <tbody>
-              <tr><td><div style="width:44px;height:32px;border-radius:4px;background:linear-gradient(135deg,#ffd591,#ff9c6e)"></div></td><td>foto-01.jpg</td><td>Freddy Costa</td><td><button class="btn btn--sm" type="button">Baixar</button></td></tr>
-              <tr><td><div style="width:44px;height:32px;border-radius:4px;background:linear-gradient(135deg,#b7eb8f,#95de64)"></div></td><td>foto-02.jpg</td><td>Freddy Costa</td><td><button class="btn btn--sm" type="button">Baixar</button></td></tr>
-              <tr><td><div style="width:44px;height:32px;border-radius:4px;background:linear-gradient(135deg,#91caff,#69b1ff)"></div></td><td>foto-03.jpg</td><td>Freddy Costa</td><td><button class="btn btn--sm" type="button">Baixar</button></td></tr>
-              <tr><td><div style="width:44px;height:32px;border-radius:4px;background:linear-gradient(135deg,#d3adf7,#b37feb)"></div></td><td>foto-04.jpg</td><td>Freddy Costa</td><td><button class="btn btn--sm" type="button">Baixar</button></td></tr>
-            </tbody>
+            <caption class="sr">Pendências agrupadas por artista</caption>
+            <thead><tr><th>Artista</th><th>Pendência</th><th style="width:110px"></th></tr></thead>
+            <tbody id="pend-art-rows"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 3. ARTISTA -->
-    <section class="card" id="s-artista">
-      <div class="card__head" data-toggle>
-        <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h2>Artista · LAGUZ <span class="pill pill--neutral">Coletivo</span></h2>
-        <span class="pill pill--warn">1 pendência</span>
-      </div>
-      <div class="card__body">
-        <h3 class="subhead">Líder do grupo</h3>
-        <dl class="kv kv--3">
-          <div><dt>Nome completo</dt><dd>Romina Noelia Sanchez</dd></div>
-          <div><dt>Nome artístico</dt><dd>Burbujas</dd></div>
-          <div><dt>Nome social</dt><dd>—</dd></div>
-          <div><dt>Data de nascimento</dt><dd>10/09/1983 <span class="kpi__hint">(42 anos)</span></dd></div>
-          <div><dt>CPF/CIN</dt><dd class="mono">622.759.073-86 <button class="copy" type="button" title="Copiar">⧉</button></dd></div>
-          <div><dt>RG</dt><dd class="mono">6013519</dd></div>
-          <div><dt>RNE / RNM</dt><dd class="mono">V601351-9</dd></div>
-          <div><dt>Nacionalidade</dt><dd>Argentina <span class="pill pill--neutral">Artista internacional</span></dd></div>
-          <div><dt>Pessoa com deficiência</dt><dd>Não</dd></div>
-          <div><dt>Gênero</dt><dd>Mulher cisgênero</dd></div>
-          <div><dt>Raça/Cor</dt><dd>Parda</dd></div>
-          <div><dt>Grau de instrução</dt><dd>Ensino Superior</dd></div>
-          <div><dt>E-mail</dt><dd>laguzproducoes@gmail.com <button class="copy" type="button" title="Copiar">⧉</button></dd></div>
-          <div><dt>Telefone</dt><dd class="mono">(85) 99973-9981 <button class="copy" type="button" title="Copiar">⧉</button></dd></div>
-          <div><dt>Endereço de referência</dt><dd>Rua Paulo Setubal, 531 — Messejana, Fortaleza/CE, 60842250</dd></div>
-        </dl>
-
-        <h3 class="subhead">Ficha técnica <span class="pill pill--warn">RG ausente em 1 integrante</span></h3>
-        <div class="tbl-wrap">
-          <table class="tbl">
-            <thead><tr><th>Integrante</th><th>Nome artístico</th><th>Nacionalidade</th><th>CPF/CIN</th><th>RG / RNM</th><th class="num">Idade</th><th>Função</th></tr></thead>
-            <tbody>
-              <tr>
-                <td>Romina Noelia Sanchez</td><td>Burbuja</td><td>Argentina</td>
-                <td class="mono">622.759.073-86</td><td class="mono">V601351-9</td><td class="num">42</td>
-                <td>Palhaça, acordeonista, acrobata, artista circense</td>
-              </tr>
-              <tr style="background:var(--c-warn-bg)">
-                <td>Felipe Abreu Pereira</td><td>Suspiros</td><td>Brasileira</td>
-                <td class="mono">035.469.383-21</td>
-                <td class="mono">200.300.914-7 <span class="pill pill--warn">informado na reabertura</span></td>
-                <td class="num">37</td>
-                <td>Palhaço, malabarista, acrobata, artista circense</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3 class="subhead">Documentos do artista</h3>
-        <div style="border:1px solid var(--c-border-2);border-radius:6px">
-          <div class="file"><span class="file__ico">PDF</span><span class="file__name">Clipping dos artistas</span><span class="file__meta">enviado 19/02/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>
-          <div class="file"><span class="file__ico">PDF</span><span class="file__name">DRT (teatro / dança / circo)</span><span class="file__meta">enviado 19/02/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>
-          <div class="file"><span class="file__ico">PDF</span><span class="file__name">RG/CPF, CNH ou RNE do líder do grupo</span><span class="file__meta">enviado 19/02/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>
-          <div class="file"><span class="file__ico">PDF</span><span class="file__name">Currículo do coletivo</span><span class="file__meta">enviado 19/02/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>
-          <div class="file"><span class="file__ico">PDF</span><span class="file__name">Currículo do líder do grupo</span><span class="file__meta">enviado 19/02/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. PROPONENTE -->
+    <!-- 2. PRODUTOR / PROPONENTE (nível do pedido) -->
     <section class="card" id="s-proponente">
       <div class="card__head" data-toggle>
         <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h2>Proponente <span class="pill pill--neutral">Pessoa Jurídica</span></h2>
+        <h2>Produtor cultural (proponente) <span class="pill pill--neutral">Pessoa Jurídica</span></h2>
         <span class="pill pill--ok">Completo</span>
       </div>
       <div class="card__body">
+        <div class="alert alert--info" style="margin-bottom:14px">
+          <span aria-hidden="true">ℹ</span>
+          <span>O produtor agencia todos os artistas deste pedido e é quem envia os documentos assinados.</span>
+        </div>
         <dl class="kv kv--3">
-          <div><dt>Razão social</dt><dd>25.434.409 ROMINA NOELIA SANCHEZ</dd></div>
-          <div><dt>Nome fantasia</dt><dd>Laguz</dd></div>
-          <div><dt>CNPJ</dt><dd class="mono">25.434.409/0001-47 <button class="copy" type="button" title="Copiar">⧉</button></dd></div>
-          <div><dt>CCM</dt><dd class="mono">000000</dd></div>
-          <div><dt>Endereço</dt><dd>Rua Paulo Setubal, 531 — Messejana, Fortaleza/CE, 60842250</dd></div>
-          <div><dt>Representante legal</dt><dd>Romina Noelia Sanchez</dd></div>
+          <div><dt>Razão social</dt><dd>Circulando Produções Culturais Ltda.</dd></div>
+          <div><dt>Nome fantasia</dt><dd>Circulando Produções</dd></div>
+          <div><dt>CNPJ</dt><dd class="mono">41.827.306/0001-92 <button class="copy" type="button" title="Copiar CNPJ" aria-label="Copiar CNPJ">⧉</button></dd></div>
+          <div><dt>CCM</dt><dd class="mono">7.412.908-3</dd></div>
+          <div><dt>Endereço</dt><dd>Rua Cel. Luís Barroso, 212 — Santo Amaro, São Paulo/SP, 04750-030</dd></div>
+          <div><dt>Representante legal</dt><dd>Márcia Helena Toledo</dd></div>
         </dl>
         <h3 class="subhead">Dados bancários</h3>
         <dl class="kv kv--3">
-          <div><dt>Banco</dt><dd>077 — Banco Inter</dd></div>
-          <div><dt>Agência</dt><dd class="mono">001</dd></div>
-          <div><dt>Conta corrente</dt><dd class="mono">32622210</dd></div>
+          <div><dt>Banco</dt><dd>001 — Banco do Brasil</dd></div>
+          <div><dt>Agência</dt><dd class="mono">1532-8</dd></div>
+          <div><dt>Conta corrente</dt><dd class="mono">48.219-0</dd></div>
         </dl>
         <div class="alert alert--info" style="margin-top:14px">
           <span aria-hidden="true">ℹ</span>
@@ -240,87 +186,120 @@
       </div>
     </section>
 
-    <!-- 5. CERTIDÕES — tabela única com prazo, no lugar de 2 sub-abas de listas -->
-    <section class="card" id="s-certidoes">
+    <!-- 3. CERTIDÕES (do produtor) -->
+    <section class="card" id="s-certidoes" data-collapsed="true">
       <div class="card__head" data-toggle>
         <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h2>Certidões, impedimentos e apenados</h2>
-        <span class="pill pill--warn">9 vencem em 19 dias</span>
+        <h2>Certidões do produtor</h2>
+        <span class="pill pill--warn">4 vencem em 25 dias</span>
       </div>
       <div class="card__body">
         <div class="alert alert--warn" style="margin-bottom:14px">
           <span aria-hidden="true">▲</span>
-          <span><b>Data de referência: 26/02/2026</b>Certidões com validade de 30 dias precisam estar vigentes na data da assinatura do contrato, não na data da análise.</span>
+          <span><b>Data de referência: 30/09/2026</b>Certidões com validade de 30 dias precisam estar vigentes na data da assinatura do contrato, não na data da análise.</span>
         </div>
         <div class="tbl-wrap">
           <table class="tbl">
             <thead><tr><th>Certidão</th><th>Origem</th><th>Válida até</th><th class="num">Prazo</th><th>Arquivo</th><th style="width:150px">Ações</th></tr></thead>
             <tbody>
-              <tr><td><b>CNPJ</b><div class="file__meta">Inscrição e situação cadastral</div></td><td>Receita Federal</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>CNPJ Romina.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>FGTS</b><div class="file__meta">Regularidade do empregador</div></td><td>Caixa</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>Consulta Regularidade do Empregador.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>CND</b><div class="file__meta">Débitos e créditos tributários federais</div></td><td>Receita Federal</td><td>07/07/2026</td><td class="num"><span class="pill pill--ok">131 dias</span></td><td>CND Romina.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
-              <tr><td><b>CNDT</b><div class="file__meta">Débitos trabalhistas</div></td><td>TST</td><td>18/08/2026</td><td class="num"><span class="pill pill--ok">173 dias</span></td><td>CNDT - 1808.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
-              <tr><td><b>CTM</b><div class="file__meta">Tributos municipais</div></td><td>Prefeitura</td><td>07/07/2026</td><td class="num"><span class="pill pill--ok">131 dias</span></td><td>Relatorio_CertidaoNegativa.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
-              <tr><td><b>CCM</b><div class="file__meta">Contribuintes mobiliários</div></td><td>Prefeitura</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>Emissao_FDC_2543440900014.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>CADIN</b><div class="file__meta">Créditos não quitados</div></td><td>Município</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>Comprovante (19).pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>TCE</b><div class="file__meta">Apenados / impedimentos de licitar</div></td><td>TCE</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>Certidão Apenados (6).pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>E-Sanções</b></td><td>Estado</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>E-Sanções.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>CNJ</b></td><td>CNJ</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>CNJ.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>TCU</b></td><td>TCU</td><td>17/03/2027</td><td class="num"><span class="pill pill--ok">1 ano</span></td><td>Certidão negativa (7).pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
-              <tr><td><b>CEIS</b><div class="file__meta">Empresas inidôneas e suspensas</div></td><td>CGU</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>Consulta de Sanções — Portal da Transparência.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
-              <tr><td><b>Listagem de apenados</b></td><td>Coord. de Bens e Serviços</td><td>17/03/2026</td><td class="num"><span class="pill pill--warn">19 dias</span></td><td>3-listagem-empresas-penalizadas.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+              <tr><td><b>CNPJ</b><div class="file__meta">Inscrição e situação cadastral</div></td><td>Receita Federal</td><td>25/10/2026</td><td class="num"><span class="pill pill--warn">25 dias</span></td><td>CNPJ Circulando.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+              <tr><td><b>FGTS</b><div class="file__meta">Regularidade do empregador</div></td><td>Caixa</td><td>25/10/2026</td><td class="num"><span class="pill pill--warn">25 dias</span></td><td>CRF FGTS.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+              <tr><td><b>CND</b><div class="file__meta">Débitos tributários federais</div></td><td>Receita Federal</td><td>14/02/2027</td><td class="num"><span class="pill pill--ok">137 dias</span></td><td>CND Circulando.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
+              <tr><td><b>CNDT</b><div class="file__meta">Débitos trabalhistas</div></td><td>TST</td><td>20/03/2027</td><td class="num"><span class="pill pill--ok">171 dias</span></td><td>CNDT.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
+              <tr><td><b>CTM</b><div class="file__meta">Tributos municipais</div></td><td>Prefeitura</td><td>14/02/2027</td><td class="num"><span class="pill pill--ok">137 dias</span></td><td>Certidao_Tributos.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
+              <tr><td><b>CCM</b><div class="file__meta">Contribuintes mobiliários</div></td><td>Prefeitura</td><td>25/10/2026</td><td class="num"><span class="pill pill--warn">25 dias</span></td><td>FDC_41827306.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+              <tr><td><b>CADIN</b><div class="file__meta">Créditos não quitados</div></td><td>Município</td><td>25/10/2026</td><td class="num"><span class="pill pill--warn">25 dias</span></td><td>Cadin.pdf</td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Reemitir</button></td></tr>
+              <tr><td><b>TCE</b><div class="file__meta">Apenados / impedimentos de licitar</div></td><td>TCE</td><td>30/11/2026</td><td class="num"><span class="pill pill--ok">61 dias</span></td><td>Apenados TCE.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
+              <tr><td><b>E-Sanções</b></td><td>Estado</td><td>30/11/2026</td><td class="num"><span class="pill pill--ok">61 dias</span></td><td>E-Sancoes.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
+              <tr><td><b>CNJ</b></td><td>CNJ</td><td>30/11/2026</td><td class="num"><span class="pill pill--ok">61 dias</span></td><td>CNJ.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
+              <tr><td><b>TCU</b></td><td>TCU</td><td>30/09/2027</td><td class="num"><span class="pill pill--ok">1 ano</span></td><td>TCU.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
+              <tr><td><b>CEIS</b><div class="file__meta">Empresas inidôneas e suspensas</div></td><td>CGU</td><td>30/11/2026</td><td class="num"><span class="pill pill--ok">61 dias</span></td><td>CEIS.pdf</td><td><button class="btn btn--sm" type="button">Ver</button></td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 6. CONTRATO -->
+    <!-- 4. ARTISTAS: tudo que é de artista fica aqui, agrupado por artista -->
+    <section class="card" id="s-artistas">
+      <div class="card__head" data-toggle>
+        <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h2>Artistas <span class="pill pill--neutral" id="art-head-count">—</span></h2>
+        <span class="pill pill--danger" id="art-head-pill">—</span>
+      </div>
+      <div class="card__body">
+        <div class="filterbar" role="search">
+          <label class="sr" for="art-search">Buscar artista</label>
+          <input type="search" id="art-search" placeholder="Buscar por artista, integrante ou local…">
+          <div class="seg" role="group" aria-label="Filtrar artistas por situação" id="art-filter">
+            <button type="button" data-filter="todos" aria-pressed="true">Todos <span data-count="todos"></span></button>
+            <button type="button" data-filter="pendencia" aria-pressed="false">Com pendência <span data-count="pendencia"></span></button>
+            <button type="button" data-filter="docs" aria-pressed="false">Docs a enviar <span data-count="docs"></span></button>
+            <button type="button" data-filter="completo" aria-pressed="false">Completos <span data-count="completo"></span></button>
+          </div>
+          <button class="btn btn--sm btn--ghost" type="button" data-expand-all="art-list">Expandir todos</button>
+          <button class="btn btn--sm btn--ghost" type="button" data-collapse-all="art-list">Recolher todos</button>
+          <span class="filterbar__count" id="art-count" aria-live="polite"></span>
+        </div>
+        <div id="art-list"></div>
+        <div class="empty" id="art-empty" hidden>Nenhum artista encontrado com esses filtros.</div>
+        <div style="margin-top:12px;text-align:right">
+          <button class="btn btn--sm btn--ghost" type="button" id="simulate" aria-pressed="false">Simular pedido com 20 artistas</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CONTRATO E PAGAMENTO (nível do pedido) -->
     <section class="card" id="s-contrato">
       <div class="card__head" data-toggle>
         <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Contrato e pagamento</h2>
-        <span class="pill pill--danger">2 pendências</span>
+        <span class="pill pill--danger">1 pendência</span>
       </div>
       <div class="card__body">
         <dl class="kv kv--3">
-          <div><dt>Processo SEI *</dt><dd><span class="miss">Não informado</span> <button class="btn btn--sm" type="button">Informar</button></dd></div>
-          <div><dt>Status de acompanhamento</dt><dd>Documentação assinada enviada</dd></div>
+          <div><dt>Processo SEI do pedido *</dt><dd><span class="miss">Não informado</span> <button class="btn btn--sm" type="button">Informar</button></dd></div>
+          <div><dt>Status de acompanhamento</dt><dd>Aguardando documentação assinada</dd></div>
           <div><dt>Fundamento legal</dt><dd>Portaria nº 34/SMC · art. 74, Lei 14.133/2021</dd></div>
-          <div><dt>Código do pedido</dt><dd class="mono">11159</dd></div>
+          <div><dt>Emenda parlamentar</dt><dd class="mono">2026.0417</dd></div>
+          <div><dt>Código do pedido</dt><dd class="mono">11231</dd></div>
+          <div><dt>Unidade requisitante</dt><dd>Centro Cultural Grajaú</dd></div>
           <div><dt>Responsável pelo pedido</dt><dd>Fábio Penna Montanini</dd></div>
-          <div><dt>Responsável pelo cadastro</dt><dd>Elizabete Alves Honorato</dd></div>
           <div><dt>Fiscal</dt><dd>Elizabete Alves Honorato <span class="file__meta">(SMC/CCULT/CCGPC)</span></dd></div>
           <div><dt>Suplente</dt><dd>Leandro Dias de Camargo <span class="file__meta">(SMC/CCULT/CCPC)</span></dd></div>
-          <div><dt>Projeto especial</dt><dd>Não</dd></div>
-          <div><dt>Pedido de reserva</dt><dd>Padrão</dd></div>
-          <div><dt>Nome da reserva</dt><dd>Programação de Atividades Culturais de Centros Culturais e Teatros</dd></div>
-          <div><dt>Despesas extraordinárias</dt><dd>Não</dd></div>
         </dl>
 
         <h3 class="subhead">Dotação e valores</h3>
         <dl class="kv kv--3">
-          <div><dt>Nº da dotação</dt><dd class="mono">25.10.13.392.3001.6.391.33903900.00.1.500.9001.1 <button class="copy" type="button" title="Copiar">⧉</button></dd></div>
-          <div><dt>Valor do contrato</dt><dd><b>R$ 5.500,00</b> <span class="file__meta">valor global para 1 apresentação</span></dd></div>
+          <div><dt>Nº da dotação</dt><dd class="mono">25.10.13.392.3001.6.392.33903900.00.1.500.9001.1 <button class="copy" type="button" title="Copiar dotação" aria-label="Copiar dotação">⧉</button></dd></div>
+          <div><dt>Valor do contrato</dt><dd><b id="ct-valor">—</b> <span class="file__meta" id="ct-valor-hint"></span></dd></div>
           <div><dt>Forma de pagamento</dt><dd>Parcela única — 30º dia após a entrega da documentação correta</dd></div>
         </dl>
 
-        <div class="alert alert--warn" style="margin-top:14px">
-          <span aria-hidden="true">▲</span>
-          <span>O somatório das contratações deste artista, no ano, na mesma unidade requisitante está <b>abaixo</b> do limite de R$ 65.492,11. Parecer jurídico dispensado.</span>
-        </div>
+        <details class="grp" style="margin-top:14px">
+          <summary>
+            <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="grp__title">Composição do valor por artista</span>
+            <span class="grp__meta" id="ct-comp-meta"></span>
+          </summary>
+          <div class="grp__body tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>Artista</th><th class="num">Apresentações</th><th class="num">Valor</th></tr></thead>
+              <tbody id="ct-comp-rows"></tbody>
+            </table>
+          </div>
+        </details>
 
         <h3 class="subhead">Processos de pagamento</h3>
         <div class="tbl-wrap">
           <table class="tbl">
-            <thead><tr><th>Parcela</th><th class="num">Valor</th><th>Vencimento</th><th>Situação</th><th>Nota fiscal</th><th style="width:120px"></th></tr></thead>
+            <thead><tr><th>Parcela</th><th class="num">Valor</th><th>Vencimento</th><th>Situação</th><th style="width:120px"></th></tr></thead>
             <tbody>
-              <tr style="background:var(--c-danger-bg)">
-                <td>Parcela única</td><td class="num">R$ 5.500,00</td>
-                <td><span class="miss" style="color:var(--c-danger-text);font-weight:600">31/12/1969 — data inválida</span></td>
-                <td><span class="pill pill--warn">Pendente</span></td>
-                <td><span class="file__meta">Nenhuma anexada</span></td>
-                <td><button class="btn btn--sm btn--danger" type="button">Corrigir</button></td>
+              <tr>
+                <td>Parcela única</td><td class="num" id="ct-parcela">—</td>
+                <td>30 dias após a documentação correta</td>
+                <td><span class="pill pill--neutral">Aguardando documentação</span></td>
+                <td><button class="btn btn--sm" type="button">Ver parcela</button></td>
               </tr>
             </tbody>
           </table>
@@ -328,71 +307,116 @@
       </div>
     </section>
 
-    <!-- 7. DOCUMENTOS -->
+    <!-- 6. DOCUMENTOS A GERAR/ASSINAR: prazo único do pedido + grupos por artista -->
     <section class="card" id="s-documentos">
       <div class="card__head" data-toggle>
         <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h2>Documentos do contrato</h2>
-        <span class="pill pill--danger">1 sem assinatura</span>
+        <h2>Documentos para assinatura</h2>
+        <span class="pill pill--danger" id="docs-head-pill">—</span>
       </div>
       <div class="card__body">
-        <div class="tbl-wrap">
-          <table class="tbl">
-            <thead><tr><th>Documento</th><th>Grupo</th><th>Escopo</th><th>Assinatura</th><th style="width:190px">Ações</th></tr></thead>
-            <tbody>
-              <tr><td><b>TESTE MARCELO STI — Dados Tarjados</b></td><td>Anexo</td><td><span class="pill pill--neutral">Pessoa Jurídica</span></td><td><span class="pill pill--ok">Assinado 24/02/2026</span></td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Baixar</button></td></tr>
-              <tr><td><b>Ficha técnica</b></td><td>Anexo · gerado</td><td><span class="pill pill--neutral">Artista</span></td><td><span class="pill pill--ok">Assinado 24/02/2026</span></td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Gerar novamente</button></td></tr>
-              <tr style="background:var(--c-danger-bg)"><td><b>Teste FCEA1 Solicitante</b></td><td>Assinável externo</td><td><span class="pill pill--neutral">Representante</span></td><td><span class="pill pill--danger">Aguardando assinatura</span></td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm btn--danger" type="button">Cobrar</button></td></tr>
-              <tr><td><b>Termo de contratação</b></td><td>Documento interno</td><td><span class="pill pill--neutral">Órgão</span></td><td><span class="pill pill--ok">Assinado 24/02/2026</span></td><td><button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Baixar</button></td></tr>
-            </tbody>
-          </table>
+        <div class="demo" role="group" aria-label="Controles de demonstração do protótipo">
+          <b>Demonstração</b>
+          <button class="btn btn--sm" type="button" id="demo-expired" aria-pressed="false">Simular prazo vencido</button>
+          <label><input type="checkbox" id="demo-fail" checked> Simular falha em 1 artista na próxima geração</label>
         </div>
 
-        <h3 class="subhead">Documentos adicionais</h3>
-        <div class="empty">Nenhum documento adicional anexado a este pedido. <button class="btn btn--sm" type="button" style="margin-left:8px">Anexar</button></div>
+        <div class="deadline" id="deadline">
+          <span>
+            <span class="file__meta" style="display:block">Prazo para envio dos documentos assinados (único para o pedido)</span>
+            <span class="deadline__date" id="deadline-date">10/10/2026</span> <span class="pill pill--warn" id="deadline-pill">faltam 10 dias</span>
+            <span class="deadline__lock" id="deadline-lock" hidden>Envio de documentos travado: o produtor só consegue enviar depois que o prazo for prorrogado.</span>
+          </span>
+          <span class="deadline__spacer"></span>
+          <span class="file__meta">Enviados sempre pelo produtor · Circulando Produções</span>
+          <button class="btn btn--sm" type="button" id="btn-prorrogar">Prorrogar prazo</button>
+        </div>
 
-        <h3 class="subhead">Notas fiscais</h3>
-        <div class="empty">Nenhuma nota fiscal — serão exigidas após a apresentação (15/04/2026).</div>
+        <div class="gen-bar">
+          <button class="btn btn--primary" type="button" id="btn-gerar" aria-describedby="gen-reason">Gerar documentos</button>
+          <span class="file__meta" id="gen-reason"></span>
+        </div>
+
+        <section class="gen-progress" id="gen-progress" aria-labelledby="gen-title" hidden>
+          <div class="gen-progress__line">
+            <h3 class="gen-progress__title" id="gen-title" tabindex="-1">Geração em andamento</h3>
+            <span id="gen-text"></span>
+            <span class="deadline__spacer"></span>
+            <button class="btn btn--sm btn--ghost" type="button" id="gen-dismiss" hidden>Ocultar</button>
+          </div>
+          <div class="progress__track" id="gen-bar" role="progressbar" aria-labelledby="gen-title" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><div class="progress__bar" id="gen-bar-fill"></div></div>
+          <p class="file__meta" id="gen-now"></p>
+          <div class="gen-fails" id="gen-fails"></div>
+          <details class="gen-lots-wrap">
+            <summary id="gen-lots-summary">Ver lotes</summary>
+            <ol class="gen-lots" id="gen-lots"></ol>
+          </details>
+          <div class="sr" id="gen-live" aria-live="polite" aria-atomic="true"></div>
+        </section>
+
+        <div class="filterbar" role="search">
+          <label class="sr" for="doc-search">Buscar documentos por artista</label>
+          <input type="search" id="doc-search" placeholder="Buscar por artista…">
+          <div class="seg" role="group" aria-label="Filtrar grupos de documentos" id="doc-filter">
+            <button type="button" data-filter="todos" aria-pressed="true">Todos</button>
+            <button type="button" data-filter="acao" aria-pressed="false">Com ação pendente</button>
+          </div>
+          <button class="btn btn--sm btn--ghost" type="button" data-expand-all="doc-list">Expandir todos</button>
+          <button class="btn btn--sm btn--ghost" type="button" data-collapse-all="doc-list">Recolher todos</button>
+          <span class="filterbar__count" id="doc-count" aria-live="polite"></span>
+        </div>
+
+        <div id="doc-list"></div>
+        <div class="empty" id="doc-empty" hidden>Nenhum grupo de documentos com esses filtros.</div>
       </div>
     </section>
 
-    <!-- 8. JUSTIFICATIVAS -->
-    <section class="card" id="s-justificativas">
+    <!-- 7. DOCUMENTOS ADICIONAIS (nota fiscal entra aqui) -->
+    <section class="card" id="s-adicionais">
+      <div class="card__head" data-toggle>
+        <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h2>Documentos adicionais</h2>
+        <span class="pill pill--neutral">1 arquivo</span>
+      </div>
+      <div class="card__body">
+        <div style="border:1px solid var(--c-border-2);border-radius:6px">
+          <div class="file"><span class="file__ico">PDF</span><span class="file__name">Ofício do gabinete — indicação da emenda 2026.0417</span><span class="file__meta">anexado 18/09/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>
+        </div>
+        <p class="file__meta" style="margin:10px 0 0">Nota fiscal, quando exigida, é anexada aqui como documento adicional (após as apresentações).</p>
+        <div style="margin-top:10px"><button class="btn btn--sm" type="button">Anexar documento</button></div>
+      </div>
+    </section>
+
+    <!-- 8. JUSTIFICATIVAS (nível do pedido) -->
+    <section class="card" id="s-justificativas" data-collapsed="true">
       <div class="card__head" data-toggle>
         <svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Justificativas</h2>
-        <span class="pill pill--neutral">3 textos · ~1.900 palavras</span>
+        <span class="pill pill--neutral">3 textos</span>
       </div>
       <div class="card__body">
         <h3 class="subhead">Justificativa da contratação</h3>
         <div class="longtext" data-clamped="true" id="txt-j1">
-          <p>A presente contratação é bastante oportuna e coerente com a proposta dos Centros Culturais da Secretaria Municipal de Cultura, que tem como objetivo, dentre outros, a promoção e o desenvolvimento de atividades e iniciativas artísticas e culturais, que proporcionem aos municípes, de maneira gratuita, atividades artísticas que contemplem diferentes linguagens e gêneros, afirmando a cultura como direito dos cidadãos.</p>
-          <p>Além disso, fortalecer a ação da SMC dentro de sua política cultural estabelecida, com a valorização de artistas e grupos pertencentes aos territórios dos centros culturais. A contratação é realizada com base no artigo 74 caput, da Lei 14.133/2021, dada a singularidade do serviço prestado pelo contratado, também demonstrado em seu material artístico anexado ao presente.</p>
-          <p>A contratação do espetáculo circense “Suspiros e Burbujas”, protagonizado por Romina Sanchez e Felipe Abreu, que dão vida aos palhaços Burbuja e Suspiro, justifica-se por sua proposta artístico-cultural voltada à linguagem do circo e à fruição cultural acessível ao público infantil e familiar.</p>
+          <p>A presente contratação decorre da emenda parlamentar 2026.0417, destinada à programação cultural gratuita do Centro Cultural Grajaú e dos CEUs da região sul, com atividades em diferentes linguagens: circo, música popular, cultura popular, dança urbana e forró.</p>
+          <p>A contratação é realizada com base no artigo 74, caput, da Lei 14.133/2021, dada a singularidade dos serviços prestados pelos artistas agenciados pela Circulando Produções Culturais, demonstrada nos materiais artísticos anexados a cada artista.</p>
+          <p>A reunião dos artistas em um único pedido, sob o mesmo produtor, simplifica a gestão contratual e garante uma programação coesa entre outubro e novembro de 2026.</p>
         </div>
         <button class="btn btn--sm btn--ghost longtext__toggle" type="button" data-expand="txt-j1">Ler tudo ▾</button>
 
         <h3 class="subhead">Justificativa do valor</h3>
         <div class="longtext">
-          <p>O valor desta contratação foi estabelecido com base na Tabela de Valores da Portaria nº 34SMC/G/2023, de 12 de maio de 2023, na categoria artes cênicas (circo) com 2 a 3 integrantes, com valor de referência em R$ 5.500,00.</p>
+          <p>Os valores seguem a Tabela de Valores da Portaria nº 34/SMC/G/2023 para cada linguagem e número de integrantes; a composição por artista está em “Contrato e pagamento”.</p>
         </div>
 
         <h3 class="subhead">Justificativa da escolha do contratado</h3>
-        <div class="longtext" data-clamped="true" id="txt-j3">
-          <p>A escolha de Romina Sanchez e Felipe Abreu, intérpretes dos palhaços Burbuja e Suspiro, justifica-se por sua trajetória artística consolidada na linguagem circense, com atuação contínua em espetáculos voltados ao público infantil e familiar, integrando música, acrobacia, malabares e comicidade de forma técnica e sensível.</p>
-          <p>O espetáculo é concebido e executado diretamente pelos próprios artistas, que possuem domínio técnico nas artes do circo, destacando-se pela combinação de habilidades como acrobacia, malabarismo, musicalidade e manipulação de bolhas de sabão gigantes, compondo uma proposta artística singular e interativa.</p>
-          <p>Ressalta-se, ainda, a relevância de sua circulação em festivais reconhecidos no Brasil e na Argentina, evidenciando reconhecimento artístico, experiência de público e capacidade de dialogar com diferentes contextos culturais.</p>
+        <div class="longtext">
+          <p>A Circulando Produções detém a representação exclusiva dos artistas listados, comprovada pelas declarações de exclusividade de cada artista.</p>
         </div>
-        <button class="btn btn--sm btn--ghost longtext__toggle" type="button" data-expand="txt-j3">Ler tudo ▾</button>
-
-        <h3 class="subhead">Observação</h3>
-        <p style="margin:0;color:var(--c-text-2)">Sem observações.</p>
       </div>
     </section>
 
   </main>
 
-  <!-- RAIL: só o que é acionável, não a timeline inteira -->
   <aside class="rail">
     <section class="card">
       <div class="card__head" style="cursor:default">
@@ -402,12 +426,12 @@
       <div class="card__body">
         <dl class="kv" style="grid-template-columns:1fr;gap:10px">
           <div><dt>Solicitante</dt><dd>Fabrícia Cibelle Barros da Silva</dd></div>
-          <div><dt>Solicitado em</dt><dd>23/02/2026</dd></div>
-          <div><dt>Justificativa</dt><dd>No campo <b>Ficha técnica do artista / membros do grupo</b> — cadastrar o RG do Felipe Abreu Pereira.</dd></div>
+          <div><dt>Solicitado em</dt><dd>28/09/2026</dd></div>
+          <div><dt>Artista</dt><dd>Maracatu Baque Forte</dd></div>
+          <div><dt>Justificativa</dt><dd>Na <b>ficha técnica</b>, informar o CPF de 2 integrantes.</dd></div>
         </dl>
         <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn--sm btn--primary" type="button">Conferir item</button>
-          <button class="btn btn--sm" type="button">Ver todas (3)</button>
+          <button class="btn btn--sm btn--primary" type="button" data-goto-artist="a3">Conferir item</button>
         </div>
       </div>
     </section>
@@ -418,10 +442,10 @@
         <a href="#s-historico" data-open-history style="margin-left:auto;font-size:12px">Ver tudo</a>
       </div>
       <div class="card__body">
-        <ol class="timeline">
-          <li><div class="timeline__when">24/02/2026 · há 6 meses</div><div class="timeline__what">Documentação assinada enviada</div><div class="timeline__flow">Aguardando assinatura → Enviada</div></li>
-          <li class="is-done"><div class="timeline__when">23/02/2026</div><div class="timeline__what">Pedido aprovado após reabertura</div></li>
-          <li class="is-done"><div class="timeline__when">23/02/2026</div><div class="timeline__what">Reaberto para o equipamento</div></li>
+        <ol class="timeline" id="timeline">
+          <li><div class="timeline__when">29/09/2026 · ontem</div><div class="timeline__what">Produtor enviou 5 documentos assinados</div><div class="timeline__flow">3 artistas ainda com documentos a enviar</div></li>
+          <li class="is-done"><div class="timeline__when">28/09/2026</div><div class="timeline__what">Declaração de exclusividade reprovada</div><div class="timeline__flow">Mestre Zé do Pife</div></li>
+          <li class="is-done"><div class="timeline__when">26/09/2026</div><div class="timeline__what">Produtor notificado — prazo até 10/10/2026</div></li>
         </ol>
       </div>
     </section>
@@ -430,18 +454,18 @@
       <div class="card__head" style="cursor:default"><h2>Contato do produtor</h2></div>
       <div class="card__body">
         <dl class="kv" style="grid-template-columns:1fr;gap:10px">
-          <div><dt>E-mail</dt><dd>laguzproducoes@gmail.com <button class="copy" type="button">⧉</button></dd></div>
-          <div><dt>Telefone</dt><dd class="mono">(85) 99973-9981 <button class="copy" type="button">⧉</button></dd></div>
+          <div><dt>Responsável</dt><dd>Márcia Helena Toledo</dd></div>
+          <div><dt>E-mail</dt><dd>contato@circulandoproducoes.com.br <button class="copy" type="button" aria-label="Copiar e-mail">⧉</button></dd></div>
+          <div><dt>Telefone</dt><dd class="mono">(11) 98412-3307 <button class="copy" type="button" aria-label="Copiar telefone">⧉</button></dd></div>
         </dl>
       </div>
     </section>
   </aside>
 </div>
 
-<!-- BARRA DE DECISÃO: a tela atual não tem onde decidir -->
 <div class="decisionbar">
   <div class="decisionbar__inner">
-    <span class="decisionbar__msg"><b>3 pendências bloqueantes</b> impedem a homologação deste pedido.</span>
+    <span class="decisionbar__msg" id="decision-msg">—</span>
     <span class="decisionbar__spacer"></span>
     <button class="btn" type="button">Salvar anotações</button>
     <button class="btn btn--danger" type="button">Devolver ao solicitante</button>
@@ -449,7 +473,6 @@
   </div>
 </div>
 
-<!-- MODAL: histórico completo -->
 <div class="modal" id="historyModal" hidden>
   <div class="modal__backdrop" data-modal-close></div>
   <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
@@ -462,20 +485,20 @@
         <table class="tbl">
           <thead><tr><th style="width:120px">Data</th><th>Evento</th><th>Transição</th><th>Responsável</th></tr></thead>
           <tbody>
-            <tr><td>24/02/2026</td><td>Contratado enviou a documentação assinada</td><td class="file__meta">Aguardando documentação assinada → Documentação assinada enviada</td><td>Romina N. Sanchez</td></tr>
-            <tr><td>24/02/2026</td><td>Contratado notificado para envio de documentação</td><td class="file__meta">Pedido aprovado → Aguardando documentação assinada</td><td>Sistema</td></tr>
-            <tr><td>23/02/2026</td><td>Pedido aprovado após reabertura</td><td class="file__meta">Pedido devolvido → Pedido aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
-            <tr><td>23/02/2026</td><td>Reabertura — alterações enviadas</td><td class="file__meta">Pedido reaberto → Pedido devolvido</td><td>Elizabete A. Honorato</td></tr>
-            <tr><td>23/02/2026</td><td>Pedido reaberto (equipamento)</td><td class="file__meta">Pedido aprovado → Pedido reaberto</td><td>Fabrícia C. B. da Silva</td></tr>
-            <tr><td>20/02/2026</td><td>Pedido aprovado</td><td class="file__meta">Pedido enviado → Pedido aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
-            <tr><td>19/02/2026</td><td>Pedido enviado</td><td class="file__meta">Rascunho → Pedido enviado</td><td>Elizabete A. Honorato</td></tr>
-            <tr><td>19/02/2026</td><td>Pedido iniciado</td><td class="file__meta">— → Rascunho</td><td>Elizabete A. Honorato</td></tr>
+            <tr><td>29/09/2026</td><td>Produtor enviou documentos assinados (5)</td><td class="file__meta">Aguardando documentação assinada</td><td>Márcia H. Toledo</td></tr>
+            <tr><td>28/09/2026</td><td>Declaração de exclusividade reprovada — Mestre Zé do Pife</td><td class="file__meta">Enviado → Reprovado</td><td>Fabrícia C. B. da Silva</td></tr>
+            <tr><td>28/09/2026</td><td>Reabertura — ficha técnica do Maracatu Baque Forte</td><td class="file__meta">Pedido aprovado → Pedido reaberto</td><td>Fabrícia C. B. da Silva</td></tr>
+            <tr><td>26/09/2026</td><td>Produtor notificado para envio da documentação</td><td class="file__meta">Pedido aprovado → Aguardando documentação assinada</td><td>Sistema</td></tr>
+            <tr><td>25/09/2026</td><td>Pedido aprovado</td><td class="file__meta">Pedido enviado → Pedido aprovado</td><td>Fabrícia C. B. da Silva</td></tr>
+            <tr><td>22/09/2026</td><td>Pedido enviado</td><td class="file__meta">Rascunho → Pedido enviado</td><td>Elizabete A. Honorato</td></tr>
+            <tr><td>18/09/2026</td><td>6 artistas vinculados ao pedido</td><td class="file__meta">—</td><td>Elizabete A. Honorato</td></tr>
+            <tr><td>18/09/2026</td><td>Pedido iniciado a partir da emenda 2026.0417</td><td class="file__meta">— → Rascunho</td><td>Elizabete A. Honorato</td></tr>
           </tbody>
         </table>
       </div>
     </div>
     <div class="modal__foot">
-      <span class="modal__foot-msg">Pedido #11159</span>
+      <span class="modal__foot-msg">Pedido #11231</span>
       <div class="modal__foot-actions">
         <button type="button" class="btn btn--sm" data-modal-close>Fechar</button>
       </div>
@@ -483,44 +506,1126 @@
   </div>
 </div>
 
+<div class="modal" id="genModal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="genModalTitle" aria-describedby="genModalHint">
+    <div class="modal__head">
+      <h3 class="modal__title" id="genModalTitle">Gerar documentos para assinatura</h3>
+      <p class="modal__hint" id="genModalHint">Escolha só o modelo. O sistema já sabe se ele é do pedido ou por artista e multiplica sozinho pelos artistas do contrato.</p>
+    </div>
+    <div class="modal__body" id="genModalBody"></div>
+    <div class="modal__foot">
+      <span class="gen-summary" id="gen-summary" aria-live="polite"></span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn" data-modal-close>Cancelar</button>
+        <button type="button" class="btn btn--primary" id="gen-confirm">Gerar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="confirmModal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmBody" style="width:min(560px,100%)">
+    <div class="modal__head"><h3 class="modal__title" id="confirmTitle">Gerar novamente?</h3></div>
+    <div class="modal__body" id="confirmBody"></div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg">A geração roda em segundo plano.</span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn" data-modal-close data-autofocus>Cancelar</button>
+        <button type="button" class="btn btn--danger" id="confirm-ok">Gerar novamente e substituir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="prorrogarModal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="prorrogarTitle" style="width:min(520px,100%)">
+    <div class="modal__head">
+      <h3 class="modal__title" id="prorrogarTitle">Prorrogar prazo dos documentos</h3>
+      <p class="modal__hint">O prazo é único para o pedido: vale para todos os documentos e artistas.</p>
+    </div>
+    <div class="modal__body">
+      <div class="field" style="margin-bottom:12px">
+        <label class="field__label" for="prorrogar-data">Novo prazo<span class="req" aria-hidden="true">*</span></label>
+        <input type="date" id="prorrogar-data" required>
+      </div>
+      <div class="field">
+        <label class="field__label" for="prorrogar-motivo">Motivo</label>
+        <textarea id="prorrogar-motivo" placeholder="Ex.: produtor aguardando assinatura digital de integrantes em viagem"></textarea>
+        <div class="field__help">Fica registrado no histórico do pedido e o produtor é notificado.</div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg">Pedido #11231</span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn" data-modal-close>Cancelar</button>
+        <button type="button" class="btn btn--primary" id="prorrogar-ok">Prorrogar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-// colapsar/expandir seções
-document.querySelectorAll('[data-toggle]').forEach(function (head) {
-  head.addEventListener('click', function () {
-    var card = head.closest('.card');
-    card.dataset.collapsed = card.dataset.collapsed === 'true' ? 'false' : 'true';
+var PRODUTOR = 'Circulando Produções';
+var TODAY = '30/09/2026';
+var LOT_SIZE = 1;
+var CHEV = '<svg class="card__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var GRADIENTS = ['#ffd591,#ff9c6e', '#b7eb8f,#95de64', '#91caff,#69b1ff', '#d3adf7,#b37feb', '#ffadd2,#ff85c0', '#87e8de,#5cdbd3'];
+
+// dados fictícios: 1 produtor PJ agenciando 6 artistas
+var BASE_ARTISTS = [
+  {
+    id: 'a1', name: 'Cia. Suspiros e Burbujas', kind: 'Coletivo', lead: 'Romina Noelia Sanchez', category: 'Circo', attraction: 'Suspiros e Burbujas',
+    synopsis: 'Os palhaços Burbuja e Suspiro chegam carregando malas, sotaques e uma paixão pelo circo que contagia. Malabares viram dança, bolhas de sabão se tornam poesia e o público vira parte da brincadeira. Espetáculo que celebra a capacidade do circo de unir pessoas através do riso, com passagens por festivais no Brasil e na Argentina desde 2015.',
+    photos: 4, credit: 'Freddy Costa',
+    events: [['11/10/2026', '14:00 – 15:00', 'Centro Cultural Grajaú', 5500], ['12/10/2026', '11:00 – 12:00', 'CEU Três Lagos', 5500]],
+    members: [['Romina Noelia Sanchez', 'Burbuja', '622.759.073-86', 'Palhaça, acordeonista, acrobata'], ['Felipe Abreu Pereira', 'Suspiro', '035.469.383-21', 'Palhaço, malabarista, acrobata']],
+    files: ['Clipping', 'Currículo do coletivo', 'DRT (circo)', 'RG/CPF do líder do grupo'],
+    pend: [],
+    docs: { proposta: ['aprovado', '26/09/2026'], exclusividade: ['aprovado', '26/09/2026'] }
+  },
+  {
+    id: 'a2', name: 'Mestre Zé do Pife', kind: 'Solo', lead: 'José Aparecido dos Santos', category: 'Música popular', attraction: 'Pife, Zabumba e Memória',
+    synopsis: 'Mestre Zé apresenta o repertório tradicional das bandas de pífanos do sertão pernambucano, intercalando música e causos sobre as festas de santo e a vida no interior. Apresentação intimista, voltada a toda a família.',
+    photos: 2, credit: 'Acervo do artista',
+    events: [['18/10/2026', '16:00 – 17:00', 'Centro Cultural Grajaú', 3500]],
+    members: [['José Aparecido dos Santos', 'Mestre Zé do Pife', '214.908.335-10', 'Pifeiro, compositor']],
+    files: ['Clipping', 'Currículo do artista', 'RG/CPF do artista'],
+    pend: ['Declaração de exclusividade reprovada — aguardando reenvio pelo produtor'],
+    docs: { proposta: ['aprovado', '26/09/2026'], exclusividade: ['reprovado', '28/09/2026', 'Assinatura do artista não confere com o documento de identidade. Reenviar com assinatura digital gov.br ou firma reconhecida.'] }
+  },
+  {
+    id: 'a3', name: 'Maracatu Baque Forte', kind: 'Coletivo', lead: 'Joana D’Arc Ferreira', category: 'Cultura popular', attraction: 'Cortejo Baque Forte',
+    synopsis: 'Cortejo de maracatu de baque virado com doze batuqueiros, dama do paço e loas cantadas. O grupo percorre o espaço em procissão e termina em roda aberta, convidando o público a aprender os toques básicos da alfaia.',
+    photos: 6, credit: 'Lia Moraes',
+    events: [['19/10/2026', '15:00 – 16:30', 'CEU Parelheiros', 8000], ['25/10/2026', '15:00 – 16:30', 'Centro Cultural Grajaú', 8000], ['01/11/2026', '10:00 – 11:30', 'CEU Vila Rubi', 8000]],
+    members: [
+      ['Joana D’Arc Ferreira', 'Mestra Joana', '318.442.906-71', 'Mestra de baque, alfaia'],
+      ['Carlos Eduardo Nunes', '—', '402.117.558-09', 'Alfaia'],
+      ['Beatriz Lopes Amaral', '—', '377.905.214-60', 'Alfaia'],
+      ['Diego Ramos Teixeira', '—', null, 'Caixa de guerra'],
+      ['Elaine Cristina Moura', '—', '289.664.013-52', 'Gonguê'],
+      ['Fábio Henrique Costa', '—', '451.228.790-33', 'Alfaia'],
+      ['Gabriela Souza Lima', 'Dama do paço', '366.019.482-17', 'Dama do paço'],
+      ['Hugo Martins Prado', '—', null, 'Mineiro (ganzá)'],
+      ['Iara Batista Rocha', '—', '298.773.106-45', 'Agbê'],
+      ['João Victor Almeida', '—', '415.338.207-88', 'Alfaia'],
+      ['Karina Oliveira Santos', '—', '337.550.914-26', 'Voz, loas'],
+      ['Lucas Pereira Brandão', '—', '442.681.035-94', 'Caixa de guerra']
+    ],
+    files: ['Clipping', 'Currículo do grupo', 'RG/CPF da líder do grupo'],
+    pend: ['Ficha técnica: CPF ausente em 2 integrantes (reabertura de 28/09/2026)'],
+    docs: { proposta: ['enviado', '29/09/2026'], exclusividade: ['aguardando', '26/09/2026'] }
+  },
+  {
+    id: 'a4', name: 'Ana Clara Ventura', kind: 'Solo', lead: 'Ana Clara Ventura Lima', category: 'Música — MPB', attraction: 'Voz e Violão: Canções do Sul',
+    synopsis: 'Show acústico com repertório autoral e releituras de compositoras paulistanas. Ana Clara alterna voz e violão em um percurso pelas canções que marcaram a periferia sul da cidade.',
+    photos: 3, credit: 'Rafa Okada',
+    events: [['20/10/2026', '19:00 – 20:00', 'Centro Cultural Grajaú', 4000], ['27/10/2026', '19:00 – 20:00', 'CEU Três Lagos', 4000]],
+    members: [['Ana Clara Ventura Lima', 'Ana Clara Ventura', '509.214.873-02', 'Cantora, violonista']],
+    files: ['Clipping', 'Currículo da artista', 'RG/CPF da artista'],
+    pend: [],
+    docs: { proposta: ['aprovado', '27/09/2026'], exclusividade: ['aprovado', '27/09/2026'] }
+  },
+  {
+    id: 'a5', name: 'Coletivo Passinho SP', kind: 'Coletivo', lead: 'Wesley Santos da Cruz', category: 'Dança urbana', attraction: 'Batalha do Passinho',
+    synopsis: 'Apresentação de dança com seis dançarinos que misturam passinho, funk e break, seguida de uma batalha aberta com jurados escolhidos entre o público.',
+    photos: 4, credit: 'Coletivo Passinho SP',
+    events: [['26/10/2026', '17:00 – 18:00', 'CEU Parelheiros', 6000], ['08/11/2026', '17:00 – 18:00', 'Centro Cultural Grajaú', 6000]],
+    members: [
+      ['Wesley Santos da Cruz', 'Wes', '478.302.119-55', 'Dançarino, coreógrafo'],
+      ['Thainá Rodrigues Melo', 'Thai', '466.019.387-21', 'Dançarina'],
+      ['Matheus Lima Barbosa', 'Theuzinho', '493.557.208-14', 'Dançarino'],
+      ['Yasmin Carvalho Reis', 'Yas', '481.662.930-07', 'Dançarina'],
+      ['Kauã Ferreira Dias', 'KF', '502.118.764-39', 'Dançarino'],
+      ['Rafael Nogueira Pinto', 'DJ Rafa', '457.990.321-66', 'DJ']
+    ],
+    files: ['Clipping', 'Currículo do coletivo', 'RG/CPF do líder do grupo'],
+    pend: [],
+    stale: 'A ficha técnica foi alterada em 29/09/2026 (DJ Rafa incluído), depois que os documentos foram gerados em 26/09/2026.',
+    docs: { proposta: ['aguardando', '26/09/2026'], exclusividade: ['aguardando', '26/09/2026'] }
+  },
+  {
+    id: 'a6', name: 'Trio Sanfona de Prata', kind: 'Coletivo', lead: 'Severino Lima Araújo', category: 'Forró', attraction: 'Forró Pé de Serra',
+    synopsis: 'Trio de sanfona, zabumba e triângulo com repertório de forró pé de serra, xote e baião. Baile aberto para dançar em pares.',
+    photos: 2, credit: 'Acervo do grupo',
+    events: [['09/11/2026', '15:00 – 17:00', 'CEU Vila Rubi', 6500]],
+    members: [['Severino Lima Araújo', 'Biu da Sanfona', '261.804.559-73', 'Sanfoneiro'], ['Antônio Carlos Farias', '—', '274.118.605-40', 'Zabumba'], ['Maria das Dores Silva', 'Dorinha', '285.337.901-28', 'Triângulo, voz']],
+    files: ['Clipping', 'Currículo do grupo', 'RG/CPF do líder do grupo'],
+    pend: [],
+    docs: { proposta: ['enviado', '29/09/2026'], exclusividade: ['enviado', '29/09/2026'] }
+  }
+];
+
+// modelos cadastrados (tabela Document) — o escopo vem do cadastro, o usuário não escolhe
+var MODELS = [
+  { id: 'termo', scope: 'pedido', signedBy: 'produtor', name: 'Termo de contratação', desc: 'Contrato inteiro · assinado pelo produtor' },
+  { id: 'bancarios', scope: 'pedido', signedBy: 'produtor', name: 'Declaração de dados bancários', desc: 'Contrato inteiro · assinada pelo produtor' },
+  { id: 'proponente', scope: 'pedido', signedBy: 'produtor', name: 'Declaração do proponente (art. 14, Lei 14.133/2021)', desc: 'Contrato inteiro · assinada pelo produtor' },
+  { id: 'nepotismo', scope: 'pedido', signedBy: 'produtor', name: 'Declaração de inexistência de nepotismo', desc: 'Contrato inteiro · assinada pelo produtor' },
+  { id: 'proposta', scope: 'artista', signedBy: 'produtor', name: 'Proposta de natureza artística', desc: '1 por artista · assinada pelo produtor' },
+  { id: 'exclusividade', scope: 'artista', signedBy: 'artistas', name: 'Declaração de exclusividade', desc: '1 arquivo por artista · assinada pelos artistas' },
+  { id: 'imagem', scope: 'artista', signedBy: 'artistas', name: 'Autorização de uso de imagem e voz', desc: '1 arquivo por artista · assinada pelos artistas' }
+];
+
+var pedidoDocs = {
+  termo: ['aprovado', '26/09/2026'],
+  bancarios: ['aprovado', '26/09/2026'],
+  proponente: ['enviado', '29/09/2026']
+};
+
+var EXTRA_NAMES = ['Bloco Lua Cheia', 'Duo Cordas do Sul', 'Grupo Teatro de Rua Alvorada', 'Samba de Roda Filhas de Oyá', 'Palhaço Pipoca', 'Orquestra de Berimbaus', 'Cia. Bonecos Andantes', 'Rap Quebrada Norte', 'Coral Vozes do Grajaú', 'Quadrilha Arraiá do Sul', 'Duo Jazz na Laje', 'Cia. Contadores de Histórias', 'Batucada Mirim', 'Cantora Dona Cida'];
+
+var STATUS = {
+  aguardando: { label: 'Aguardando assinatura', cls: 'pill--warn' },
+  enviado: { label: 'Enviado · em análise', cls: '' },
+  aprovado: { label: 'Aprovado', cls: 'pill--ok' },
+  reprovado: { label: 'Reprovado', cls: 'pill--danger' }
+};
+
+var state = {
+  artists: BASE_ARTISTS,
+  art: { q: '', filter: 'todos' },
+  doc: { q: '', filter: 'todos' },
+  gen: {},        // 'gid:modelo' -> 'fila' | 'gerando'
+  groupGen: {},   // gid -> 'fila' | 'gerando' | 'pronto' | 'falhou'
+  deadline: { date: '10/10/2026', expired: false },
+  failArmed: true
+};
+var job = null;
+
+function $(id) { return document.getElementById(id); }
+function money(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+function norm(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+function nowTime() { var d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+function parseBr(s) { var p = s.split('/'); return new Date(+p[2], +p[1] - 1, +p[0]); }
+function daysBetween(from, to) { return Math.round((parseBr(to) - parseBr(from)) / 86400000); }
+
+function artistValue(a) { return a.events.reduce(function (sum, e) { return sum + e[3]; }, 0); }
+function artistById(id) { return state.artists.filter(function (a) { return a.id === id; })[0]; }
+function modelById(id) { return MODELS.filter(function (m) { return m.id === id; })[0]; }
+function modelsOf(scope) { return MODELS.filter(function (m) { return m.scope === scope; }); }
+function entriesOf(gid) { return gid === 'pedido' ? pedidoDocs : artistById(gid).docs; }
+function groupName(gid) { return gid === 'pedido' ? 'Documentos do pedido' : artistById(gid).name; }
+function isRunning() { return !!(job && job.running); }
+
+function signerFor(m, a) {
+  if (m.signedBy === 'produtor') return 'Produtor';
+  return a.kind === 'Solo' ? a.lead : plural(a.members.length, 'integrante', 'integrantes');
+}
+
+function docsOf(gid) {
+  var entries = entriesOf(gid);
+  var artist = gid === 'pedido' ? null : artistById(gid);
+  return modelsOf(artist ? 'artista' : 'pedido').filter(function (m) {
+    return entries[m.id] || state.gen[gid + ':' + m.id];
+  }).map(function (m) {
+    var e = entries[m.id] || [];
+    return { key: gid + ':' + m.id, gid: gid, model: m.id, name: m.name, desc: m.desc, signer: artist ? signerFor(m, artist) : 'Produtor', status: e[0], date: e[1], reason: e[2], fresh: e[3], gen: state.gen[gid + ':' + m.id] };
+  });
+}
+function artistDocs(a) { return docsOf(a.id); }
+function withStatus(docs) { return docs.filter(function (d) { return d.status; }); }
+
+function flags(a) {
+  var docs = withStatus(artistDocs(a));
+  var hasRejected = docs.some(function (d) { return d.status === 'reprovado'; });
+  var hasPendency = a.pend.length > 0 || hasRejected;
+  var docsToSend = docs.some(function (d) { return d.status === 'aguardando' || d.status === 'reprovado'; });
+  var needsAction = docs.some(function (d) { return d.status !== 'aprovado'; });
+  var approved = docs.filter(function (d) { return d.status === 'aprovado'; }).length;
+  var complete = !hasPendency && approved === docs.length;
+  return { docs: docs, hasPendency: hasPendency, docsToSend: docsToSend, needsAction: needsAction, approved: approved, complete: complete };
+}
+
+function docsPill(f) {
+  var cls = 'pill--neutral';
+  if (f.docsToSend) cls = 'pill--warn';
+  if (f.docs.some(function (d) { return d.status === 'reprovado'; })) cls = 'pill--danger';
+  if (f.approved === f.docs.length) cls = 'pill--ok';
+  return '<span class="pill ' + cls + '">Docs ' + f.approved + '/' + f.docs.length + ' aprovados</span>';
+}
+
+function tone(f) {
+  if (f.hasPendency) return 'grp--danger';
+  if (f.docsToSend) return 'grp--warn';
+  if (f.complete) return 'grp--ok';
+  return '';
+}
+
+function renderArtist(a) {
+  var f = flags(a);
+  var value = artistValue(a);
+  var statusPill = f.hasPendency
+    ? '<span class="pill pill--danger">' + plural(a.pend.length || 1, 'pendência', 'pendências') + '</span>'
+    : (f.complete ? '<span class="pill pill--ok">Completo</span>' : '');
+
+  var pendAlerts = a.pend.map(function (p) {
+    return '<div class="alert alert--danger" style="margin-bottom:10px"><span aria-hidden="true">●</span><span>' + p + '</span></div>';
+  }).join('');
+
+  var events = a.events.map(function (e) {
+    return '<tr><td>' + e[0] + '</td><td>' + e[1] + '</td><td>' + e[2] + '</td><td class="num">' + money(e[3]) + '</td></tr>';
+  }).join('');
+
+  var missing = a.members.filter(function (m) { return !m[2]; }).length;
+  var members = a.members.map(function (m) {
+    var cpf = m[2] ? m[2] : '<span class="miss" style="color:var(--c-danger-text);font-weight:600">Não informado</span>';
+    var rowStyle = m[2] ? '' : ' style="background:var(--c-warn-bg)"';
+    return '<tr' + rowStyle + '><td>' + m[0] + '</td><td>' + m[1] + '</td><td class="mono">' + cpf + '</td><td>' + m[3] + '</td></tr>';
+  }).join('');
+  var membersPill = missing
+    ? '<span class="pill pill--warn">CPF ausente em ' + missing + '</span>'
+    : '<span class="pill pill--neutral">' + plural(a.members.length, 'integrante', 'integrantes') + '</span>';
+
+  var thumbs = '';
+  for (var i = 0; i < a.photos; i++) thumbs += '<span style="background:linear-gradient(135deg,' + GRADIENTS[i % GRADIENTS.length] + ')" role="img" aria-label="Foto ' + (i + 1) + '"></span>';
+
+  var files = a.files.map(function (name) {
+    return '<div class="file"><span class="file__ico">PDF</span><span class="file__name">' + name + '</span><span class="file__meta">enviado 22/09/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>';
+  }).join('');
+
+  return '' +
+    '<details class="grp ' + tone(f) + '" id="art-' + a.id + '" data-id="' + a.id + '">' +
+      '<summary>' + CHEV +
+        '<span class="grp__title">' + a.name + '</span>' +
+        '<span class="pill pill--neutral">' + a.kind + '</span>' +
+        '<span class="grp__meta">' + a.category + ' · ' + plural(a.events.length, 'apresentação', 'apresentações') + ' · ' + money(value) + ' · a partir de ' + a.events[0][0] + '</span>' +
+        '<span class="grp__pills">' + statusPill + docsPill(f) + '</span>' +
+      '</summary>' +
+      '<div class="grp__body">' +
+        pendAlerts +
+        '<dl class="kv kv--3">' +
+          '<div><dt>' + (a.kind === 'Solo' ? 'Nome civil' : 'Líder do grupo') + '</dt><dd>' + a.lead + '</dd></div>' +
+          '<div><dt>Atração</dt><dd>' + a.attraction + '</dd></div>' +
+          '<div><dt>Linguagem</dt><dd>' + a.category + '</dd></div>' +
+        '</dl>' +
+        '<h3 class="subhead">Eventos e apresentações <span class="pill pill--neutral">' + a.events.length + '</span></h3>' +
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Data</th><th>Horário</th><th>Local</th><th class="num">Valor</th></tr></thead><tbody>' + events + '</tbody></table></div>' +
+        '<h3 class="subhead">Sinopse e release</h3>' +
+        '<div class="longtext" data-clamped="true" id="txt-' + a.id + '"><p>' + a.synopsis + '</p></div>' +
+        '<button class="btn btn--sm btn--ghost longtext__toggle" type="button" data-expand="txt-' + a.id + '">Ler tudo ▾</button>' +
+        '<h3 class="subhead">Fotos para divulgação <span class="pill pill--neutral">' + a.photos + ' · crédito: ' + a.credit + '</span></h3>' +
+        '<div class="thumbs">' + thumbs + '<button class="btn btn--sm" type="button">Baixar todas</button></div>' +
+        '<h3 class="subhead">Ficha técnica ' + membersPill + '</h3>' +
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Integrante</th><th>Nome artístico</th><th>CPF/CIN</th><th>Função</th></tr></thead><tbody>' + members + '</tbody></table></div>' +
+        '<h3 class="subhead">Documentos do artista</h3>' +
+        '<div style="border:1px solid var(--c-border-2);border-radius:6px">' + files + '</div>' +
+        '<div class="grp__foot"><button class="btn btn--sm" type="button" data-goto-docs="' + a.id + '" data-focus-key="goto-' + a.id + '">Ver documentos para assinatura deste artista →</button></div>' +
+      '</div>' +
+    '</details>';
+}
+
+function busyAttr() { return isRunning() ? ' disabled title="Geração em andamento"' : ''; }
+
+function docRow(d) {
+  var sendLocked = state.deadline.expired && (d.status === 'aguardando' || d.status === 'reprovado');
+  var fresh = d.fresh && !d.gen ? ' <span class="pill pill--ok">Gerado agora</span>' : '';
+  var reason = d.reason && !d.gen ? '<div class="doc-reason"><b>Justificativa:</b> ' + d.reason + '</div>' : '';
+  var lock = sendLocked ? '<div class="file__meta" style="color:var(--c-danger-text);font-weight:600;margin-top:4px">Envio travado até prorrogar o prazo</div>' : '';
+  var rowStyle = d.status === 'reprovado' && !d.gen ? ' style="background:var(--c-danger-bg)"' : '';
+  var statusCell;
+  var actions;
+
+  if (d.gen === 'fila') {
+    statusCell = '<span class="pill pill--neutral">' + (d.status ? 'Nova versão na fila' : 'Na fila') + '</span>';
+    actions = '<span class="file__meta">Aguardando a vez do lote</span>';
+  }
+  if (d.gen === 'gerando') {
+    statusCell = '<span class="pill"><span class="spin" aria-hidden="true"></span>' + (d.status ? 'Gerando nova versão…' : 'Gerando…') + '</span>';
+    actions = '<span class="file__meta">Aparece aqui assim que ficar pronto</span>';
+  }
+  if (!d.gen) {
+    var st = STATUS[d.status];
+    statusCell = '<span class="pill ' + st.cls + '">' + st.label + (d.date ? ' ' + d.date : '') + '</span>' + lock;
+    actions = {
+      aguardando: '<button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Baixar</button>',
+      enviado: '<button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm btn--primary" type="button">Aprovar</button> <button class="btn btn--sm btn--danger" type="button">Reprovar</button>',
+      aprovado: '<button class="btn btn--sm" type="button">Ver</button> <button class="btn btn--sm" type="button">Baixar</button>',
+      reprovado: '<button class="btn btn--sm" type="button">Ver arquivo reprovado</button>'
+    }[d.status] + ' <button class="btn btn--sm btn--ghost" type="button" data-regen-doc="' + d.key + '" data-focus-key="regen-' + d.key + '"' + busyAttr() + '>Gerar novamente</button>';
+  }
+  return '<tr' + rowStyle + '><td><b>' + d.name + '</b>' + fresh + '<div class="file__meta">' + d.desc + '</div>' + reason + '</td><td>' + d.signer + '</td><td>' + statusCell + '</td><td>' + actions + '</td></tr>';
+}
+
+var GROUP_GEN_PILL = {
+  fila: '<span class="pill pill--neutral">Na fila</span>',
+  gerando: '<span class="pill"><span class="spin" aria-hidden="true"></span>Gerando…</span>',
+  pronto: '<span class="pill pill--ok">Gerado agora</span>',
+  falhou: '<span class="pill pill--danger">Falha na geração</span>'
+};
+
+function docGroup(gid, title, meta, docs, open) {
+  var settled = withStatus(docs);
+  var pending = settled.filter(function (d) { return d.status !== 'aprovado'; }).length;
+  var rejected = settled.some(function (d) { return d.status === 'reprovado'; });
+  var waiting = settled.some(function (d) { return d.status === 'aguardando'; });
+  var gen = state.groupGen[gid];
+  var artist = gid === 'pedido' ? null : artistById(gid);
+  var groupTone = 'grp--ok';
+  if (waiting) groupTone = 'grp--warn';
+  if (rejected || gen === 'falhou') groupTone = 'grp--danger';
+  if (!waiting && !rejected && pending) groupTone = '';
+  var pill = '';
+  if (settled.length) {
+    pill = pending
+      ? '<span class="pill ' + (rejected ? 'pill--danger' : waiting ? 'pill--warn' : '') + '">' + plural(pending, 'com ação pendente', 'com ação pendente') + '</span>'
+      : '<span class="pill pill--ok">Todos aprovados</span>';
+  }
+  var genPill = gen ? GROUP_GEN_PILL[gen] : '';
+  var groupBusy = gen === 'fila' || gen === 'gerando';
+
+  var failAlert = gen === 'falhou'
+    ? '<div class="alert alert--danger" style="margin-bottom:10px"><span aria-hidden="true">●</span><span><b>Não foi possível gerar ' + (artist ? 'os documentos deste artista' : 'os documentos do pedido') + '</b>O serviço de PDF não respondeu a tempo. Nenhuma versão anterior foi substituída; os outros artistas não foram afetados.' +
+      '<br><button class="btn btn--sm" type="button" style="margin-top:8px" data-retry="' + gid + '" data-focus-key="retry-' + gid + '">Tentar de novo só ' + (artist ? 'este artista' : 'o pedido') + '</button></span></div>'
+    : '';
+  var staleAlert = artist && artist.stale && !groupBusy
+    ? '<div class="alert alert--warn" style="margin-bottom:10px"><span aria-hidden="true">▲</span><span><b>Dados da cópia do artista mudaram depois da geração</b>' + artist.stale + ' Os documentos não refletem os dados atuais.' +
+      '<br><button class="btn btn--sm" type="button" style="margin-top:8px" data-regen-group="' + gid + '" data-focus-key="regen-group-' + gid + '"' + busyAttr() + '>Gerar novamente os documentos deste artista</button></span></div>'
+    : '';
+  var foot = artist && !artist.stale && settled.length && !groupBusy
+    ? '<div class="grp__foot"><button class="btn btn--sm btn--ghost" type="button" data-regen-group="' + gid + '" data-focus-key="regen-group-' + gid + '"' + busyAttr() + '>Gerar novamente os ' + plural(settled.length, 'documento', 'documentos') + ' deste artista</button></div>'
+    : '';
+  var table = docs.length
+    ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Documento</th><th>Assinado por</th><th>Situação</th><th style="width:300px">Ações</th></tr></thead><tbody>' + docs.map(docRow).join('') + '</tbody></table></div>'
+    : '<div class="empty">Nenhum documento gerado ainda.</div>';
+
+  return '' +
+    '<details class="grp ' + groupTone + '" id="doc-' + gid + '"' + (open ? ' open' : '') + '>' +
+      '<summary>' + CHEV + '<span class="grp__title">' + title + '</span><span class="grp__meta">' + meta + '</span><span class="grp__pills">' + genPill + pill + '</span></summary>' +
+      '<div class="grp__body">' + failAlert + staleAlert + table + foot + '</div>' +
+    '</details>';
+}
+
+function matches(a, q) {
+  if (!q) return true;
+  var hay = [a.name, a.lead, a.category].concat(a.members.map(function (m) { return m[0]; })).concat(a.events.map(function (e) { return e[2]; })).join(' ');
+  return norm(hay).indexOf(q) !== -1;
+}
+
+function passesArtistFilter(f, filter) {
+  if (filter === 'pendencia') return f.hasPendency;
+  if (filter === 'docs') return f.docsToSend;
+  if (filter === 'completo') return f.complete;
+  return true;
+}
+
+function applyArtistFilters() {
+  var q = norm(state.art.q.trim());
+  var shown = 0;
+  state.artists.forEach(function (a) {
+    var visible = matches(a, q) && passesArtistFilter(flags(a), state.art.filter);
+    $('art-' + a.id).hidden = !visible;
+    if (visible) shown++;
+  });
+  $('art-empty').hidden = shown > 0;
+  $('art-count').textContent = 'Exibindo ' + shown + ' de ' + plural(state.artists.length, 'artista', 'artistas');
+}
+
+function applyDocFilters() {
+  var q = norm(state.doc.q.trim());
+  var shown = 0;
+  var pedidoVisible = !q && (state.doc.filter === 'todos' || withStatus(docsOf('pedido')).some(function (d) { return d.status !== 'aprovado'; }));
+  $('doc-pedido').hidden = !pedidoVisible;
+  if (pedidoVisible) shown++;
+  state.artists.forEach(function (a) {
+    var visible = norm(a.name).indexOf(q) !== -1 && (state.doc.filter === 'todos' || flags(a).needsAction || !!state.groupGen[a.id]);
+    $('doc-' + a.id).hidden = !visible;
+    if (visible) shown++;
+  });
+  $('doc-empty').hidden = shown > 0;
+  $('doc-count').textContent = 'Exibindo ' + shown + ' de ' + (state.artists.length + 1) + ' grupos (1 do pedido + ' + plural(state.artists.length, 'artista', 'artistas') + ')';
+}
+
+// re-renderiza uma lista sem fechar os grupos abertos nem perder o foco do usuário
+function replaceKeepingState(listId, html) {
+  var list = $(listId);
+  var hadContent = list.children.length > 0;
+  var open = {};
+  list.querySelectorAll('details').forEach(function (d) { open[d.id] = d.open; });
+  var active = document.activeElement;
+  var focusKey = null;
+  if (active && list.contains(active)) {
+    if (active.dataset.focusKey) focusKey = active.dataset.focusKey;
+    if (active.tagName === 'SUMMARY') focusKey = 'summary:' + active.parentNode.id;
+  }
+  list.innerHTML = html;
+  if (hadContent) list.querySelectorAll('details').forEach(function (d) { if (d.id in open) d.open = open[d.id]; });
+  if (!focusKey) return;
+  var target = focusKey.indexOf('summary:') === 0
+    ? document.querySelector('#' + focusKey.slice(8) + ' > summary')
+    : list.querySelector('[data-focus-key="' + focusKey + '"]');
+  if (target && !target.disabled) target.focus({ preventScroll: true });
+}
+
+function renderDocs() {
+  var artists = state.artists;
+  var pedido = docsOf('pedido');
+  replaceKeepingState('doc-list',
+    docGroup('pedido', 'Documentos do pedido', 'Não ligados a artista · ' + plural(pedido.length, 'documento', 'documentos'), pedido, true) +
+    artists.map(function (a) {
+      var docs = artistDocs(a);
+      return docGroup(a.id, a.name, plural(docs.length, 'documento', 'documentos') + ' · ' + a.kind.toLowerCase(), docs, false);
+    }).join(''));
+
+  var docsAll = withStatus(pedido.concat.apply(pedido, artists.map(artistDocs)));
+  var byStatus = { aguardando: 0, enviado: 0, aprovado: 0, reprovado: 0 };
+  docsAll.forEach(function (d) { byStatus[d.status]++; });
+  $('toc-docs').textContent = docsAll.length - byStatus.aprovado;
+  $('docs-head-pill').textContent = byStatus.reprovado + ' reprovado · ' + byStatus.aguardando + ' aguardando · ' + byStatus.enviado + ' em análise';
+
+  var busy = isRunning();
+  $('btn-gerar').disabled = busy;
+  $('gen-reason').textContent = busy
+    ? 'Geração em andamento — o botão volta quando o processamento terminar.'
+    : 'Escolha só os modelos; os documentos por artista são multiplicados automaticamente pelos ' + plural(artists.length, 'artista', 'artistas') + '.';
+  $('simulate').disabled = busy;
+
+  renderProgress();
+  renderDeadline();
+  applyDocFilters();
+}
+
+function render() {
+  var artists = state.artists;
+  var all = artists.map(function (a) { return { a: a, f: flags(a) }; });
+  var withPendency = all.filter(function (x) { return x.f.hasPendency; });
+  var withDocsToSend = all.filter(function (x) { return x.f.docsToSend; });
+  var complete = all.filter(function (x) { return x.f.complete; });
+  var total = artists.reduce(function (sum, a) { return sum + artistValue(a); }, 0);
+  var shows = artists.reduce(function (sum, a) { return sum + a.events.length; }, 0);
+  var blocking = 1 + withPendency.length;
+
+  replaceKeepingState('art-list', artists.map(renderArtist).join(''));
+
+  $('kpi-valor').textContent = money(total);
+  $('kpi-artistas').textContent = plural(artists.length, 'artista', 'artistas');
+  $('kpi-artistas-hint').textContent = plural(shows, 'apresentação', 'apresentações') + ' · ' + complete.length + ' completos';
+  $('kpi-pendencias').textContent = plural(blocking, 'bloqueante', 'bloqueantes');
+  $('kpi-pendencias-hint').textContent = '1 do pedido · ' + plural(withPendency.length, 'artista', 'artistas');
+  $('toc-pend').textContent = blocking;
+  $('toc-art').textContent = artists.length;
+  $('pend-pill').textContent = plural(blocking, 'bloqueante', 'bloqueantes') + ' · 1 aviso';
+  $('pend-art-count').textContent = plural(withPendency.length, 'artista', 'artistas');
+  $('art-head-count').textContent = plural(artists.length, 'artista', 'artistas');
+  $('art-head-pill').textContent = plural(withPendency.length, 'com pendência', 'com pendência');
+  $('decision-msg').innerHTML = '<b>' + plural(blocking, 'pendência bloqueante', 'pendências bloqueantes') + '</b> (1 do pedido, ' + withPendency.length + ' de artistas) impedem a homologação.';
+  $('ct-valor').textContent = money(total);
+  $('ct-valor-hint').textContent = 'soma de ' + plural(artists.length, 'artista', 'artistas') + ' · ' + plural(shows, 'apresentação', 'apresentações');
+  $('ct-parcela').textContent = money(total);
+  $('ct-comp-meta').textContent = plural(artists.length, 'artista', 'artistas') + ' · ' + money(total);
+  $('ct-comp-rows').innerHTML = artists.map(function (a) {
+    return '<tr><td>' + a.name + '</td><td class="num">' + a.events.length + '</td><td class="num">' + money(artistValue(a)) + '</td></tr>';
+  }).join('') + '<tr><td><b>Total</b></td><td class="num"><b>' + shows + '</b></td><td class="num"><b>' + money(total) + '</b></td></tr>';
+
+  $('pend-art-rows').innerHTML = withPendency.map(function (x) {
+    var items = x.a.pend.length ? x.a.pend : ['Documento reprovado'];
+    return '<tr><td><b>' + x.a.name + '</b></td><td>' + items.join('<br>') + '</td><td><button class="btn btn--sm" type="button" data-goto-artist="' + x.a.id + '">Abrir artista</button></td></tr>';
+  }).join('') || '<tr><td colspan="3" class="file__meta">Nenhum artista com pendência.</td></tr>';
+
+  var counts = { todos: artists.length, pendencia: withPendency.length, docs: withDocsToSend.length, completo: complete.length };
+  document.querySelectorAll('#art-filter [data-count]').forEach(function (el) { el.textContent = '(' + counts[el.dataset.count] + ')'; });
+
+  applyArtistFilters();
+  renderDocs();
+}
+
+/* ---------- prazo único do pedido ---------- */
+function renderDeadline() {
+  var d = state.deadline;
+  var days = daysBetween(TODAY, d.date);
+  $('deadline').classList.toggle('deadline--expired', d.expired);
+  $('deadline-date').textContent = d.expired ? 'Venceu em ' + d.date : d.date;
+  $('deadline-pill').className = 'pill ' + (d.expired ? 'pill--danger' : 'pill--warn');
+  $('deadline-pill').textContent = d.expired ? 'prazo vencido' : 'faltam ' + plural(days, 'dia', 'dias');
+  $('deadline-lock').hidden = !d.expired;
+  $('btn-prorrogar').className = 'btn btn--sm' + (d.expired ? ' btn--primary' : '');
+  $('kpi-prazo').className = 'kpi ' + (d.expired ? 'kpi--danger' : 'kpi--warn');
+  $('kpi-prazo-value').textContent = d.expired ? 'Vencido' : d.date;
+  $('kpi-prazo-hint').textContent = d.expired ? 'Venceu em ' + d.date + ' · envio travado' : plural(days, 'dia', 'dias') + ' · prazo único do pedido';
+}
+
+/* ---------- geração assíncrona em lotes por artista ---------- */
+function announce(msg) { $('gen-live').textContent = msg; }
+
+function lotNames(lot) { return lot.items.map(function (it) { return groupName(it.gid); }).join(', '); }
+
+function lotState(lot) {
+  var states = lot.items.map(function (it) { return state.groupGen[it.gid]; });
+  if (states.indexOf('gerando') !== -1) return 'gerando';
+  if (states.indexOf('falhou') !== -1) return 'falhou';
+  if (states.every(function (s) { return s === 'pronto'; })) return 'pronto';
+  return 'fila';
+}
+
+function renderProgress() {
+  var panel = $('gen-progress');
+  panel.hidden = !job;
+  if (!job) return;
+  var failedIds = Object.keys(job.failed);
+  var running = job.running;
+  panel.className = 'gen-progress' + (!running && !failedIds.length ? ' gen-progress--done' : '') + (!running && failedIds.length ? ' gen-progress--fail' : '');
+
+  var title = 'Geração em andamento';
+  var text = 'Gerando ' + job.done + ' de ' + plural(job.total, 'documento', 'documentos') + ' · lote ' + Math.min(job.lotIndex + 1, job.lots.length) + ' de ' + job.lots.length;
+  var now = 'Agora: ' + lotNames(job.lots[Math.min(job.lotIndex, job.lots.length - 1)]) + '. Os documentos prontos já aparecem abaixo — você pode continuar usando a tela.';
+  if (!running) {
+    title = failedIds.length ? 'Geração concluída com falha' : 'Geração concluída';
+    text = failedIds.length
+      ? job.done + ' de ' + job.total + ' documentos gerados · ' + plural(failedIds.length, 'grupo', 'grupos') + ' com falha'
+      : plural(job.done, 'documento gerado', 'documentos gerados') + ' às ' + job.finishedAt;
+    now = failedIds.length
+      ? 'Os documentos que deram certo já estão disponíveis. Tente de novo só o que falhou.'
+      : 'Todos os documentos estão prontos e aguardando assinatura do produtor.';
+  }
+  $('gen-title').textContent = title;
+  $('gen-text').textContent = text;
+  $('gen-now').textContent = now;
+  $('gen-bar').setAttribute('aria-valuemax', job.total);
+  $('gen-bar').setAttribute('aria-valuenow', job.done);
+  $('gen-bar').setAttribute('aria-valuetext', text);
+  $('gen-bar-fill').style.width = (job.total ? Math.round(job.done / job.total * 100) : 0) + '%';
+  $('gen-dismiss').hidden = running || failedIds.length > 0;
+
+  $('gen-fails').innerHTML = failedIds.map(function (gid) {
+    return '<div class="alert alert--danger"><span aria-hidden="true">●</span><span><b>' + groupName(gid) + ' — ' + plural(job.failed[gid].length, 'documento não gerado', 'documentos não gerados') + '</b>O serviço de PDF não respondeu a tempo. <button class="btn btn--sm" type="button" data-retry="' + gid + '">Tentar de novo só este</button></span></div>';
+  }).join('');
+
+  $('gen-lots-summary').textContent = 'Ver lotes (' + job.lots.length + ') · até ' + plural(LOT_SIZE, 'artista', 'artistas') + ' por lote, para não sobrecarregar a fila de PDF';
+  var LOT_PILL = { fila: '<span class="pill pill--neutral">Na fila</span>', gerando: GROUP_GEN_PILL.gerando, pronto: '<span class="pill pill--ok">Pronto</span>', falhou: '<span class="pill pill--danger">Com falha</span>' };
+  $('gen-lots').innerHTML = job.lots.map(function (lot, i) {
+    return '<li><b>Lote ' + (i + 1) + '</b> ' + LOT_PILL[lotState(lot)] + ' <span class="file__meta">' + (lot.label ? lot.label + ' · ' : '') + lotNames(lot) + '</span></li>';
+  }).join('');
+}
+
+function clearPreviousRun() {
+  state.groupGen = {};
+  [pedidoDocs].concat(state.artists.map(function (a) { return a.docs; })).forEach(function (entries) {
+    Object.keys(entries).forEach(function (k) { entries[k][3] = false; });
+  });
+}
+
+// plan: [{ gid, models: [ids] }]
+function startJob(plan) {
+  plan = plan.filter(function (p) { return p.models.length; });
+  if (!plan.length || isRunning()) return;
+  clearPreviousRun();
+  var lots = [];
+  var pedido = plan.filter(function (p) { return p.gid === 'pedido'; });
+  var arts = plan.filter(function (p) { return p.gid !== 'pedido'; });
+  if (pedido.length) lots.push({ items: pedido });
+  for (var i = 0; i < arts.length; i += LOT_SIZE) lots.push({ items: arts.slice(i, i + LOT_SIZE) });
+  var total = plan.reduce(function (sum, p) { return sum + p.models.length; }, 0);
+  var failTarget = null;
+  if (state.failArmed && arts.length) failTarget = arts.some(function (p) { return p.gid === 'a3'; }) ? 'a3' : arts[arts.length - 1].gid;
+
+  job = { lots: lots, lotIndex: 0, total: total, done: 0, failed: {}, running: true, failTarget: failTarget, artistCount: arts.length };
+  plan.forEach(function (p) {
+    state.groupGen[p.gid] = 'fila';
+    p.models.forEach(function (m) { state.gen[p.gid + ':' + m] = 'fila'; });
+  });
+  announce('Geração iniciada: ' + plural(total, 'documento', 'documentos') + ' em ' + plural(lots.length, 'lote', 'lotes') + '.');
+  renderDocs();
+  runLot();
+}
+
+function runLot() {
+  if (job.lotIndex >= job.lots.length) {
+    finishJob();
+    return;
+  }
+  var lot = job.lots[job.lotIndex];
+  var pending = lot.items.length;
+  announce('Lote ' + (job.lotIndex + 1) + ' de ' + job.lots.length + ': ' + lotNames(lot) + '.');
+  lot.items.forEach(function (item, idx) {
+    state.groupGen[item.gid] = 'gerando';
+    item.models.forEach(function (m) { state.gen[item.gid + ':' + m] = 'gerando'; });
+    generateItem(item, idx * 450, function () {
+      pending--;
+      if (pending) return;
+      job.lotIndex++;
+      render();
+      setTimeout(runLot, 600);
+    });
+  });
+  renderDocs();
+}
+
+function generateItem(item, offset, done) {
+  if (item.gid === job.failTarget) {
+    job.failTarget = null;
+    state.failArmed = false;
+    $('demo-fail').checked = false;
+    setTimeout(function () {
+      item.models.forEach(function (m) { delete state.gen[item.gid + ':' + m]; });
+      state.groupGen[item.gid] = 'falhou';
+      job.failed[item.gid] = item.models;
+      announce('Falha ao gerar os documentos de ' + groupName(item.gid) + '. Os demais seguem normalmente.');
+      renderDocs();
+      done();
+    }, offset + 1400);
+    return;
+  }
+  item.models.forEach(function (m, i) {
+    setTimeout(function () {
+      entriesOf(item.gid)[m] = ['aguardando', TODAY, null, true];
+      delete state.gen[item.gid + ':' + m];
+      job.done++;
+      var isLast = i === item.models.length - 1;
+      if (isLast) {
+        state.groupGen[item.gid] = 'pronto';
+        var artist = item.gid === 'pedido' ? null : artistById(item.gid);
+        var refreshedAll = artist && Object.keys(artist.docs).every(function (k) { return item.models.indexOf(k) !== -1; });
+        if (refreshedAll) artist.stale = null;
+      }
+      renderDocs();
+      if (isLast) done();
+    }, offset + (i + 1) * 900);
+  });
+}
+
+function finishJob() {
+  job.running = false;
+  job.finishedAt = nowTime();
+  var failedCount = Object.keys(job.failed).length;
+  announce(failedCount
+    ? 'Geração concluída: ' + job.done + ' de ' + job.total + ' documentos. ' + plural(failedCount, 'grupo falhou', 'grupos falharam') + '.'
+    : 'Geração concluída: ' + plural(job.done, 'documento gerado', 'documentos gerados') + '.');
+  var isRetry = !!job.logged;
+  var newDocs = job.done - (job.logged || 0);
+  job.logged = job.done;
+  if (newDocs) {
+    $('timeline').insertAdjacentHTML('afterbegin', '<li><div class="timeline__when">' + TODAY + ' · ' + job.finishedAt + '</div><div class="timeline__what">' + plural(newDocs, 'documento gerado', 'documentos gerados') + ' para assinatura</div><div class="timeline__flow">' + (isRetry ? 'Nova tentativa após falha' : '') + (!isRetry && job.artistCount ? plural(job.artistCount, 'artista', 'artistas') + ' · ' : '') + (isRetry ? '' : 'em ' + plural(job.lots.length, 'lote', 'lotes')) + '</div></li>');
+  }
+  render();
+}
+
+function retry(gid) {
+  if (!job || !job.failed[gid]) return;
+  var models = job.failed[gid];
+  delete job.failed[gid];
+  state.groupGen[gid] = 'fila';
+  models.forEach(function (m) { state.gen[gid + ':' + m] = 'fila'; });
+  job.lots.push({ label: 'Nova tentativa', items: [{ gid: gid, models: models }] });
+  if (job.running) {
+    renderDocs();
+    return;
+  }
+  job.running = true;
+  runLot();
+  $('gen-title').focus();
+}
+
+/* ---------- modais ---------- */
+var modalStack = [];
+function openModal(id, trigger) {
+  var modal = $(id);
+  modal.hidden = false;
+  modal._trigger = trigger;
+  modalStack.push(modal);
+  var first = modal.querySelector('[data-autofocus]') || modal.querySelector('.modal__body input:not(:disabled)') || modal.querySelector('.modal__body button, .modal__foot button');
+  if (first) first.focus();
+}
+function closeModal(modal, returnTo) {
+  modal.hidden = true;
+  modalStack.splice(modalStack.indexOf(modal), 1);
+  var target = returnTo || modal._trigger;
+  if (target && document.contains(target) && !target.disabled) {
+    target.focus();
+    return;
+  }
+  if (job) $('gen-title').focus();
+}
+
+/* ---------- modal "Gerar documentos": escolha só o modelo ---------- */
+var pick = null;
+
+function artistsWith(modelId) { return state.artists.filter(function (a) { return a.docs[modelId]; }); }
+
+function modelTargets(m) {
+  if (m.scope === 'pedido') return pedidoDocs[m.id] ? [] : ['pedido'];
+  if (pick.limit) return state.artists.filter(function (a) { return pick.only[a.id]; }).map(function (a) { return a.id; });
+  return state.artists.filter(function (a) { return !a.docs[m.id]; }).map(function (a) { return a.id; });
+}
+
+function pickRow(m) {
+  return '<div class="pick" id="pick-' + m.id + '">' +
+    '<input type="checkbox" id="chk-' + m.id + '" data-model="' + m.id + '" aria-describedby="pick-pills-' + m.id + '">' +
+    '<label class="pick__main" for="chk-' + m.id + '"><b>' + m.name + '</b><span class="file__meta">' + m.desc + '</span></label>' +
+    '<span class="pick__pills" id="pick-pills-' + m.id + '"></span>' +
+    '<button class="btn btn--sm btn--ghost" type="button" id="pick-regen-' + m.id + '" data-regen-model="' + m.id + '">Gerar novamente…</button>' +
+  '</div>';
+}
+
+function openGenModal(trigger) {
+  var n = state.artists.length;
+  pick = { limit: false, only: {} };
+  $('genModalBody').innerHTML =
+    '<fieldset class="picks"><legend>Do pedido · 1 documento cada</legend>' + modelsOf('pedido').map(pickRow).join('') + '</fieldset>' +
+    '<fieldset class="picks"><legend>Por artista · 1 documento para cada um dos ' + n + ' artistas</legend>' + modelsOf('artista').map(pickRow).join('') + '</fieldset>' +
+    '<details class="grp" id="gen-adv"><summary>' + CHEV + '<span class="grp__title">Opções avançadas</span><span class="grp__meta">Limitar a artistas específicos — use só para gerar novamente</span></summary>' +
+      '<div class="grp__body">' +
+        '<fieldset class="gen-scope"><legend class="sr">Para quais artistas gerar</legend>' +
+          '<label><input type="radio" name="gen-scope" value="todos" checked> Todos os artistas do contrato (padrão)</label>' +
+          '<label><input type="radio" name="gen-scope" value="limit"> Somente os artistas selecionados abaixo</label>' +
+        '</fieldset>' +
+        '<fieldset class="gen-artists" id="gen-artists" aria-disabled="true" style="margin:0"><legend class="sr">Artistas</legend>' +
+          state.artists.map(function (a) {
+            return '<label><input type="checkbox" data-only="' + a.id + '" disabled> ' + a.name + (a.stale ? ' <span class="pill pill--warn">dados alterados</span>' : '') + '</label>';
+          }).join('') +
+        '</fieldset>' +
+      '</div>' +
+    '</details>';
+  MODELS.forEach(function (m) { $('chk-' + m.id).checked = false; });
+  updateGenModal();
+  openModal('genModal', trigger);
+}
+
+function updateGenModal() {
+  var n = state.artists.length;
+  var pedidoCount = 0;
+  var perArtist = [];
+  var replaced = 0;
+  var involved = {};
+
+  MODELS.forEach(function (m) {
+    var chk = $('chk-' + m.id);
+    var targets = modelTargets(m);
+    var pills = [];
+    var done = targets.length === 0 && !(m.scope === 'artista' && pick.limit);
+    var regenVisible = false;
+
+    if (m.scope === 'pedido') {
+      pills.push('<span class="pill pill--neutral">1 por pedido</span>');
+      if (pedidoDocs[m.id]) pills.push('<span class="pill pill--ok">Já gerado · ' + pedidoDocs[m.id][1] + '</span>');
+      regenVisible = !!pedidoDocs[m.id];
+    }
+    if (m.scope === 'artista') {
+      var have = artistsWith(m.id).length;
+      pills.push('<span class="pill">1 por artista · ×' + (done ? n : targets.length) + '</span>');
+      if (!pick.limit && have === n) pills.push('<span class="pill pill--ok">Já gerado para os ' + n + '</span>');
+      if (!pick.limit && have > 0 && have < n) pills.push('<span class="pill pill--warn">Já gerado para ' + have + ' de ' + n + ' · gera só os que faltam</span>');
+      if (pick.limit) {
+        var willReplace = targets.filter(function (gid) { return artistById(gid).docs[m.id]; }).length;
+        if (willReplace) pills.push('<span class="pill pill--warn">substitui ' + willReplace + '</span>');
+      }
+      regenVisible = !pick.limit && have > 0;
+    }
+
+    chk.disabled = done;
+    if (done) chk.checked = false;
+    $('pick-' + m.id).classList.toggle('pick--done', done);
+    $('pick-pills-' + m.id).innerHTML = pills.join('');
+    $('pick-regen-' + m.id).hidden = !regenVisible;
+
+    if (!chk.checked) return;
+    if (m.scope === 'pedido') {
+      pedidoCount++;
+      return;
+    }
+    perArtist.push(targets.length);
+    targets.forEach(function (gid) {
+      involved[gid] = true;
+      if (artistById(gid).docs[m.id]) replaced++;
+    });
+  });
+
+  var artistTotal = perArtist.reduce(function (s, v) { return s + v; }, 0);
+  var total = pedidoCount + artistTotal;
+  var artistCount = Object.keys(involved).length;
+  var lots = (pedidoCount ? 1 : 0) + Math.ceil(artistCount / LOT_SIZE);
+  var sameCount = perArtist.length && perArtist.every(function (v) { return v === perArtist[0]; });
+  var parts = [];
+  if (pedidoCount) parts.push(pedidoCount + ' do pedido');
+  if (artistTotal && sameCount) parts.push(perArtist.length + ' por artista × ' + plural(perArtist[0], 'artista', 'artistas'));
+  if (artistTotal && !sameCount) parts.push(artistTotal + ' dos artistas');
+
+  var confirm = $('gen-confirm');
+  confirm.disabled = total === 0;
+  if (!total) {
+    $('gen-summary').textContent = pick.limit && !artistCount ? 'Selecione ao menos um artista nas opções avançadas.' : 'Selecione ao menos um modelo.';
+    confirm.textContent = 'Gerar';
+    return;
+  }
+  $('gen-summary').innerHTML = 'Serão gerados <b>' + plural(total, 'documento', 'documentos') + '</b> (' + parts.join(' + ') + ')' +
+    '<br><span class="file__meta">Processamento em segundo plano, em ' + plural(lots, 'lote', 'lotes') + ' · ' +
+    (replaced ? '<b style="color:var(--c-warn-text)">' + plural(replaced, 'versão anterior será substituída', 'versões anteriores serão substituídas') + '</b>' : 'nenhum documento existente será substituído') + '</span>';
+  confirm.textContent = replaced ? 'Gerar e substituir ' + replaced : 'Gerar ' + plural(total, 'documento', 'documentos');
+  confirm.className = 'btn ' + (replaced ? 'btn--danger' : 'btn--primary');
+}
+
+function buildPlanFromModal() {
+  var byGid = { pedido: [] };
+  state.artists.forEach(function (a) { byGid[a.id] = []; });
+  MODELS.forEach(function (m) {
+    if (!$('chk-' + m.id).checked) return;
+    modelTargets(m).forEach(function (gid) { byGid[gid].push(m.id); });
+  });
+  return ['pedido'].concat(state.artists.map(function (a) { return a.id; })).map(function (gid) { return { gid: gid, models: byGid[gid] }; });
+}
+
+$('genModal').addEventListener('change', function (event) {
+  var t = event.target;
+  if (t.name === 'gen-scope') {
+    pick.limit = t.value === 'limit';
+    $('gen-artists').setAttribute('aria-disabled', String(!pick.limit));
+    $('gen-artists').querySelectorAll('input').forEach(function (i) { i.disabled = !pick.limit; });
+  }
+  if (t.dataset.only) pick.only[t.dataset.only] = t.checked;
+  updateGenModal();
+});
+
+$('gen-confirm').addEventListener('click', function () {
+  var plan = buildPlanFromModal();
+  closeModal($('genModal'), $('gen-title'));
+  startJob(plan);
+  $('gen-title').focus();
+});
+
+/* ---------- "Gerar novamente" com confirmação de substituição ---------- */
+var pendingRegen = null;
+
+function confirmRegen(plan, trigger) {
+  var docs = [];
+  plan.forEach(function (p) {
+    p.models.forEach(function (m) {
+      var e = entriesOf(p.gid)[m];
+      docs.push({ group: groupName(p.gid), name: modelById(m).name, status: e[0], date: e[1] });
+    });
+  });
+  var signedOrSent = docs.filter(function (d) { return d.status !== 'aguardando'; }).length;
+  var listed = docs.slice(0, 8).map(function (d) {
+    return '<li><b>' + d.name + '</b> · ' + d.group + ' <span class="pill ' + STATUS[d.status].cls + '">' + STATUS[d.status].label + (d.date ? ' ' + d.date : '') + '</span></li>';
+  }).join('') + (docs.length > 8 ? '<li>e mais ' + (docs.length - 8) + '…</li>' : '');
+  $('confirmTitle').textContent = 'Gerar novamente ' + plural(docs.length, 'documento', 'documentos') + '?';
+  $('confirmBody').innerHTML =
+    '<p style="margin:0">Os documentos serão gerados de novo com os dados atuais. <b>A versão anterior de cada um será substituída.</b></p>' +
+    (signedOrSent ? '<div class="alert alert--warn" style="margin-top:10px"><span aria-hidden="true">▲</span><span><b>' + plural(signedOrSent, 'documento já foi enviado ou analisado', 'documentos já foram enviados ou analisados') + '</b>O produtor terá de assinar e enviar a nova versão, e a análise recomeça.</span></div>' : '') +
+    '<ul class="regen-list">' + listed + '</ul>';
+  $('confirm-ok').textContent = 'Gerar novamente e substituir' + (docs.length > 1 ? ' ' + docs.length : '');
+  pendingRegen = plan;
+  openModal('confirmModal', trigger);
+}
+
+$('confirm-ok').addEventListener('click', function () {
+  var plan = pendingRegen;
+  pendingRegen = null;
+  closeModal($('confirmModal'), $('gen-title'));
+  startJob(plan);
+  $('gen-title').focus();
+});
+
+function regenPlanForGroup(gid) {
+  return [{ gid: gid, models: withStatus(docsOf(gid)).map(function (d) { return d.model; }) }];
+}
+function regenPlanForModel(modelId) {
+  var m = modelById(modelId);
+  if (m.scope === 'pedido') return [{ gid: 'pedido', models: [modelId] }];
+  return artistsWith(modelId).map(function (a) { return { gid: a.id, models: [modelId] }; });
+}
+
+/* ---------- prorrogar prazo ---------- */
+$('btn-prorrogar').addEventListener('click', function () {
+  var base = parseBr(state.deadline.expired ? '13/10/2026' : state.deadline.date);
+  base.setDate(base.getDate() + 10);
+  $('prorrogar-data').value = base.getFullYear() + '-' + String(base.getMonth() + 1).padStart(2, '0') + '-' + String(base.getDate()).padStart(2, '0');
+  $('prorrogar-motivo').value = '';
+  openModal('prorrogarModal', this);
+});
+$('prorrogar-ok').addEventListener('click', function () {
+  var value = $('prorrogar-data').value;
+  if (!value) {
+    $('prorrogar-data').focus();
+    return;
+  }
+  var p = value.split('-');
+  state.deadline = { date: p[2] + '/' + p[1] + '/' + p[0], expired: false };
+  $('demo-expired').setAttribute('aria-pressed', 'false');
+  $('demo-expired').textContent = 'Simular prazo vencido';
+  $('timeline').insertAdjacentHTML('afterbegin', '<li><div class="timeline__when">' + TODAY + ' · ' + nowTime() + '</div><div class="timeline__what">Prazo prorrogado até ' + state.deadline.date + '</div><div class="timeline__flow">Envio de documentos liberado · produtor notificado</div></li>');
+  closeModal($('prorrogarModal'));
+  renderDocs();
+});
+
+/* ---------- controles de demonstração ---------- */
+$('demo-expired').addEventListener('click', function () {
+  var expired = this.getAttribute('aria-pressed') !== 'true';
+  this.setAttribute('aria-pressed', String(expired));
+  this.textContent = expired ? 'Voltar ao prazo em dia' : 'Simular prazo vencido';
+  state.deadline.expired = expired;
+  renderDocs();
+});
+$('demo-fail').addEventListener('change', function () { state.failArmed = this.checked; });
+
+function buildSimulatedArtists() {
+  var extra = EXTRA_NAMES.map(function (name, i) {
+    var source = BASE_ARTISTS[i % BASE_ARTISTS.length];
+    var docs = {};
+    Object.keys(source.docs).forEach(function (k) { docs[k] = source.docs[k].slice(); });
+    return Object.assign({}, source, { id: 'x' + i, name: name, attraction: name, docs: docs, stale: null });
+  });
+  return BASE_ARTISTS.concat(extra);
+}
+
+function reveal(el) {
+  el.hidden = false;
+  el.open = true;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  el.querySelector('summary').focus({ preventScroll: true });
+}
+
+function resetFilters(scope) {
+  state[scope].q = '';
+  state[scope].filter = 'todos';
+  $(scope + '-search').value = '';
+  document.querySelectorAll('#' + scope + '-filter button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.filter === 'todos')); });
+}
+
+function expandSection(id) {
+  var card = $(id);
+  card.dataset.collapsed = 'false';
+  var head = card.querySelector('[data-toggle]');
+  if (head) head.setAttribute('aria-expanded', 'true');
+}
+
+// filtros (busca + segmentado)
+['art', 'doc'].forEach(function (scope) {
+  $(scope + '-search').addEventListener('input', function (event) {
+    state[scope].q = event.target.value;
+    if (scope === 'art') applyArtistFilters();
+    if (scope === 'doc') applyDocFilters();
+  });
+  $(scope + '-filter').addEventListener('click', function (event) {
+    var btn = event.target.closest('button');
+    if (!btn) return;
+    state[scope].filter = btn.dataset.filter;
+    this.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+    if (scope === 'art') applyArtistFilters();
+    if (scope === 'doc') applyDocFilters();
   });
 });
 
-// "ler tudo" nos textos longos
-document.querySelectorAll('[data-expand]').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    var box = document.getElementById(btn.dataset.expand);
+// cliques delegados
+document.addEventListener('click', function (event) {
+  var t = event.target;
+  var el;
+  if ((el = t.closest('[data-modal-close]'))) {
+    closeModal(el.closest('.modal'));
+    return;
+  }
+  if ((el = t.closest('[data-regen-model]'))) {
+    var plan = regenPlanForModel(el.dataset.regenModel);
+    closeModal($('genModal'), $('btn-gerar'));
+    confirmRegen(plan, $('btn-gerar'));
+    return;
+  }
+  if ((el = t.closest('[data-regen-doc]'))) {
+    var parts = el.dataset.regenDoc.split(':');
+    confirmRegen([{ gid: parts[0], models: [parts[1]] }], el);
+    return;
+  }
+  if ((el = t.closest('[data-regen-group]'))) {
+    confirmRegen(regenPlanForGroup(el.dataset.regenGroup), el);
+    return;
+  }
+  if ((el = t.closest('[data-retry]'))) {
+    retry(el.dataset.retry);
+    return;
+  }
+  if ((el = t.closest('[data-expand]'))) {
+    var box = $(el.dataset.expand);
     var clamped = box.dataset.clamped === 'true';
     box.dataset.clamped = clamped ? 'false' : 'true';
-    btn.textContent = clamped ? 'Recolher ▴' : 'Ler tudo ▾';
+    el.textContent = clamped ? 'Recolher ▴' : 'Ler tudo ▾';
+    return;
+  }
+  if ((el = t.closest('[data-goto-artist]'))) {
+    resetFilters('art');
+    applyArtistFilters();
+    expandSection('s-artistas');
+    reveal($('art-' + el.dataset.gotoArtist));
+    return;
+  }
+  if ((el = t.closest('[data-goto-docs]'))) {
+    resetFilters('doc');
+    applyDocFilters();
+    expandSection('s-documentos');
+    reveal($('doc-' + el.dataset.gotoDocs));
+    return;
+  }
+  if ((el = t.closest('[data-goto-section]'))) {
+    expandSection(el.dataset.gotoSection);
+    $(el.dataset.gotoSection).scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  if ((el = t.closest('[data-expand-all]'))) {
+    document.querySelectorAll('#' + el.dataset.expandAll + ' > details:not([hidden])').forEach(function (d) { d.open = true; });
+    return;
+  }
+  if ((el = t.closest('[data-collapse-all]'))) {
+    document.querySelectorAll('#' + el.dataset.collapseAll + ' > details').forEach(function (d) { d.open = false; });
+  }
+});
+
+$('btn-gerar').addEventListener('click', function () { openGenModal(this); });
+$('gen-dismiss').addEventListener('click', function () {
+  job = null;
+  state.groupGen = {};
+  renderDocs();
+  $('btn-gerar').focus();
+});
+
+$('simulate').addEventListener('click', function () {
+  var simulated = this.getAttribute('aria-pressed') !== 'true';
+  this.setAttribute('aria-pressed', String(simulated));
+  this.textContent = simulated ? 'Voltar para 6 artistas' : 'Simular pedido com 20 artistas';
+  state.artists = simulated ? buildSimulatedArtists() : BASE_ARTISTS;
+  job = null;
+  state.groupGen = {};
+  resetFilters('art');
+  resetFilters('doc');
+  render();
+});
+
+// colapsar/expandir seções (cabeçalho acessível por teclado)
+document.querySelectorAll('[data-toggle]').forEach(function (head) {
+  var card = head.closest('.card');
+  head.setAttribute('role', 'button');
+  head.setAttribute('tabindex', '0');
+  head.setAttribute('aria-expanded', String(card.dataset.collapsed !== 'true'));
+  function toggle() {
+    var collapsed = card.dataset.collapsed === 'true';
+    card.dataset.collapsed = collapsed ? 'false' : 'true';
+    head.setAttribute('aria-expanded', String(collapsed));
+  }
+  head.addEventListener('click', toggle);
+  head.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    toggle();
   });
+});
+
+// índice: abre a seção recolhida ao navegar
+document.querySelectorAll('.toc a:not([data-open-history])').forEach(function (a) {
+  a.addEventListener('click', function () { expandSection(a.getAttribute('href').slice(1)); });
 });
 
 // modal de histórico completo
-function openHistoryModal() {
-  document.getElementById('historyModal').hidden = false;
-}
-function closeHistoryModal() {
-  document.getElementById('historyModal').hidden = true;
-}
 document.querySelectorAll('[data-open-history]').forEach(function (trigger) {
   trigger.addEventListener('click', function (event) {
     event.preventDefault();
-    openHistoryModal();
+    openModal('historyModal', trigger);
   });
 });
-document.querySelectorAll('#historyModal [data-modal-close]').forEach(function (node) {
-  node.addEventListener('click', closeHistoryModal);
-});
 document.addEventListener('keydown', function (event) {
-  if (event.key === 'Escape' && !document.getElementById('historyModal').hidden) closeHistoryModal();
+  if (event.key === 'Escape' && modalStack.length) closeModal(modalStack[modalStack.length - 1]);
 });
+
+render();
 
 // scrollspy do índice lateral
 var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
