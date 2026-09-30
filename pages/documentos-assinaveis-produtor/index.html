@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1 · Documentos assináveis — Portal do produtor · Pedido 11231</title>
+<link rel="stylesheet" href="../../styles/global.css">
+<style>
+/* Identidade do portal Porta de Entrada (tema escuro), medida na tela de homologação */
+:root{
+  --pe-bg:#1F1F23; --pe-surface:#2B2B31; --pe-surface-2:#26262B; --pe-sunken:#1A1A1E;
+  --pe-border:#424242; --pe-border-soft:#35353C;
+  --pe-text:rgba(255,255,255,.85); --pe-strong:rgba(255,255,255,.92); --pe-text-2:rgba(255,255,255,.65); --pe-text-3:rgba(255,255,255,.5); --pe-label:#D5D5D5;
+  --pe-primary:#006BD4; --pe-primary-hover:#227CCC; --pe-link:#147BEB; --pe-focus:#3C89E8;
+  --pe-warn:#E89A3C; --pe-warn-icon:#D89614; --pe-warn-bg:#2B2111; --pe-warn-border:#594214;
+  --pe-info:#3C89E8; --pe-info-bg:#111A2C; --pe-info-border:#15325B;
+  --pe-danger:#DC4446; --pe-danger-text:#E86E6B; --pe-danger-bg:#2C1618; --pe-danger-border:#5B2526;
+  --pe-ok:#49AA19; --pe-ok-text:#6ABE39; --pe-ok-bg:#162312; --pe-ok-border:#274916;
+  --pe-font:Roboto,Arial,sans-serif;
+  --pe-head:MadeTommy,"Segoe UI",Roboto,Arial,sans-serif;
+  --pe-radius-card:24px; --pe-radius:8px; --pe-radius-ctl:6px;
+  --pe-header-h:64px;
+}
+body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color:var(--pe-text);color-scheme:dark;
+  background:linear-gradient(115deg,rgba(255,121,87,0) 60%,rgba(255,121,87,.07) 110%) fixed,var(--pe-bg)}
+.pe a{color:var(--pe-link)}
+.pe :is(h1,h2,h3){font-family:var(--pe-head);font-weight:400;color:var(--pe-strong);margin:0}
+.pe :focus-visible{outline:2px solid var(--pe-focus);outline-offset:2px}
+.pe svg{width:16px;height:16px;flex:none}
+
+/* casca do portal: menu lateral + barra superior */
+.pe-shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.pe-side{position:sticky;top:0;height:100vh;overflow:auto;background:var(--pe-surface);padding:12px 8px 16px;display:flex;flex-direction:column;gap:4px}
+.pe-logo{display:inline-flex;align-items:center;gap:8px;padding:0 10px 12px;text-decoration:none;color:var(--pe-strong)}
+.pe .pe-logo{color:var(--pe-strong)}
+.pe-logo svg{width:30px;height:30px}
+.pe-logo b{font-family:var(--pe-head);font-size:18px;line-height:.95;font-weight:700;letter-spacing:.2px}
+.pe-logo small{display:block;font-size:9px;font-weight:400;text-align:right;color:var(--pe-text-2)}
+.pe select.pe-side__area{width:100%;margin:0 0 12px;min-height:32px;padding:4px 7px;border:1px solid var(--pe-border);border-radius:4px;background:var(--pe-surface);color:var(--pe-text);font:inherit;font-size:14px}
+.pe-side__title{margin:10px 10px 4px;font-size:16px;color:var(--pe-text-2)}
+.pe-side ul{list-style:none;margin:0;padding:0}
+.pe .pe-side a:not(.pe-logo){display:flex;align-items:center;gap:8px;min-height:36px;padding:0 10px;border-radius:6px;color:var(--pe-label);text-decoration:none}
+.pe .pe-side a:not(.pe-logo):hover{background:rgba(255,255,255,.06)}
+.pe .pe-side a[aria-current="page"]{background:rgba(0,107,212,.18);color:#fff}
+.pe-side a span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pe-side hr{border:0;border-top:1px solid var(--pe-border);margin:12px 0}
+.pe-side__ver{margin:auto 0 0;text-align:center;font-size:13px;color:var(--pe-text-2)}
+
+.pe-main{display:flex;flex-direction:column;min-width:0}
+.pe-top{position:sticky;top:0;z-index:20;height:var(--pe-header-h);display:flex;align-items:center;gap:12px;padding:0 32px;
+  background:rgba(31,31,35,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--pe-border-soft)}
+.pe-top__logo{display:none}
+.pe-top__spacer{flex:1}
+.pe-bell{position:relative;display:inline-grid;place-items:center;width:40px;height:40px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);color:var(--pe-text)}
+.pe-bell__count{position:absolute;top:-8px;right:-8px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--pe-danger);color:#fff;font-size:12px;line-height:20px;text-align:center}
+.pe-user{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);color:var(--pe-strong);white-space:nowrap}
+
+.pe-page{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;align-items:start;width:100%;max-width:1640px;margin:0 auto;padding:24px 32px 48px}
+.pe-col{display:flex;flex-direction:column;gap:24px;min-width:0}
+.pe-card{background:var(--pe-surface);border-radius:var(--pe-radius-card);padding:24px}
+
+/* botões e links */
+.pe-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 15px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);
+  background:var(--pe-surface);color:var(--pe-text);font:inherit;font-size:14px;line-height:1.2;cursor:pointer;text-decoration:none;white-space:nowrap}
+.pe a.pe-btn{color:var(--pe-text)}
+.pe-btn:hover,.pe a.pe-btn:hover{border-color:var(--pe-primary-hover);color:#fff}
+.pe-btn--primary{background:var(--pe-primary);border-color:var(--pe-primary);color:#fff}
+.pe-btn--primary:hover{background:var(--pe-primary-hover)}
+.pe-btn:disabled,.pe-btn:disabled:hover{cursor:not-allowed;color:rgba(255,255,255,.25);background:rgba(255,255,255,.08);border-color:var(--pe-border)}
+.pe-btn--ghost{border-color:transparent;background:transparent;color:var(--pe-text-2)}
+.pe-btn--sm{min-height:28px;padding:0 10px;font-size:13px}
+.pe-linkbtn{display:inline-flex;align-items:flex-start;gap:6px;border:0;background:none;padding:0 0 4px;font:inherit;font-size:14.4px;color:var(--pe-text-2);cursor:pointer;text-align:left}
+.pe-linkbtn svg{margin-top:3px}
+.pe-linkbtn:hover{color:var(--pe-link);text-decoration:underline;text-underline-offset:3px}
+
+/* etiquetas, alertas */
+.pe-status{display:inline-flex;align-items:center;min-height:28px;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.04);font-size:12px;letter-spacing:1.4px;color:var(--pe-warn)}
+.pe-status[data-tone="danger"]{color:var(--pe-danger-text)}
+.pe-status[data-tone="info"]{color:var(--pe-info)}
+.pe-tag{display:inline-flex;align-items:center;gap:6px;padding:0 8px;border:1px solid;border-radius:6px;font-size:12px;line-height:22px;white-space:nowrap;font-family:var(--pe-font);letter-spacing:0;vertical-align:middle}
+.pe-tag--neutral{color:var(--pe-text-2);border-color:var(--pe-border);background:rgba(255,255,255,.04)}
+.pe-tag--warn{color:var(--pe-warn);border-color:var(--pe-warn-border);background:var(--pe-warn-bg)}
+.pe-tag--info{color:var(--pe-info);border-color:var(--pe-info-border);background:var(--pe-info-bg)}
+.pe-tag--danger{color:var(--pe-danger-text);border-color:var(--pe-danger-border);background:var(--pe-danger-bg)}
+.pe-tag--ok{color:var(--pe-ok-text);border-color:var(--pe-ok-border);background:var(--pe-ok-bg)}
+.pe-alert{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border:1px solid;border-radius:var(--pe-radius);color:var(--pe-text)}
+.pe-alert p{margin:0}
+.pe-alert__ico{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;color:#141414;margin-top:1px}
+.pe-alert__ico svg{width:14px;height:14px}
+.pe-alert__title{display:block;font-size:16px;color:var(--pe-strong);margin:0 0 4px}
+.pe-alert__title:focus{outline:none}
+.pe-alert--warn{background:var(--pe-warn-bg);border-color:var(--pe-warn-border)} .pe-alert--warn .pe-alert__ico{background:var(--pe-warn-icon)}
+.pe-alert--info{background:var(--pe-info-bg);border-color:var(--pe-info-border)} .pe-alert--info .pe-alert__ico{background:var(--pe-info)}
+.pe-alert--danger{background:var(--pe-danger-bg);border-color:var(--pe-danger-border)} .pe-alert--danger .pe-alert__ico{background:var(--pe-danger);color:#fff}
+.pe-alert--ok{background:var(--pe-ok-bg);border-color:var(--pe-ok-border)} .pe-alert--ok .pe-alert__ico{background:var(--pe-ok);color:#fff}
+.pe-attention{padding:20px 24px}
+.pe-attention__link{display:block;width:fit-content;margin:8px 0 0 auto;text-decoration:none}
+.pe-attention__link:hover{text-decoration:underline}
+
+/* faixa de demonstração */
+.pe-demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:8px 12px;border:1px dashed #6B5AA8;border-radius:var(--pe-radius);background:rgba(146,84,222,.08);font-size:12px;color:#C9B5F5}
+.pe-demo__badge{padding:1px 8px;border-radius:999px;background:#3B2A63;color:#E2D4FF;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.pe-demo__group{display:inline-flex;flex-wrap:wrap;gap:6px}
+.pe-demo .pe-btn{min-height:28px;padding:0 10px;font-size:12px;background:transparent;border-color:#5A4A8C;color:#D9CCFA}
+.pe-demo .pe-btn[aria-pressed="true"]{background:#3B2A63;border-color:#8A6DD8;color:#fff}
+.pe-demo .pe-btn:disabled{color:rgba(255,255,255,.3);border-color:#3F3566}
+.pe-demo__sep{width:1px;height:18px;background:#5A4A8C}
+.pe-demo__hint{margin-left:auto;color:#A898D6}
+
+/* cabeçalho do pedido */
+.pe-title{font-size:28px;letter-spacing:1.4px}
+.pe-order{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:10px 0 0}
+.pe-order__num{font-family:var(--pe-head);font-size:18px;letter-spacing:.9px;color:var(--pe-strong)}
+.pe-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 24px;margin:18px 0 0}
+.pe-facts dt{font-weight:600;color:var(--pe-strong)}
+.pe-facts dd{margin:2px 0 0;color:var(--pe-text-2)}
+
+/* corpo: progresso, blocos, filtros */
+.pe-body{display:flex;flex-direction:column;gap:20px}
+.pe-progress{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:14px 16px;border:1px solid var(--pe-border);border-radius:12px;background:var(--pe-surface-2)}
+.pe-progress__text{margin:0;font-family:var(--pe-head);font-size:17px;letter-spacing:.6px;color:var(--pe-strong)}
+.pe-progress progress{flex:1 1 180px;height:8px;border:0;border-radius:4px;background:#3A3A42;overflow:hidden;-webkit-appearance:none;appearance:none}
+.pe-progress progress::-webkit-progress-bar{background:#3A3A42;border-radius:4px}
+.pe-progress progress::-webkit-progress-value{background:var(--pe-primary);border-radius:4px}
+.pe-progress progress::-moz-progress-bar{background:var(--pe-primary);border-radius:4px}
+.pe-progress__tags{display:inline-flex;flex-wrap:wrap;gap:6px}
+.pe-block{display:flex;flex-direction:column;gap:12px}
+.pe-block__head{display:flex;flex-direction:column;gap:2px}
+.pe-section-title{font-size:20px;letter-spacing:1px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.pe-section-hint{margin:0;color:var(--pe-text-2);font-size:13px}
+.pe-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.pe-search{flex:1 1 240px;display:flex}
+.pe input[type="search"]{width:100%;min-height:36px;padding:0 12px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);background:var(--pe-sunken);color:var(--pe-text);font:inherit;font-size:14px}
+.pe input[type="search"]::placeholder{color:#808080}
+.pe input[type="search"]:focus{border-color:var(--pe-primary);box-shadow:none;outline:2px solid var(--pe-focus);outline-offset:1px}
+.pe-seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);overflow:hidden}
+.pe-seg button{border:0;border-right:1px solid var(--pe-border);background:transparent;color:var(--pe-text-2);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer}
+.pe-seg button:last-child{border-right:0}
+.pe-seg button:hover{color:#fff}
+.pe-seg button[aria-pressed="true"]{background:rgba(0,107,212,.25);color:#fff}
+.pe-seg button:focus-visible{outline-offset:-2px}
+.pe-tools__row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;width:100%}
+.pe-count{margin:0 auto 0 0;font-size:12px;color:var(--pe-text-3)}
+.pe-empty{padding:24px;border:1px dashed var(--pe-border);border-radius:12px;text-align:center;color:var(--pe-text-2);display:flex;flex-direction:column;align-items:center;gap:10px}
+
+/* grupos por artista (collapse) */
+.pe-grp{border:1px solid var(--pe-border);border-radius:12px;background:var(--pe-surface-2)}
+.pe-grp+.pe-grp{margin-top:10px}
+.pe-grp[data-tone="danger"]{box-shadow:inset 3px 0 0 var(--pe-danger)}
+.pe-grp[data-tone="warn"]{box-shadow:inset 3px 0 0 var(--pe-warn)}
+.pe-grp[data-tone="info"]{box-shadow:inset 3px 0 0 var(--pe-info)}
+.pe-grp[data-tone="ok"]{box-shadow:inset 3px 0 0 var(--pe-ok)}
+.pe-grp>summary{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:14px 16px;cursor:pointer;list-style:none;border-radius:12px}
+.pe-grp>summary::-webkit-details-marker{display:none}
+.pe-grp>summary:hover{background:rgba(255,255,255,.03)}
+.pe-grp>summary:focus-visible{outline-offset:-2px}
+.pe-chev{color:var(--pe-text-2);transform:rotate(-90deg);transition:transform .15s}
+.pe-grp[open]>summary .pe-chev{transform:none}
+.pe-grp__name{font-family:var(--pe-head);font-size:16px;letter-spacing:.8px;color:var(--pe-strong)}
+.pe-grp__meta{font-size:13px;color:var(--pe-text-2)}
+.pe-grp__pills{margin-left:auto;display:flex;flex-wrap:wrap;gap:6px}
+.pe-grp__body{padding:0 16px 16px}
+@media (prefers-reduced-motion:reduce){.pe-chev{transition:none}}
+
+/* item de documento */
+.pe-docs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.pe-doc{border:1px solid var(--pe-border);border-radius:var(--pe-radius);padding:16px;background:var(--pe-surface)}
+.pe-doc[data-status="reprovado"]{border-color:var(--pe-danger-border);background:linear-gradient(rgba(220,68,70,.07),rgba(220,68,70,.07)),var(--pe-surface);box-shadow:inset 3px 0 0 var(--pe-danger)}
+.pe-doc[data-status="aprovado"],.pe-doc[data-status="enviado"]{background:var(--pe-surface-2)}
+.pe-doc__head{display:flex;align-items:flex-start;gap:12px}
+.pe-doc__ico{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;color:#fff}
+.pe-doc__ico--pendente{border:2px solid #8C8C8C}
+.pe-doc__ico--anexado{background:var(--pe-primary)}
+.pe-doc__ico--reprovado{background:var(--pe-danger)}
+.pe-doc__ico--aprovado{background:#52C41A}
+.pe-doc__ico--enviado{background:#2F4A7A}
+.pe-doc__main{flex:1;min-width:0}
+.pe-doc__name{margin:0;font-family:var(--pe-head);font-size:16px;letter-spacing:.8px;color:var(--pe-strong);display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.pe-doc__meta{margin:2px 0 0;font-size:13px;color:var(--pe-text-2)}
+.pe-doc__body{margin:10px 0 0 44px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.pe-doc__actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.pe-reason{width:100%;padding:10px 12px;border:1px solid var(--pe-danger-border);border-radius:var(--pe-radius);background:var(--pe-danger-bg);font-size:13px}
+.pe-reason p{margin:0}
+.pe-reason p+p{margin-top:4px}
+.pe-reason b{color:var(--pe-danger-text);font-weight:600}
+.pe-reason--past{border-color:var(--pe-border);background:var(--pe-sunken)}
+.pe-reason--past b{color:var(--pe-text-2)}
+.pe-filechip{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:0;font:inherit;color:var(--pe-link);cursor:pointer;text-align:left;word-break:break-all}
+.pe-filechip:hover{text-decoration:underline}
+.pe-filechip small{color:var(--pe-text-3);font-size:12px;white-space:nowrap}
+.pe-upload{position:relative;display:inline-flex}
+.pe-upload input:focus-visible+label{outline:2px solid var(--pe-focus);outline-offset:2px}
+.pe-note{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:13px;color:var(--pe-text-2)}
+.pe-error{margin:0;font-size:13px;color:var(--pe-danger-text)}
+
+/* envio final (fica visível ao rolar a lista) */
+.pe-submit{position:sticky;bottom:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px 16px;
+  margin:4px -24px -24px;padding:14px 24px;border-top:1px solid var(--pe-border-soft);border-radius:0 0 var(--pe-radius-card) var(--pe-radius-card);background:rgba(43,43,49,.97)}
+.pe-submit__msg{margin:0 auto 0 0;font-size:13px;color:var(--pe-text-2)}
+.pe-submit__msg b{color:var(--pe-strong);font-weight:600}
+
+/* histórico */
+.pe-aside{position:sticky;top:calc(var(--pe-header-h) + 24px)}
+.pe-aside>h2{font-size:22px;letter-spacing:1.1px;padding-bottom:16px;border-bottom:1px solid var(--pe-border)}
+.pe-hist{list-style:none;margin:18px 0 0 6px;padding:0 0 0 18px;border-left:2px solid var(--pe-border)}
+.pe-hist>li{position:relative;padding:0 0 18px 6px}
+.pe-hist>li:last-child{padding-bottom:0}
+.pe-hist>li::before{content:"";position:absolute;left:-25px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--pe-surface);border:2px solid var(--pe-info)}
+.pe-hist>li[data-tone="danger"]::before{border-color:var(--pe-danger);background:var(--pe-danger)}
+.pe-hist>li[data-tone="ok"]::before{border-color:var(--pe-ok);background:var(--pe-ok)}
+.pe-hist>li[data-tone="warn"]::before{border-color:var(--pe-warn)}
+.pe-hist p{margin:0}
+.pe-hist__when{font-size:12px;color:var(--pe-text-3)}
+.pe-hist__what{font-weight:500;color:var(--pe-strong)}
+.pe-hist__detail{margin-top:2px;font-size:13px;color:var(--pe-text-2)}
+.pe-hist ul{margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--pe-text-2)}
+.pe-hist__just{margin-top:6px;padding:8px 10px;border-radius:6px;background:var(--pe-sunken);font-size:13px}
+
+/* confirmação e aviso rápido */
+.pe-dialog{width:min(560px,calc(100vw - 32px));padding:0;border:1px solid var(--pe-border);border-radius:16px;background:var(--pe-surface);color:var(--pe-text)}
+.pe-dialog::backdrop{background:rgba(0,0,0,.6)}
+.pe-dialog__body{padding:24px 24px 8px}
+.pe-dialog h2{font-size:20px;letter-spacing:1px;margin-bottom:10px}
+.pe-dialog__body p{margin:0 0 10px}
+.pe-dialog__body ul{margin:0 0 12px;padding-left:20px;color:var(--pe-text-2)}
+.pe-dialog__foot{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;padding:16px 24px;border-top:1px solid var(--pe-border-soft)}
+.pe-toast{position:fixed;right:24px;bottom:24px;z-index:60;max-width:380px;padding:10px 16px;border-radius:var(--pe-radius);background:#3A3A42;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.45);font-size:13px}
+
+@media (max-width:1180px){
+  .pe-page{grid-template-columns:minmax(0,1fr)}
+  .pe-aside{position:static}
+}
+@media (max-width:900px){
+  .pe-shell{grid-template-columns:minmax(0,1fr)}
+  .pe-side{display:none}
+  .pe-top{padding:0 16px}
+  .pe-top__logo{display:inline-flex;padding:0}
+  .pe-page{padding:16px 16px 32px;gap:16px}
+  .pe-col{gap:16px}
+  .pe-card{padding:20px 16px;border-radius:16px}
+  .pe-submit{margin:4px -16px -20px;padding:12px 16px;border-radius:0 0 16px 16px}
+  .pe-submit .pe-btn{flex:1 1 100%}
+  .pe-demo__hint{margin-left:0}
+}
+@media (max-width:600px){
+  .pe-user__name{display:none}
+  .pe-title{font-size:23px}
+  .pe-doc{padding:14px 12px}
+  .pe-doc__head{flex-wrap:wrap;row-gap:6px}
+  .pe-doc__main{flex-basis:calc(100% - 44px)}
+  .pe-doc__head>.pe-tag{margin-left:44px}
+  .pe-doc__body{margin-left:0}
+  .pe-grp>summary{padding:12px}
+  .pe-grp__body{padding:0 10px 12px}
+  .pe-grp__pills{margin-left:28px}
+  .pe-attention{padding:16px}
+}
+</style>
+</head>
+<body class="pe" data-page="documentos-assinaveis-produtor">
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="pe-shell">
+  <div class="pe-side">
+    <a class="pe-logo" href="#" aria-label="Porta de Entrada da Cultura — página inicial">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 5h15l-6 9H3z" fill="#FF725C"/><path d="M12 14h11l-5 8h-6z" fill="#F1A921"/><path d="M3 14h9l-3 13H3z" fill="#1668DC"/></svg>
+      <span><b>porta de<br>entrada</b><small>da cultura</small></span>
+    </a>
+    <label class="sr-only" for="pe-area">Selecionar área</label>
+    <select class="pe-side__area" id="pe-area">
+      <option>Produtor cultural</option>
+      <option>Artista</option>
+    </select>
+    <nav aria-labelledby="pe-nav-painel">
+      <p class="pe-side__title" id="pe-nav-painel">Painel</p>
+      <ul>
+        <li><a href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 7.5L8 3l5.5 4.5V13h-3.5V9.5h-4V13H2.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span>Página inicial</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M3 8h10M3 11.5h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Acesso rápido</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z M6.5 9.5h3M8 8v3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span>Submissão de Sugestões e/ou Propostas Artísticas</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z M6.5 9.5h3M8 8v3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span>Formulário de Adesão</span></a></li>
+      </ul>
+    </nav>
+    <hr>
+    <nav aria-labelledby="pe-nav-conta">
+      <p class="pe-side__title" id="pe-nav-conta">Minha conta</p>
+      <ul>
+        <li><a href="#"><span>Cadastros</span></a></li>
+        <li><a href="#" aria-current="page"><span>Projetos</span></a></li>
+        <li><a href="#"><span>Cessão de espaço</span></a></li>
+      </ul>
+    </nav>
+    <p class="pe-side__ver">v1.23.2</p>
+  </div>
+
+  <div class="pe-main">
+    <header class="pe-top">
+      <a class="pe-logo pe-top__logo" href="#" aria-label="Porta de Entrada da Cultura — página inicial">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 5h15l-6 9H3z" fill="#FF725C"/><path d="M12 14h11l-5 8h-6z" fill="#F1A921"/><path d="M3 14h9l-3 13H3z" fill="#1668DC"/></svg>
+      </a>
+      <a class="pe-btn" href="../../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3.5M7 4.5L3.5 8 7 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar</a>
+      <span class="pe-top__spacer"></span>
+      <span class="pe-bell" role="img" aria-label="Notificações: 1 nova">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 11.5V7a4 4 0 018 0v4.5l1 1H3zM6.5 13.5a1.5 1.5 0 003 0" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        <span class="pe-bell__count" aria-hidden="true">1</span>
+      </span>
+      <span class="pe-user"><span class="pe-user__name">Márcia H. Toledo</span><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.5" r="2.8" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2.8 14a5.2 5.2 0 0110.4 0" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>
+    </header>
+
+    <div class="pe-page">
+      <main class="pe-col" id="conteudo">
+
+        <section class="pe-demo" aria-label="Controles de demonstração do protótipo">
+          <span class="pe-demo__badge">Demonstração</span>
+          <span id="pe-demo-cenario">Cenário:</span>
+          <span class="pe-demo__group" role="group" aria-labelledby="pe-demo-cenario">
+            <button type="button" class="pe-btn" data-scenario="primeiro" aria-pressed="true">Primeiro envio</button>
+            <button type="button" class="pe-btn" data-scenario="devolvido" aria-pressed="false">Devolvido com reprovações</button>
+            <button type="button" class="pe-btn" data-scenario="enviado" aria-pressed="false">Enviado (em análise)</button>
+          </span>
+          <span class="pe-demo__sep" aria-hidden="true"></span>
+          <button type="button" class="pe-btn" id="pe-many" aria-pressed="false">Simular 20 artistas</button>
+          <button type="button" class="pe-btn" id="pe-fill">Anexar todos os pendentes</button>
+          <span class="pe-demo__hint">Dados fictícios · nenhum arquivo sai do navegador</span>
+        </section>
+
+        <header class="pe-card">
+          <h1 class="pe-title">Documentos assináveis</h1>
+          <p class="pe-order"><span class="pe-order__num">Pedido - 11231</span><span class="pe-status" id="pe-phase-tag"></span></p>
+          <dl class="pe-facts">
+            <div><dt>Emenda parlamentar · evento</dt><dd>2026.0417 · Programação cultural gratuita no Centro Cultural Grajaú e CEUs da região sul</dd></div>
+            <div><dt>Produtor (proponente)</dt><dd>Circulando Produções Culturais Ltda. · PJ · CNPJ 41.827.306/0001-92</dd></div>
+            <div><dt>Artistas do pedido</dt><dd id="pe-fact-artists"></dd></div>
+          </dl>
+        </header>
+
+        <div class="pe-card pe-body">
+          <div id="pe-banner" role="status"></div>
+
+          <div class="pe-alert pe-alert--warn pe-attention">
+            <span class="pe-alert__ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 4v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="1.1" fill="currentColor"/></svg></span>
+            <div style="flex:1;min-width:0">
+              <p class="pe-alert__title">Atenção</p>
+              <p>Somente aceitamos arquivos assinados digitalmente com protocolo de verificação (assinaturas do GOV.br ou equivalentes). Cada arquivo deve ser um PDF de até 10 MB.</p>
+              <a class="pe-attention__link" href="https://assinador.iti.br/" target="_blank" rel="noreferrer">Assinador Digital<span class="sr-only"> (abre em nova aba)</span></a>
+            </div>
+          </div>
+
+          <div class="pe-progress">
+            <p class="pe-progress__text" id="pe-progress-text"></p>
+            <progress id="pe-progress" max="1" value="0" aria-labelledby="pe-progress-text"></progress>
+            <span class="pe-progress__tags" id="pe-progress-tags"></span>
+          </div>
+
+          <section class="pe-block" aria-labelledby="pe-pedido-title">
+            <div class="pe-block__head">
+              <h2 class="pe-section-title" id="pe-pedido-title">Documentos do pedido</h2>
+              <p class="pe-section-hint">Valem para o contrato inteiro e são assinados por você, como produtor.</p>
+            </div>
+            <ul class="pe-docs" id="pe-pedido-list"></ul>
+          </section>
+
+          <section class="pe-block" aria-labelledby="pe-art-title">
+            <div class="pe-block__head">
+              <h2 class="pe-section-title" id="pe-art-title">Documentos por artista <span class="pe-tag pe-tag--neutral" id="pe-art-total"></span></h2>
+              <p class="pe-section-hint">Cada artista tem a proposta de natureza artística, assinada por você, e a declaração de exclusividade, assinada pelo artista ou pelos integrantes do grupo.</p>
+            </div>
+            <div class="pe-tools">
+              <search class="pe-search">
+                <label class="sr-only" for="pe-q">Buscar artista pelo nome</label>
+                <input type="search" id="pe-q" placeholder="Buscar artista pelo nome…" autocomplete="off">
+              </search>
+              <div class="pe-seg" role="group" aria-label="Filtrar artistas por situação" id="pe-filter"></div>
+              <div class="pe-tools__row">
+                <p class="pe-count" id="pe-count" aria-live="polite"></p>
+                <button type="button" class="pe-btn pe-btn--ghost pe-btn--sm" id="pe-expand">Expandir todos</button>
+                <button type="button" class="pe-btn pe-btn--ghost pe-btn--sm" id="pe-collapse">Recolher todos</button>
+              </div>
+            </div>
+            <div id="pe-artist-list"></div>
+            <div class="pe-empty" id="pe-empty" hidden>
+              <span>Nenhum artista encontrado com esses filtros.</span>
+              <button type="button" class="pe-btn pe-btn--sm" id="pe-clear">Limpar busca e filtros</button>
+            </div>
+          </section>
+
+          <div class="pe-submit">
+            <p class="pe-submit__msg" id="pe-submit-msg" aria-live="polite"></p>
+            <button type="button" class="pe-btn pe-btn--primary" id="pe-send" aria-describedby="pe-submit-msg">Enviar documentos</button>
+          </div>
+        </div>
+      </main>
+
+      <aside class="pe-card pe-aside" aria-labelledby="pe-hist-title">
+        <h2 id="pe-hist-title">Histórico</h2>
+        <ol class="pe-hist" id="pe-hist"></ol>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<p class="sr-only" id="pe-live" aria-live="polite"></p>
+<div class="pe-toast" id="pe-toast" role="status" hidden></div>
+
+<dialog class="pe-dialog" id="pe-confirm" aria-labelledby="pe-confirm-title" aria-describedby="pe-confirm-desc">
+  <form method="dialog">
+    <div class="pe-dialog__body">
+      <h2 id="pe-confirm-title"></h2>
+      <div id="pe-confirm-desc"></div>
+    </div>
+    <div class="pe-dialog__foot">
+      <button type="submit" class="pe-btn" value="cancel" autofocus>Voltar e revisar</button>
+      <button type="submit" class="pe-btn pe-btn--primary" value="ok" id="pe-confirm-ok"></button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+(function () {
+'use strict';
+
+var TODAY = '30/09/2026';
+var ANALYST = 'Fabrícia C. B. da Silva';
+var MAX_BYTES = 10 * 1024 * 1024;
+
+var ICON = {
+  check: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  alert: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="1.1" fill="currentColor"/></svg>',
+  info: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="4.4" r="1.1" fill="currentColor"/><path d="M8 7.2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  clip: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 5.5L6.2 9.8a1.4 1.4 0 0 0 2 2l4.6-4.6a2.8 2.8 0 0 0-4-4L4.2 7.8a4.2 4.2 0 0 0 6 6l3.3-3.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  clock: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 5v3.2l2 1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  lock: '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>',
+  upload: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10.5V3M5 5.8l3-3 3 3M3 10.5v2h10v-2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  download: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.8v7.5M5 7.5l3 3 3-3M3 10.5v2h10v-2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  chev: '<svg class="pe-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+var PEDIDO_MODELS = [
+  { id: 'termo', name: 'Termo de contratação', signer: 'Assinado por você (produtor)' },
+  { id: 'bancarios', name: 'Declaração de dados bancários', signer: 'Assinada por você (produtor)' },
+  { id: 'proponente', name: 'Declaração do proponente (art. 14, Lei 14.133/2021)', signer: 'Assinada por você (produtor)' }
+];
+
+var BASE_ARTISTS = [
+  { id: 'a1', name: 'Cia. Suspiros e Burbujas', kind: 'grupo', members: 2 },
+  { id: 'a2', name: 'Mestre Zé do Pife', kind: 'solo', members: 1, lead: 'José Aparecido dos Santos' },
+  { id: 'a3', name: 'Maracatu Baque Forte', kind: 'grupo', members: 12 },
+  { id: 'a4', name: 'Ana Clara Ventura', kind: 'solo', members: 1, lead: 'Ana Clara Ventura Lima' },
+  { id: 'a5', name: 'Coletivo Passinho SP', kind: 'grupo', members: 6 },
+  { id: 'a6', name: 'Trio Sanfona de Prata', kind: 'grupo', members: 3 }
+];
+
+var EXTRA_ARTISTS = [
+  ['Bloco Lua Cheia', 'grupo', 9], ['Duo Cordas do Sul', 'grupo', 2], ['Grupo Teatro de Rua Alvorada', 'grupo', 5],
+  ['Samba de Roda Filhas de Oyá', 'grupo', 7], ['Palhaço Pipoca', 'solo', 1, 'Rogério Batista Nunes'], ['Orquestra de Berimbaus', 'grupo', 10],
+  ['Cia. Bonecos Andantes', 'grupo', 4], ['Rap Quebrada Norte', 'grupo', 3], ['Coral Vozes do Grajaú', 'grupo', 16],
+  ['Quadrilha Arraiá do Sul', 'grupo', 12], ['Duo Jazz na Laje', 'grupo', 2], ['Cia. Contadores de Histórias', 'grupo', 3],
+  ['Batucada Mirim', 'grupo', 8], ['Cantora Dona Cida', 'solo', 1, 'Aparecida Moreira da Silva']
+];
+
+var FIRST_ATTACHED = {
+  pedido: ['termo', 'bancarios'],
+  a1: ['proposta', 'exclusividade'],
+  a3: ['proposta'],
+  a4: ['proposta', 'exclusividade'],
+  a6: ['proposta', 'exclusividade']
+};
+
+var REJECTED = {
+  'a2:exclusividade': 'A assinatura do artista não confere com o documento de identidade. Envie de novo com a assinatura digital GOV.br do próprio artista.',
+  'a3:exclusividade': 'Faltam as assinaturas de 2 dos 12 integrantes: Diego Ramos Teixeira e Hugo Martins Prado.',
+  'a5:proposta': 'O arquivo enviado é de uma versão anterior da proposta, sem o DJ Rafa na ficha técnica. Baixe o documento de novo, assine e anexe.',
+  'x3:exclusividade': 'O arquivo não tem protocolo de verificação da assinatura digital. Assine pelo GOV.br ou por um assinador equivalente.'
+};
+
+var STATUS = {
+  pendente: { label: 'Pendente de envio', tone: 'warn', icon: '' },
+  anexado: { label: 'Anexado · não enviado', tone: 'info', icon: ICON.clip },
+  reprovado: { label: 'Reprovado', tone: 'danger', icon: ICON.alert },
+  aprovado: { label: 'Aprovado', tone: 'ok', icon: ICON.check },
+  enviado: { label: 'Em análise', tone: 'info', icon: ICON.clock }
+};
+
+var PHASE = {
+  aberto: { tag: 'Aguardando assinaturas', tone: 'warn' },
+  devolvido: { tag: 'Devolvido para correção', tone: 'danger' },
+  enviado: { tag: 'Documentos assinados enviados', tone: 'info' }
+};
+
+var FILTERS = [
+  { id: 'todos', label: 'Todos', test: function () { return true; } },
+  { id: 'pendencia', label: 'Com pendência', test: function (t) { return t.missing > 0; } },
+  { id: 'reprovados', label: 'Reprovados', test: function (t) { return t.reprovado > 0; } },
+  { id: 'completos', label: 'Sem pendência', test: function (t) { return t.missing === 0; } }
+];
+
+var state = {
+  scenario: 'primeiro', many: false, artists: BASE_ARTISTS, phase: 'aberto',
+  docs: {}, errors: {}, open: {}, keep: {}, q: '', filter: 'todos', history: [], sentAt: ''
+};
+
+function $(id) { return document.getElementById(id); }
+function when(cond, html) { if (!cond) return ''; return html; }
+function plural(n, one, many) { if (n === 1) return n + ' ' + one; return n + ' ' + many; }
+function norm(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+function slug(s) { return norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function nowTime() { var d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+function fmtSize(bytes) {
+  if (bytes >= 1048576) return (bytes / 1048576).toFixed(1).replace('.', ',') + ' MB';
+  return Math.max(1, Math.round(bytes / 1024)) + ' KB';
+}
+function tag(tone, text) { return '<span class="pe-tag pe-tag--' + tone + '">' + text + '</span>'; }
+function who(g) { if (!g.artist) return ''; return ' — ' + g.name; }
+
+function extraArtists() {
+  return EXTRA_ARTISTS.map(function (e, i) { return { id: 'x' + i, name: e[0], kind: e[1], members: e[2], lead: e[3] }; });
+}
+
+function artistModels(a) {
+  var exclusividade = { id: 'exclusividade', name: 'Declaração de exclusividade', variant: 'Grupo', signer: 'Assinada pelos ' + a.members + ' integrantes do grupo' };
+  if (a.kind === 'solo') exclusividade = { id: 'exclusividade', name: 'Declaração de exclusividade', variant: 'Individual', signer: 'Assinada pelo artista · ' + a.lead };
+  return [{ id: 'proposta', name: 'Proposta de natureza artística', signer: 'Assinada por você (produtor)' }, exclusividade];
+}
+
+function groups() {
+  var list = [{ id: 'pedido', name: 'Documentos do pedido', models: PEDIDO_MODELS }];
+  state.artists.forEach(function (a) { list.push({ id: a.id, name: a.name, artist: a, models: artistModels(a) }); });
+  return list;
+}
+function docsOf(g) {
+  return g.models.map(function (m) {
+    var key = g.id + ':' + m.id;
+    return { key: key, group: g, model: m, st: state.docs[key] };
+  });
+}
+function allDocs() { return groups().reduce(function (acc, g) { return acc.concat(docsOf(g)); }, []); }
+function findDoc(key) { return allDocs().filter(function (d) { return d.key === key; })[0]; }
+
+function tally(docs) {
+  var t = { total: docs.length, pendente: 0, anexado: 0, reprovado: 0, aprovado: 0, enviado: 0, replacing: 0 };
+  docs.forEach(function (d) {
+    t[d.st.status]++;
+    if (d.st.replacing) t.replacing++;
+  });
+  t.missing = t.pendente + t.reprovado;
+  t.round = t.total - t.aprovado;
+  return t;
+}
+
+function fileFor(g, m) { return slug(m.name).slice(0, 30) + '-' + slug(g.name).slice(0, 26) + '-assinado.pdf'; }
+function fakeSize(key) {
+  var h = 0;
+  for (var i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) % 997;
+  return 160 * 1024 + h * 1400;
+}
+
+function attachedInFirst(g, m) {
+  var preset = FIRST_ATTACHED[g.id];
+  if (preset) return preset.indexOf(m.id) !== -1;
+  if (g.id.charAt(0) !== 'x') return false;
+  var n = Number(g.id.slice(1)) % 5;
+  if (n === 0) return false;
+  if (n === 1) return m.id === 'proposta';
+  return true;
+}
+
+function seed() {
+  var scenario = state.scenario;
+  state.docs = {};
+  state.errors = {};
+  state.open = {};
+  state.keep = {};
+  state.q = '';
+  state.filter = 'todos';
+  $('pe-q').value = '';
+  groups().forEach(function (g) {
+    docsOf(g).forEach(function (d) {
+      var file = fileFor(g, d.model);
+      var size = fakeSize(d.key);
+      if (scenario === 'primeiro') {
+        state.docs[d.key] = { status: 'pendente' };
+        if (attachedInFirst(g, d.model)) state.docs[d.key] = { status: 'anexado', file: file, size: size };
+      }
+      if (scenario === 'devolvido') {
+        state.docs[d.key] = { status: 'aprovado', file: file, size: size, reviewedAt: TODAY };
+        if (REJECTED[d.key]) state.docs[d.key] = { status: 'reprovado', reason: REJECTED[d.key], reviewedAt: TODAY, rejectedFile: file };
+      }
+      if (scenario === 'enviado') state.docs[d.key] = { status: 'enviado', file: file, size: size };
+    });
+  });
+  state.phase = { primeiro: 'aberto', devolvido: 'devolvido', enviado: 'enviado' }[scenario];
+  state.sentAt = '';
+  if (scenario === 'enviado') state.sentAt = '29/09/2026 às 18:05';
+  state.history = seedHistory(scenario);
+  groups().forEach(function (g) {
+    if (g.artist && tally(docsOf(g)).missing > 0) state.open[g.id] = true;
+  });
+}
+
+function seedHistory(scenario) {
+  var total = allDocs().length;
+  var notified = {
+    when: '26/09/2026 · 14:30', what: 'Notificação recebida', tone: 'warn',
+    detail: 'Documentos disponíveis para assinatura: ' + plural(total, 'documento', 'documentos') + ' de ' + plural(state.artists.length, 'artista', 'artistas') + '. Aviso enviado para contato@circulandoproducoes.com.br.'
+  };
+  var sent = { when: '29/09/2026 · 18:05', what: 'Documentação enviada', tone: 'info', detail: plural(total, 'documento enviado', 'documentos enviados') + ' para análise.' };
+  if (scenario === 'primeiro') return [notified];
+  if (scenario === 'enviado') return [sent, notified];
+  var rejected = allDocs().filter(function (d) { return d.st.status === 'reprovado'; });
+  var returned = {
+    when: '30/09/2026 · 10:12', what: 'Documentação devolvida para correção', tone: 'danger',
+    detail: plural(total - rejected.length, 'aprovado', 'aprovados') + ' · ' + plural(rejected.length, 'reprovado', 'reprovados') + ' · análise de ' + ANALYST,
+    list: rejected.map(function (d) { return d.model.name + ' — ' + d.group.name; }),
+    justification: 'Corrija e envie de novo os documentos reprovados. Os demais foram aprovados e continuam valendo.'
+  };
+  return [returned, sent, notified];
+}
+
+function alertBox(tone, icon, title, text) {
+  return '<div class="pe-alert pe-alert--' + tone + '"><span class="pe-alert__ico" aria-hidden="true">' + icon + '</span>' +
+    '<div><p class="pe-alert__title" id="pe-banner-title" tabindex="-1">' + title + '</p><p>' + text + '</p></div></div>';
+}
+
+function renderBanner() {
+  var t = tally(allDocs());
+  var html = '';
+  if (state.phase === 'aberto') {
+    html = alertBox('info', ICON.info, 'Você envia todos os documentos deste pedido',
+      'Como produtor, você anexa os documentos do pedido e os de cada artista — inclusive as declarações assinadas pelos artistas. ' +
+      'Os arquivos anexados ficam salvos aqui, mas só seguem para análise quando você clicar em <b>Enviar documentos</b>.');
+  }
+  if (state.phase === 'devolvido') {
+    html = alertBox('danger', ICON.alert, 'A análise devolveu ' + plural(t.reprovado, 'documento reprovado', 'documentos reprovados'),
+      'Anexe de novo só os reprovados — estão destacados em vermelho, com a justificativa. ' +
+      'Os ' + t.aprovado + ' aprovados ficam travados e não precisam ser reenviados. Depois, clique em <b>Enviar documentos</b>.');
+  }
+  if (state.phase === 'enviado') {
+    html = alertBox('ok', ICON.check, 'Documentação enviada — em análise',
+      'Enviada em ' + state.sentAt + ' · ' + plural(t.enviado, 'documento', 'documentos') + '.' +
+      when(t.aprovado, ' Os ' + t.aprovado + ' já aprovados continuam valendo.') +
+      ' Os arquivos ficam travados durante a análise. Se algum for reprovado, você recebe uma notificação e poderá anexá-lo de novo nesta tela.');
+  }
+  $('pe-banner').innerHTML = html;
+}
+
+function renderHead(t) {
+  var phase = PHASE[state.phase];
+  var el = $('pe-phase-tag');
+  el.textContent = phase.tag;
+  el.setAttribute('data-tone', phase.tone);
+  $('pe-fact-artists').textContent = plural(state.artists.length, 'artista', 'artistas') + ' · ' + plural(t.total, 'documento', 'documentos') + ' para assinar';
+  $('pe-art-total').textContent = plural(state.artists.length, 'artista', 'artistas');
+}
+
+function renderProgress(t) {
+  var done = t.anexado + t.enviado;
+  var text = done + ' de ' + plural(t.round, 'documento anexado', 'documentos anexados');
+  if (state.phase === 'devolvido') text = t.anexado + ' de ' + plural(t.round, 'reprovado reanexado', 'reprovados reanexados');
+  if (state.phase === 'enviado') text = plural(t.enviado, 'documento enviado', 'documentos enviados') + ' · em análise';
+  $('pe-progress-text').textContent = text;
+  var bar = $('pe-progress');
+  bar.max = Math.max(1, t.round);
+  bar.value = done;
+  var tags = [];
+  if (t.pendente) tags.push(tag('warn', plural(t.pendente, 'pendente de envio', 'pendentes de envio')));
+  if (t.reprovado) tags.push(tag('danger', plural(t.reprovado, 'reprovado', 'reprovados')));
+  if (t.aprovado) tags.push(tag('ok', plural(t.aprovado, 'aprovado', 'aprovados')));
+  $('pe-progress-tags').innerHTML = tags.join('');
+}
+
+function reasonBox(st) {
+  if (st.status === 'reprovado') {
+    return '<div class="pe-reason"><p><b>Reprovado em ' + st.reviewedAt + '. Justificativa da análise:</b> ' + st.reason + '</p>' +
+      '<p><button type="button" class="pe-filechip" data-view="' + esc(st.rejectedFile) + '">' + ICON.clip + '<span>Ver arquivo reprovado</span></button></p></div>';
+  }
+  return '<div class="pe-reason pe-reason--past"><p><b>Motivo da reprovação anterior:</b> ' + st.reason + '</p></div>';
+}
+
+function uploadControl(d, id, err) {
+  var st = d.st;
+  var text = 'Anexar documento assinado';
+  if (st.status === 'reprovado') text = 'Anexar novamente';
+  if (st.status === 'anexado') text = 'Trocar arquivo';
+  var describedBy = 'name-' + id;
+  if (err) describedBy += ' err-' + id;
+  return '<span class="pe-upload">' +
+    '<input type="file" class="sr-only" id="file-' + id + '" accept="application/pdf,.pdf" data-key="' + d.key + '" data-focus="file:' + d.key + '" aria-describedby="' + describedBy + '"' + when(err, ' aria-invalid="true"') + '>' +
+    '<label class="pe-btn" for="file-' + id + '">' + ICON.upload + text + '<span class="sr-only"> — ' + d.model.name + who(d.group) + '</span></label>' +
+  '</span>';
+}
+
+function docItem(d) {
+  var st = d.st;
+  var m = d.model;
+  var id = d.key.replace(':', '-');
+  var status = STATUS[st.status];
+  var label = status.label;
+  if (st.status === 'anexado' && st.replacing) label = 'Reanexado · não enviado';
+  var editable = state.phase !== 'enviado' && ['pendente', 'reprovado', 'anexado'].indexOf(st.status) !== -1;
+  var err = state.errors[d.key];
+  var body = '';
+  var actions = '';
+  if (editable) {
+    body += '<button type="button" class="pe-linkbtn" data-download="' + d.key + '">' + ICON.download +
+      '<span>Clique aqui para baixar o documento ' + m.name + ' e enviá-lo assinado<span class="sr-only">' + who(d.group) + '</span></span></button>';
+    actions += uploadControl(d, id, err);
+  }
+  if (st.reason) body += reasonBox(st);
+  if (st.file) {
+    body += '<button type="button" class="pe-filechip" data-view="' + esc(st.file) + '">' + ICON.clip + '<span>' + esc(st.file) + '</span><small>' + fmtSize(st.size) + '</small>' +
+      '<span class="sr-only"> — abrir o arquivo anexado</span></button>';
+  }
+  if (editable && st.status === 'anexado') {
+    actions += '<button type="button" class="pe-btn pe-btn--ghost pe-btn--sm" data-remove="' + d.key + '">Remover<span class="sr-only"> o arquivo de ' + m.name + who(d.group) + '</span></button>';
+  }
+  if (actions) body += '<div class="pe-doc__actions">' + actions + '</div>';
+  if (err) body += '<p class="pe-error" id="err-' + id + '">' + esc(err) + '</p>';
+  if (st.status === 'aprovado') body += '<p class="pe-note">' + ICON.lock + 'Aprovado em ' + st.reviewedAt + ' · travado, não precisa reenviar</p>';
+  if (st.status === 'enviado') body += '<p class="pe-note">' + ICON.lock + 'Enviado para análise · travado até o resultado</p>';
+  return '<li class="pe-doc" data-status="' + st.status + '">' +
+    '<div class="pe-doc__head">' +
+      '<span class="pe-doc__ico pe-doc__ico--' + st.status + '" aria-hidden="true">' + status.icon + '</span>' +
+      '<div class="pe-doc__main"><p class="pe-doc__name" id="name-' + id + '">' + m.name + when(m.variant, ' ' + tag('neutral', m.variant)) + '</p>' +
+      '<p class="pe-doc__meta">' + m.signer + '</p></div>' +
+      tag(status.tone, label) +
+    '</div>' +
+    '<div class="pe-doc__body">' + body + '</div>' +
+  '</li>';
+}
+
+function groupSummary(t) {
+  if (t.reprovado) return { tone: 'danger', pill: tag('danger', plural(t.reprovado, 'reprovado', 'reprovados')) };
+  if (t.pendente) return { tone: 'warn', pill: tag('warn', t.anexado + ' de ' + t.round + ' anexados') };
+  if (t.anexado && t.replacing) return { tone: 'info', pill: tag('info', 'Reanexado') };
+  if (t.anexado) return { tone: 'info', pill: tag('info', 'Tudo anexado') };
+  if (t.enviado) return { tone: 'info', pill: tag('info', 'Em análise') };
+  return { tone: 'ok', pill: tag('ok', 'Aprovados') };
+}
+
+function groupItem(g, docs, t) {
+  var a = g.artist;
+  var summary = groupSummary(t);
+  var meta = 'Grupo · ' + plural(a.members, 'integrante', 'integrantes');
+  if (a.kind === 'solo') meta = 'Solo · ' + a.lead;
+  return '<details class="pe-grp" data-gid="' + g.id + '" data-tone="' + summary.tone + '"' + when(state.open[g.id], ' open') + '>' +
+    '<summary data-focus="sum:' + g.id + '">' + ICON.chev + '<span class="pe-grp__name">' + g.name + '</span>' +
+      '<span class="pe-grp__meta">' + meta + '</span><span class="pe-grp__pills">' + summary.pill + '</span></summary>' +
+    '<div class="pe-grp__body"><ul class="pe-docs">' + docs.map(docItem).join('') + '</ul></div>' +
+  '</details>';
+}
+
+function matches(g, q) {
+  if (!q) return true;
+  return norm(g.name + ' ' + (g.artist.lead || '')).indexOf(q) !== -1;
+}
+
+function setIfChanged(id, html) {
+  var el = $(id);
+  if (el.innerHTML === html) return;
+  el.innerHTML = html;
+}
+
+function renderArtists() {
+  var q = norm(state.q.trim());
+  var artistGroups = groups().slice(1);
+  var filter = FILTERS.filter(function (f) { return f.id === state.filter; })[0];
+  var counts = {};
+  var html = '';
+  var shown = 0;
+  FILTERS.forEach(function (f) { counts[f.id] = 0; });
+  artistGroups.forEach(function (g) {
+    var docs = docsOf(g);
+    var t = tally(docs);
+    FILTERS.forEach(function (f) { if (f.test(t)) counts[f.id]++; });
+    if ((!filter.test(t) || !matches(g, q)) && !state.keep[g.id]) return;
+    shown++;
+    html += groupItem(g, docs, t);
+  });
+  $('pe-artist-list').innerHTML = html;
+  $('pe-empty').hidden = shown > 0;
+  $('pe-filter').innerHTML = FILTERS.map(function (f) {
+    return '<button type="button" data-filter="' + f.id + '" data-focus="filter:' + f.id + '" aria-pressed="' + (f.id === state.filter) + '">' + f.label + ' (' + counts[f.id] + ')</button>';
+  }).join('');
+  setIfChanged('pe-count', 'Exibindo ' + shown + ' de ' + plural(artistGroups.length, 'artista', 'artistas'));
+}
+
+function missingDetail(t) {
+  var parts = [];
+  if (t.pendente) parts.push(plural(t.pendente, 'pendente de envio', 'pendentes de envio'));
+  if (t.reprovado) parts.push(plural(t.reprovado, 'reprovado', 'reprovados'));
+  return ' (' + parts.join(' · ') + ')';
+}
+
+function renderSubmit(t) {
+  var ready = state.phase !== 'enviado' && t.missing === 0 && t.anexado > 0;
+  var msg = '';
+  $('pe-send').disabled = !ready;
+  if (state.phase === 'enviado') msg = 'Documentação enviada em ' + state.sentAt + ' — em análise. Os arquivos ficam travados até o resultado.';
+  if (state.phase !== 'enviado' && t.missing > 0) msg = 'Faltam <b>' + plural(t.missing, 'documento', 'documentos') + '</b> para anexar' + missingDetail(t) + '. O envio libera quando tudo estiver anexado.';
+  if (ready) msg = '<b>Tudo anexado.</b> ' + plural(t.anexado, 'documento será enviado', 'documentos serão enviados') + ' para análise.';
+  setIfChanged('pe-submit-msg', msg);
+}
+
+function renderHistory() {
+  $('pe-hist').innerHTML = state.history.map(function (h) {
+    var list = (h.list || []).map(function (item) { return '<li>' + item + '</li>'; }).join('');
+    return '<li data-tone="' + h.tone + '"><p class="pe-hist__when">' + h.when + '</p><p class="pe-hist__what">' + h.what + '</p>' +
+      when(h.detail, '<p class="pe-hist__detail">' + h.detail + '</p>') +
+      when(list, '<p class="pe-hist__detail">Documentos que foram reprovados:</p><ul>' + list + '</ul>') +
+      when(h.justification, '<p class="pe-hist__just"><b>Justificativa:</b> ' + h.justification + '</p>') +
+    '</li>';
+  }).join('');
+}
+
+function renderDemo(t) {
+  document.querySelectorAll('[data-scenario]').forEach(function (b) {
+    b.setAttribute('aria-pressed', String(b.getAttribute('data-scenario') === state.scenario));
+  });
+  $('pe-many').setAttribute('aria-pressed', String(state.many));
+  $('pe-fill').disabled = state.phase === 'enviado' || t.missing === 0;
+}
+
+function render(focusKey) {
+  var active = document.activeElement;
+  var keep = focusKey;
+  if (!keep && active && active.getAttribute) keep = active.getAttribute('data-focus');
+  var t = tally(allDocs());
+  renderHead(t);
+  renderProgress(t);
+  $('pe-pedido-list').innerHTML = docsOf(groups()[0]).map(docItem).join('');
+  renderArtists();
+  renderSubmit(t);
+  renderHistory();
+  renderDemo(t);
+  if (!keep) return;
+  var target = document.querySelector('[data-focus="' + keep + '"]');
+  if (target) target.focus({ preventScroll: true });
+}
+
+function start() {
+  seed();
+  renderBanner();
+  render();
+}
+
+function announce(msg) {
+  var live = $('pe-live');
+  live.textContent = '';
+  setTimeout(function () { live.textContent = msg; }, 50);
+}
+
+var toastTimer = null;
+function toast(msg) {
+  var el = $('pe-toast');
+  el.textContent = msg;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 4000);
+}
+
+function attach(key, name, size, type) {
+  var d = findDoc(key);
+  var st = d.st;
+  var isPdf = type === 'application/pdf' || /\.pdf$/i.test(name);
+  delete state.errors[key];
+  if (!isPdf) state.errors[key] = 'Seu arquivo ' + name + ' não é do tipo PDF. Anexe o documento assinado em PDF.';
+  if (isPdf && size > MAX_BYTES) state.errors[key] = 'Seu arquivo ' + name + ' não pode conter mais de 10MB.';
+  if (state.errors[key]) {
+    announce(state.errors[key]);
+    render('file:' + key);
+    return;
+  }
+  state.keep[d.group.id] = true;
+  st.replacing = st.status === 'reprovado' || !!st.replacing;
+  st.status = 'anexado';
+  st.file = name;
+  st.size = size;
+  announce('Arquivo ' + name + ' anexado em ' + d.model.name + who(d.group) + '. Ele ainda não foi enviado para análise.');
+  render('file:' + key);
+}
+
+function removeFile(key) {
+  var d = findDoc(key);
+  var st = d.st;
+  state.keep[d.group.id] = true;
+  st.status = 'pendente';
+  if (st.replacing) st.status = 'reprovado';
+  st.replacing = false;
+  st.file = null;
+  st.size = 0;
+  announce('Arquivo removido de ' + d.model.name + who(d.group) + '.');
+  render('file:' + key);
+}
+
+function setFilter(id) {
+  var filter = FILTERS.filter(function (f) { return f.id === id; })[0];
+  state.filter = id;
+  state.keep = {};
+  if (id === 'pendencia' || id === 'reprovados') {
+    groups().slice(1).forEach(function (g) {
+      if (filter.test(tally(docsOf(g)))) state.open[g.id] = true;
+    });
+  }
+  render('filter:' + id);
+}
+
+function openConfirm() {
+  var t = tally(allDocs());
+  var pedidoCount = tally(docsOf(groups()[0])).anexado;
+  var artistCount = groups().slice(1).filter(function (g) { return tally(docsOf(g)).anexado > 0; }).length;
+  var artistDocs = t.anexado - pedidoCount;
+  var items = [];
+  var title = 'Enviar ' + plural(t.anexado, 'documento', 'documentos') + ' para análise?';
+  if (state.phase === 'devolvido') title = 'Reenviar ' + plural(t.anexado, 'documento corrigido', 'documentos corrigidos') + '?';
+  if (pedidoCount) items.push('<li>' + plural(pedidoCount, 'documento do pedido', 'documentos do pedido') + '</li>');
+  if (artistDocs) items.push('<li>' + plural(artistDocs, 'documento', 'documentos') + ' de ' + plural(artistCount, 'artista', 'artistas') + '</li>');
+  $('pe-confirm-title').textContent = title;
+  $('pe-confirm-desc').innerHTML = '<p>Serão enviados:</p><ul>' + items.join('') + '</ul>' +
+    when(t.aprovado, '<p>Os ' + t.aprovado + ' documentos já aprovados continuam valendo e não serão reenviados.</p>') +
+    '<p>Depois do envio, os arquivos ficam travados até o fim da análise. Se algum for reprovado, você recebe uma notificação e poderá anexá-lo de novo.</p>';
+  $('pe-confirm-ok').textContent = 'Enviar ' + plural(t.anexado, 'documento', 'documentos');
+  $('pe-confirm').returnValue = '';
+  $('pe-confirm').showModal();
+}
+
+function submitDocs() {
+  var resend = state.phase === 'devolvido';
+  var time = nowTime();
+  var what = 'Documentação enviada';
+  var sent = 0;
+  allDocs().forEach(function (d) {
+    if (d.st.status !== 'anexado') return;
+    d.st.status = 'enviado';
+    sent++;
+  });
+  if (resend) what = 'Documentos corrigidos reenviados';
+  state.phase = 'enviado';
+  state.scenario = 'enviado';
+  state.sentAt = TODAY + ' às ' + time;
+  state.errors = {};
+  state.history.unshift({ when: TODAY + ' · ' + time, what: what, tone: 'info', detail: plural(sent, 'documento enviado', 'documentos enviados') + ' para análise.' });
+  renderBanner();
+  render();
+  $('pe-banner-title').focus();
+}
+
+document.addEventListener('click', function (event) {
+  var el = event.target.closest('[data-scenario],[data-filter],[data-download],[data-view],[data-remove]');
+  if (!el) return;
+  if (el.hasAttribute('data-scenario')) {
+    state.scenario = el.getAttribute('data-scenario');
+    start();
+    return;
+  }
+  if (el.hasAttribute('data-filter')) {
+    setFilter(el.getAttribute('data-filter'));
+    return;
+  }
+  if (el.hasAttribute('data-download')) {
+    var d = findDoc(el.getAttribute('data-download'));
+    toast('Download simulado: ' + d.model.name + who(d.group) + '. No sistema, baixa o PDF gerado para assinatura.');
+    return;
+  }
+  if (el.hasAttribute('data-view')) {
+    toast('Abrir arquivo (simulado): ' + el.getAttribute('data-view'));
+    return;
+  }
+  removeFile(el.getAttribute('data-remove'));
+});
+
+document.addEventListener('change', function (event) {
+  var input = event.target;
+  if (!input.matches('input[type="file"][data-key]')) return;
+  var file = input.files && input.files[0];
+  if (!file) return;
+  attach(input.getAttribute('data-key'), file.name, file.size, file.type);
+});
+
+document.addEventListener('toggle', function (event) {
+  var details = event.target;
+  if (!details.matches || !details.matches('details[data-gid]') || !details.isConnected) return;
+  state.open[details.getAttribute('data-gid')] = details.open;
+}, true);
+
+$('pe-q').addEventListener('input', function () {
+  state.q = this.value;
+  state.keep = {};
+  render();
+});
+$('pe-expand').addEventListener('click', function () {
+  document.querySelectorAll('#pe-artist-list details').forEach(function (d) { state.open[d.getAttribute('data-gid')] = true; });
+  render();
+});
+$('pe-collapse').addEventListener('click', function () {
+  state.open = {};
+  render();
+});
+$('pe-clear').addEventListener('click', function () {
+  state.q = '';
+  state.keep = {};
+  state.filter = 'todos';
+  $('pe-q').value = '';
+  render();
+  $('pe-q').focus();
+});
+$('pe-many').addEventListener('click', function () {
+  state.many = !state.many;
+  state.artists = BASE_ARTISTS;
+  if (state.many) state.artists = BASE_ARTISTS.concat(extraArtists());
+  start();
+});
+$('pe-fill').addEventListener('click', function () {
+  document.querySelectorAll('#pe-artist-list details').forEach(function (d) { state.keep[d.getAttribute('data-gid')] = true; });
+  var count = 0;
+  allDocs().forEach(function (d) {
+    if (d.st.status !== 'pendente' && d.st.status !== 'reprovado') return;
+    d.st.replacing = d.st.status === 'reprovado';
+    d.st.status = 'anexado';
+    d.st.file = fileFor(d.group, d.model);
+    d.st.size = fakeSize(d.key);
+    delete state.errors[d.key];
+    count++;
+  });
+  render();
+  announce(plural(count, 'arquivo anexado', 'arquivos anexados') + ' (simulação). Confira e clique em Enviar documentos.');
+  $('pe-send').focus();
+});
+$('pe-send').addEventListener('click', openConfirm);
+$('pe-confirm').addEventListener('close', function () {
+  if (this.returnValue !== 'ok') return;
+  submitDocs();
+});
+
+start();
+})();
+</script>
+</body>
+</html>
