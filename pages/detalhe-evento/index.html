@@ -178,9 +178,9 @@
     <section class="card" id="sec-pedidos" aria-labelledby="pedidosTitle">
       <div class="card__head">
         <h2 class="card__title" id="pedidosTitle">Pedidos de contratação</h2>
-        <span class="pill pill--neutral">3 pedidos</span>
+        <span class="pill pill--neutral" id="pedidosCount">3 pedidos</span>
       </div>
-      <div class="tbl-wrap">
+      <div class="tbl-wrap" id="pedidosTable">
         <table class="tbl tbl--pedidos">
           <caption class="sr-only">Pedidos de contratação vinculados a este evento</caption>
           <thead>
@@ -223,6 +223,12 @@
             </tr>
           </tfoot>
         </table>
+      </div>
+      <!-- estado vazio: abrir com ?pedidos=0 -->
+      <div class="pedidos__empty" id="pedidosEmpty" hidden>
+        <p class="pedidos__empty-title">Nenhum pedido de contratação</p>
+        <p class="pedidos__empty-msg">Os pedidos abertos neste evento aparecem aqui, com valor, status e eventos planejados.</p>
+        <a class="btn btn--sm" href="../criacao-emenda/index.html">+ Criar primeiro pedido</a>
       </div>
     </section>
 
@@ -465,6 +471,35 @@
     showToast('Seleção de nova reserva orçamentária (mock).');
   });
   refreshReservas();
+
+  /* ---------------- pedidos: estado vazio (?pedidos=0) ---------------- */
+  if (new URLSearchParams(window.location.search).get('pedidos') === '0') {
+    el('pedidosTable').hidden = true;
+    el('pedidosEmpty').hidden = false;
+    el('pedidosCount').textContent = '0 pedidos';
+  }
+
+  /* ---------------- destaque da seção ao navegar pelo índice ---------------- */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function highlightSection(sectionEl) {
+    const primary = getComputedStyle(sectionEl).getPropertyValue('--c-primary').trim();
+    const outline = { outlineStyle: 'solid', outlineWidth: '2px', outlineOffset: '2px' };
+    sectionEl.animate([
+      Object.assign({ outlineColor: primary }, outline),
+      Object.assign({ outlineColor: primary, offset: 0.35, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }, outline),
+      Object.assign({ outlineColor: 'transparent' }, outline)
+    ], 1600);
+  }
+  document.querySelectorAll('.toc a[data-section]').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      const sectionEl = el(link.dataset.section);
+      if (!sectionEl) return;
+      event.preventDefault();
+      sectionEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      history.replaceState(null, '', '#' + link.dataset.section);
+      highlightSection(sectionEl);
+    });
+  });
 
   /* ---------------- scroll spy ---------------- */
   const tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[data-section]'));
