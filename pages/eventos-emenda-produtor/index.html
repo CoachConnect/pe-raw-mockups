@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emendas — Portal do produtor</title>
+<link rel="stylesheet" href="../../styles/global.css">
+<style>
+/* Identidade do portal Porta de Entrada (tema escuro do antd do SMCCA: styles/themes/dark.ts) */
+:root{
+  --pe-bg:#1F1F23; --pe-surface:#2B2B31; --pe-surface-2:#26262B; --pe-sunken:#1A1A1E;
+  --pe-border:#424242; --pe-border-soft:#35353C;
+  --pe-text:rgba(255,255,255,.85); --pe-strong:rgba(255,255,255,.92); --pe-text-2:rgba(255,255,255,.65); --pe-text-3:rgba(255,255,255,.5); --pe-label:#D5D5D5;
+  --pe-primary:#006BD4; --pe-primary-hover:#227CCC; --pe-link:#147BEB; --pe-focus:#3C89E8;
+  --pe-warn:#E89A3C; --pe-warn-icon:#D89614; --pe-warn-bg:#2B2111; --pe-warn-border:#594214;
+  --pe-info:#3C89E8; --pe-info-bg:#111A2C; --pe-info-border:#15325B;
+  --pe-cyan:#13A8A8; --pe-cyan-bg:#112123; --pe-cyan-border:#144848;
+  --pe-amend:#17A2B8;
+  --pe-danger:#DC4446; --pe-danger-text:#E86E6B;
+  --pe-ok:#49AA19; --pe-ok-text:#6ABE39; --pe-ok-bg:#162312; --pe-ok-border:#274916;
+  --pe-font:Roboto,Arial,sans-serif;
+  --pe-head:MadeTommy,"Segoe UI",Roboto,Arial,sans-serif;
+  --pe-radius-card:24px; --pe-radius:8px; --pe-radius-ctl:6px;
+  --pe-header-h:64px;
+}
+body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color:var(--pe-text);color-scheme:dark;
+  background:linear-gradient(115deg,rgba(255,121,87,0) 60%,rgba(255,121,87,.07) 110%) fixed,var(--pe-bg)}
+.pe a{color:var(--pe-link)}
+.pe :is(h1,h2,h3){font-family:var(--pe-head);font-weight:400;color:var(--pe-strong);margin:0}
+.pe :focus-visible{outline:2px solid var(--pe-focus);outline-offset:2px}
+.pe svg{width:16px;height:16px;flex:none}
+
+/* casca do portal: menu lateral + barra superior */
+.pe-shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.pe-side{position:sticky;top:0;height:100vh;overflow:auto;background:var(--pe-surface);padding:12px 8px 16px;display:flex;flex-direction:column;gap:4px}
+.pe-logo{display:inline-flex;align-items:center;gap:8px;padding:0 10px 12px;text-decoration:none;color:var(--pe-strong)}
+.pe .pe-logo{color:var(--pe-strong)}
+.pe-logo svg{width:30px;height:30px}
+.pe-logo b{font-family:var(--pe-head);font-size:18px;line-height:.95;font-weight:700;letter-spacing:.2px}
+.pe-logo small{display:block;font-size:9px;font-weight:400;text-align:right;color:var(--pe-text-2)}
+.pe select.pe-side__area{width:100%;margin:0 0 12px;min-height:32px;padding:4px 7px;border:1px solid var(--pe-border);border-radius:4px;background:var(--pe-surface);color:var(--pe-text);font:inherit;font-size:14px}
+.pe-side__title{margin:10px 10px 4px;font-size:16px;color:var(--pe-text-2)}
+.pe-side ul{list-style:none;margin:0;padding:0}
+.pe .pe-side a:not(.pe-logo),.pe-side summary{display:flex;align-items:center;gap:8px;min-height:36px;padding:0 10px;border-radius:6px;color:var(--pe-label);text-decoration:none}
+.pe .pe-side a:not(.pe-logo):hover,.pe-side summary:hover{background:rgba(255,255,255,.06)}
+.pe .pe-side a[aria-current="page"]{background:rgba(0,107,212,.18);color:#fff}
+.pe-side a span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pe-side summary{cursor:pointer;list-style:none}
+.pe-side summary::-webkit-details-marker{display:none}
+.pe-side summary .pe-chev{margin-left:auto}
+.pe-side details[open]>summary .pe-chev{transform:none}
+.pe-side details ul{padding-left:14px}
+.pe-side hr{border:0;border-top:1px solid var(--pe-border);margin:12px 0}
+.pe-side__ver{margin:auto 0 0;text-align:center;font-size:13px;color:var(--pe-text-2)}
+
+.pe-main{display:flex;flex-direction:column;min-width:0}
+.pe-top{position:sticky;top:0;z-index:20;height:var(--pe-header-h);display:flex;align-items:center;gap:12px;padding:0 32px;
+  background:rgba(31,31,35,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--pe-border-soft)}
+.pe-top__logo{display:none}
+.pe-top__spacer{flex:1}
+.pe-bell{position:relative;display:inline-grid;place-items:center;width:40px;height:40px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);color:var(--pe-text)}
+.pe-bell__count{position:absolute;top:-8px;right:-8px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--pe-danger);color:#fff;font-size:12px;line-height:20px;text-align:center}
+.pe-user{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);color:var(--pe-strong);white-space:nowrap}
+
+.pe-page{display:flex;flex-direction:column;gap:24px;width:100%;max-width:1280px;margin:0 auto;padding:24px 32px 48px}
+.pe-card{background:var(--pe-surface);border-radius:var(--pe-radius-card);padding:24px}
+
+/* botões */
+.pe-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 15px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);
+  background:var(--pe-surface);color:var(--pe-text);font:inherit;font-size:14px;line-height:1.2;cursor:pointer;text-decoration:none;white-space:nowrap}
+.pe a.pe-btn{color:var(--pe-text)}
+.pe-btn:hover,.pe a.pe-btn:hover{border-color:var(--pe-primary-hover);color:#fff}
+.pe-btn--primary,.pe a.pe-btn--primary{background:var(--pe-primary);border-color:var(--pe-primary);color:#fff}
+.pe-btn--primary:hover{background:var(--pe-primary-hover)}
+.pe-btn--ghost{border-color:transparent;background:transparent;color:var(--pe-text-2)}
+.pe-btn--sm{min-height:28px;padding:0 10px;font-size:13px}
+.pe-icon-btn{display:inline-grid;place-items:center;width:32px;height:32px;border:0;border-radius:var(--pe-radius-ctl);background:transparent;color:var(--pe-text-2);cursor:pointer}
+.pe-icon-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+
+/* tag (antd Tag) e alerta (antd Alert) */
+.pe-tag{display:inline-flex;align-items:center;gap:6px;padding:0 8px;border:1px solid;border-radius:6px;font-size:12px;line-height:22px;white-space:nowrap;font-family:var(--pe-font);letter-spacing:0;vertical-align:middle}
+.pe-tag--neutral{color:var(--pe-text-2);border-color:var(--pe-border);background:rgba(255,255,255,.04)}
+.pe-tag--warn{color:var(--pe-warn);border-color:var(--pe-warn-border);background:var(--pe-warn-bg)}
+.pe-tag--info{color:var(--pe-info);border-color:var(--pe-info-border);background:var(--pe-info-bg)}
+.pe-tag--cyan{color:var(--pe-cyan);border-color:var(--pe-cyan-border);background:var(--pe-cyan-bg)}
+.pe-tag--ok{color:var(--pe-ok-text);border-color:var(--pe-ok-border);background:var(--pe-ok-bg)}
+.pe-tag--amend{color:#5CC8D9;border-color:var(--pe-amend);background:rgba(23,162,184,.12)}
+.pe-alert{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border:1px solid;border-radius:var(--pe-radius);color:var(--pe-text)}
+.pe-alert p{margin:0}
+.pe-alert__ico{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;color:#141414;margin-top:1px}
+.pe-alert__ico svg{width:14px;height:14px}
+.pe-alert__title{display:block;font-size:16px;color:var(--pe-strong);margin:0 0 4px}
+.pe-alert--warn{background:var(--pe-warn-bg);border-color:var(--pe-warn-border)} .pe-alert--warn .pe-alert__ico{background:var(--pe-warn-icon)}
+.pe-alert--info{background:var(--pe-info-bg);border-color:var(--pe-info-border)} .pe-alert--info .pe-alert__ico{background:var(--pe-info)}
+
+/* faixa de demonstração */
+.pe-demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:8px 12px;border:1px dashed #6B5AA8;border-radius:var(--pe-radius);background:rgba(146,84,222,.08);font-size:12px;color:#C9B5F5}
+.pe-demo__badge{padding:1px 8px;border-radius:999px;background:#3B2A63;color:#E2D4FF;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.pe-demo__group{display:inline-flex;flex-wrap:wrap;gap:6px}
+.pe-demo .pe-btn{min-height:28px;padding:0 10px;font-size:12px;background:transparent;border-color:#5A4A8C;color:#D9CCFA}
+.pe-demo .pe-btn[aria-pressed="true"]{background:#3B2A63;border-color:#8A6DD8;color:#fff}
+.pe-demo__hint{margin-left:auto;color:#A898D6}
+
+/* breadcrumb (antd Breadcrumb) */
+.pe-crumbs ol{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none;color:var(--pe-text-3)}
+.pe-crumbs li+li::before{content:"/";margin-right:8px}
+.pe .pe-crumbs a{color:var(--pe-text-2);text-decoration:none;border-radius:4px}
+.pe .pe-crumbs a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.pe-crumbs [aria-current]{color:var(--pe-strong)}
+
+/* cabeçalho */
+.pe-title{font-size:28px;letter-spacing:1.4px}
+.pe-order{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:10px 0 0}
+.pe-order__num{font-family:var(--pe-head);font-size:18px;letter-spacing:.9px;color:var(--pe-strong)}
+.pe-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px 24px;margin:18px 0 0}
+.pe-facts dt{font-weight:600;color:var(--pe-strong)}
+.pe-facts dd{margin:2px 0 0;color:var(--pe-text-2)}
+.pe-hint{margin:6px 0 0;color:var(--pe-text-2);font-size:13px}
+
+/* abas (antd Tabs) */
+.pe-tabs{display:flex;flex-wrap:wrap;gap:0 32px;border-bottom:1px solid var(--pe-border);margin:-8px 0 20px}
+.pe-tab{position:relative;padding:12px 0;border:0;background:none;font:inherit;font-size:14px;color:var(--pe-text);cursor:pointer}
+.pe-tab:hover:not(:disabled){color:var(--pe-primary-hover)}
+.pe-tab[aria-selected="true"]{color:var(--pe-link)}
+.pe-tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--pe-primary)}
+.pe-tab:disabled{color:rgba(255,255,255,.25);cursor:not-allowed}
+.pe-panel{display:flex;flex-direction:column;gap:20px}
+
+/* busca e contagem */
+.pe-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.pe-search{flex:1 1 260px;display:flex}
+.pe input[type="search"]{width:100%;min-height:36px;padding:0 12px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);background:var(--pe-sunken);color:var(--pe-text);font:inherit;font-size:14px}
+.pe input[type="search"]::placeholder{color:#808080}
+.pe input[type="search"]:focus{border-color:var(--pe-primary);outline:2px solid var(--pe-focus);outline-offset:1px}
+.pe-count{margin:0 auto 0 0;font-size:12px;color:var(--pe-text-3)}
+.pe-empty{padding:24px;border:1px dashed var(--pe-border);border-radius:12px;text-align:center;color:var(--pe-text-2)}
+
+/* seções */
+.pe-block{display:flex;flex-direction:column;gap:12px}
+.pe-section-title{font-size:20px;letter-spacing:1px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.pe .pe-sub{font-size:15px;letter-spacing:.8px;margin:22px 0 10px}
+.pe .pe-sub:first-child{margin-top:8px}
+
+/* painel por evento planejado (antd Collapse) */
+.pe-grp{border:1px solid var(--pe-border);border-radius:12px;background:var(--pe-surface-2)}
+.pe-grp+.pe-grp{margin-top:10px}
+.pe-grp>summary{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:14px 16px;cursor:pointer;list-style:none;border-radius:12px}
+.pe-grp>summary::-webkit-details-marker{display:none}
+.pe-grp>summary:hover{background:rgba(255,255,255,.03)}
+.pe-grp>summary:focus-visible{outline-offset:-2px}
+.pe-chev{color:var(--pe-text-2);transform:rotate(-90deg);transition:transform .15s}
+.pe-grp[open]>summary .pe-chev{transform:none}
+.pe-grp__name{font-family:var(--pe-head);font-size:16px;letter-spacing:.8px;color:var(--pe-strong)}
+.pe-grp__meta{font-size:13px;color:var(--pe-text-2)}
+.pe-grp__pills{margin-left:auto;display:flex;flex-wrap:wrap;gap:6px}
+.pe-grp__body{padding:4px 16px 16px;border-top:1px solid var(--pe-border-soft)}
+@media (prefers-reduced-motion:reduce){.pe-chev{transition:none}}
+
+/* antd Descriptions (bordered, 2 colunas) */
+.pe-desc{display:grid;grid-template-columns:minmax(140px,max-content) minmax(0,1fr) minmax(140px,max-content) minmax(0,1fr);gap:1px;margin:0;
+  border:1px solid var(--pe-border);border-radius:8px;overflow:hidden;background:var(--pe-border)}
+.pe-desc>div{display:contents}
+.pe-desc dt,.pe-desc dd{margin:0;padding:9px 16px}
+.pe-desc dt{background:#303036;color:var(--pe-text-2)}
+.pe-desc dd{background:var(--pe-surface-2);color:var(--pe-text)}
+.pe-desc>div:last-child:nth-child(odd) dd{grid-column:span 3}
+.pe-text{margin:12px 0 0;display:grid;gap:10px}
+.pe-text dt{color:var(--pe-text-2);font-size:13px}
+.pe-text dd{margin:2px 0 0;white-space:pre-line}
+
+/* antd Table */
+.pe-table-wrap{overflow-x:auto;border:1px solid var(--pe-border);border-radius:8px}
+.pe-table{width:100%;border-collapse:collapse}
+.pe-table th{background:#303036;color:var(--pe-strong);font-weight:500;text-align:left;padding:10px 16px;border-bottom:1px solid var(--pe-border);white-space:nowrap}
+.pe-table td{padding:10px 16px;border-bottom:1px solid var(--pe-border-soft);vertical-align:top}
+.pe-table tbody tr:last-child td{border-bottom:0}
+.pe-table tbody tr:hover td{background:rgba(255,255,255,.03)}
+.pe-table tfoot td{background:#303036;font-weight:500;color:var(--pe-strong);border-top:1px solid var(--pe-border)}
+.pe-table .num{text-align:right;white-space:nowrap}
+.pe-table .act{text-align:right;white-space:nowrap}
+.pe-nowrap{white-space:nowrap}
+.pe-muted{color:var(--pe-text-3)}
+
+/* StepCard (bnp StepCard) */
+.pe-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.pe-step{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border:1px solid var(--pe-border);border-radius:var(--pe-radius);background:var(--pe-surface);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.pe-step:hover{border-color:var(--pe-primary-hover)}
+.pe a.pe-step{color:inherit;text-decoration:none}
+.pe-step[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+.pe-step[aria-disabled="true"]:hover{border-color:var(--pe-border)}
+.pe-step__ico{flex:none;display:grid;place-items:center;width:32px;height:32px;border:2px solid #8C8C8C;border-radius:50%;color:var(--pe-text-2)}
+.pe-step[data-done] .pe-step__ico{background:var(--pe-ok);border-color:var(--pe-ok);color:#fff}
+.pe-step__main{flex:1;min-width:0}
+.pe-step__title{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0;font-family:var(--pe-head);font-size:16px;letter-spacing:.8px;color:var(--pe-strong)}
+.pe-step__desc{margin:2px 0 0;font-size:13px;color:var(--pe-text-2)}
+.pe-step__go{color:var(--pe-text-2)}
+.pe-step:hover .pe-step__go{color:#fff}
+
+/* Modal (antd Modal) com formulário */
+.pe-dialog{width:min(860px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:1px solid var(--pe-border);border-radius:16px;background:var(--pe-surface);color:var(--pe-text)}
+.pe-dialog::backdrop{background:rgba(0,0,0,.6)}
+.pe-dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 50px)}
+.pe-dialog__head{display:flex;align-items:flex-start;gap:12px;padding:20px 24px 12px}
+.pe-dialog__head>div{flex:1;min-width:0}
+.pe-dialog h2{font-size:20px;letter-spacing:1px}
+.pe-dialog__sub{margin:2px 0 0;font-size:13px;color:var(--pe-text-2)}
+.pe-dialog__body{padding:4px 24px 20px;overflow:auto}
+.pe-dialog__foot{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;padding:14px 24px;border-top:1px solid var(--pe-border-soft)}
+.pe-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.pe-field{display:flex;flex-direction:column;gap:6px;min-width:0;margin:0;padding:0;border:0}
+.pe-field--full{grid-column:1/-1}
+.pe-field>label,.pe-field>legend{padding:0;font-size:14px;color:var(--pe-text)}
+.pe-form :is(input:not([type="radio"]),select,textarea){width:100%;min-height:36px;padding:6px 11px;border:1px solid var(--pe-border);border-radius:var(--pe-radius-ctl);background:var(--pe-sunken);color:var(--pe-text);font:inherit;font-size:14px}
+.pe-form textarea{min-height:84px;resize:vertical}
+.pe-form :is(input:not([type="radio"]),select,textarea):hover{border-color:var(--pe-primary-hover)}
+.pe-form :is(input:not([type="radio"]),select,textarea):focus{border-color:var(--pe-primary);outline:2px solid var(--pe-focus);outline-offset:1px}
+.pe-radio{display:flex;flex-wrap:wrap;gap:6px 18px;min-height:36px;align-items:center}
+.pe-radio label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.pe-radio input{accent-color:var(--pe-primary)}
+.pe-divider{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:10px 0 0;font-family:var(--pe-head);font-size:16px;letter-spacing:.8px;color:var(--pe-strong)}
+.pe-divider:first-child{margin-top:0}
+.pe-divider::after{content:"";flex:1;border-top:1px solid var(--pe-border)}
+.pe-toast{position:fixed;right:24px;bottom:24px;z-index:60;max-width:380px;padding:10px 16px;border-radius:var(--pe-radius);background:#3A3A42;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.45);font-size:13px}
+
+@media (max-width:900px){
+  .pe-shell{grid-template-columns:minmax(0,1fr)}
+  .pe-side{display:none}
+  .pe-top{padding:0 16px}
+  .pe-top__logo{display:inline-flex;padding:0}
+  .pe-page{padding:16px 16px 32px;gap:16px}
+  .pe-card{padding:20px 16px;border-radius:16px}
+  .pe-demo__hint{margin-left:0}
+}
+@media (max-width:720px){
+  .pe-desc{grid-template-columns:minmax(110px,38%) minmax(0,1fr)}
+  .pe-desc>div:last-child:nth-child(odd) dd{grid-column:auto}
+  .pe-form{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+  .pe-user__name{display:none}
+  .pe-title{font-size:23px}
+  .pe-grp>summary{padding:12px}
+  .pe-grp__body{padding:4px 10px 12px}
+  .pe-grp__pills{margin-left:28px}
+  .pe-dialog__head,.pe-dialog__body,.pe-dialog__foot{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body class="pe" data-page="eventos-emenda-produtor">
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="pe-shell">
+  <div class="pe-side">
+    <a class="pe-logo" href="#" aria-label="Porta de Entrada da Cultura — página inicial">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 5h15l-6 9H3z" fill="#FF725C"/><path d="M12 14h11l-5 8h-6z" fill="#F1A921"/><path d="M3 14h9l-3 13H3z" fill="#1668DC"/></svg>
+      <span><b>porta de<br>entrada</b><small>da cultura</small></span>
+    </a>
+    <label class="sr-only" for="pe-area">Selecionar área</label>
+    <select class="pe-side__area" id="pe-area">
+      <option>Produtor cultural</option>
+      <option>Artista</option>
+    </select>
+    <nav aria-labelledby="pe-nav-painel">
+      <p class="pe-side__title" id="pe-nav-painel">Painel</p>
+      <ul>
+        <li><a href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 7.5L8 3l5.5 4.5V13h-3.5V9.5h-4V13H2.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span>Página inicial</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M3 8h10M3 11.5h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Acesso rápido</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z M6.5 9.5h3M8 8v3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span>Submissão de Sugestões e/ou Propostas Artísticas</span></a></li>
+      </ul>
+    </nav>
+    <hr>
+    <nav aria-labelledby="pe-nav-conta">
+      <p class="pe-side__title" id="pe-nav-conta">Minha conta</p>
+      <ul>
+        <li>
+          <details>
+            <summary>Cadastros<svg class="pe-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+            <ul>
+              <li><a href="#"><span>Proponentes</span></a></li>
+              <li><a href="#"><span>Artistas</span></a></li>
+              <li><a href="#"><span>Vínculos</span></a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details open>
+            <summary>Projetos<svg class="pe-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+            <ul>
+              <li><a href="#"><span>Oportunidades</span></a></li>
+              <li><a href="#"><span>Minhas submissões</span></a></li>
+              <li><a href="#"><span>Minhas inscrições</span></a></li>
+              <li><a href="#emendas" aria-current="page"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3.5h10v9H3zM3 6.5h10M6 3.5v9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span>Emendas</span></a></li>
+            </ul>
+          </details>
+        </li>
+        <li><a href="#"><span>Cessão de espaço</span></a></li>
+      </ul>
+    </nav>
+    <p class="pe-side__ver">v1.23.2</p>
+  </div>
+
+  <div class="pe-main">
+    <header class="pe-top">
+      <a class="pe-logo pe-top__logo" href="#" aria-label="Porta de Entrada da Cultura — página inicial">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 5h15l-6 9H3z" fill="#FF725C"/><path d="M12 14h11l-5 8h-6z" fill="#F1A921"/><path d="M3 14h9l-3 13H3z" fill="#1668DC"/></svg>
+      </a>
+      <a class="pe-btn" href="../../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3.5M7 4.5L3.5 8 7 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar</a>
+      <span class="pe-top__spacer"></span>
+      <span class="pe-bell" role="img" aria-label="Notificações: 1 nova">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 11.5V7a4 4 0 018 0v4.5l1 1H3zM6.5 13.5a1.5 1.5 0 003 0" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        <span class="pe-bell__count" aria-hidden="true">1</span>
+      </span>
+      <span class="pe-user"><span class="pe-user__name">Márcia H. Toledo</span><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.5" r="2.8" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2.8 14a5.2 5.2 0 0110.4 0" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>
+    </header>
+
+    <main class="pe-page" id="conteudo">
+
+      <!-- ============ LISTAGEM: Projetos > Emendas ============ -->
+      <div id="view-list" class="pe-page" style="padding:0">
+        <nav class="pe-crumbs" aria-label="Trilha de navegação">
+          <ol><li><span>Projetos</span></li><li><span aria-current="page">Emendas</span></li></ol>
+        </nav>
+        <section class="pe-card" aria-labelledby="pe-list-title">
+          <h1 class="pe-title" id="pe-list-title">Emendas</h1>
+          <p class="pe-hint">Eventos de emenda parlamentar em que você é o produtor (proponente) do pedido de contratação.</p>
+          <div class="pe-table-wrap" style="margin-top:20px">
+            <table class="pe-table">
+              <caption class="sr-only">Seus pedidos de emenda parlamentar</caption>
+              <thead>
+                <tr><th>Pedido</th><th>Evento</th><th>Período</th><th class="num">Eventos planejados</th><th>Status</th><th class="act"><span class="sr-only">Ação</span></th></tr>
+              </thead>
+              <tbody id="pe-list-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ DETALHE: Projetos > Emendas > Emenda (id) ============ -->
+      <div id="view-detail" class="pe-page" style="padding:0" hidden>
+        <section class="pe-demo" aria-label="Controles de demonstração do protótipo">
+          <span class="pe-demo__badge">Demonstração</span>
+          <span id="pe-demo-fase">Status do pedido:</span>
+          <span class="pe-demo__group" role="group" aria-labelledby="pe-demo-fase">
+            <button type="button" class="pe-btn" data-fase="assinatura" aria-pressed="true">Aguardando assinatura</button>
+            <button type="button" class="pe-btn" data-fase="reaberto" aria-pressed="false">Pedido reaberto</button>
+          </span>
+          <span id="pe-demo-prod">Produtor:</span>
+          <span class="pe-demo__group" role="group" aria-labelledby="pe-demo-prod">
+            <button type="button" class="pe-btn" data-prod="PJ" aria-pressed="true">PJ</button>
+            <button type="button" class="pe-btn" data-prod="PF" aria-pressed="false">PF</button>
+          </span>
+          <span class="pe-demo__hint">Dados fictícios · nada sai do navegador</span>
+        </section>
+
+        <nav class="pe-crumbs" aria-label="Trilha de navegação">
+          <ol><li><span>Projetos</span></li><li><a href="#emendas">Emendas</a></li><li><span aria-current="page" id="pe-crumb-id"></span></li></ol>
+        </nav>
+
+        <header class="pe-card">
+          <h1 class="pe-title" id="pe-evt-name"></h1>
+          <p class="pe-order"><span class="pe-order__num" id="pe-evt-code"></span><span id="pe-evt-status"></span><span class="pe-tag pe-tag--amend">Emenda parlamentar</span></p>
+          <dl class="pe-facts" id="pe-evt-facts"></dl>
+        </header>
+
+        <section class="pe-card" aria-label="Detalhes do pedido">
+          <div class="pe-tabs" role="tablist" aria-label="Seções do pedido">
+            <button type="button" class="pe-tab" role="tab" id="tab-eventos" aria-controls="panel-eventos" aria-selected="true">Dados do evento</button>
+            <button type="button" class="pe-tab" role="tab" id="tab-docs" aria-controls="panel-docs" aria-selected="false">Documentos</button>
+            <button type="button" class="pe-tab" role="tab" id="tab-atualizar" aria-controls="panel-atualizar" aria-selected="false">Atualizar dados do contrato</button>
+          </div>
+
+          <div class="pe-panel" role="tabpanel" id="panel-eventos" aria-labelledby="tab-eventos">
+            <div class="pe-tools">
+              <search class="pe-search">
+                <label class="sr-only" for="pe-q-evt">Buscar evento planejado por artista ou atração</label>
+                <input type="search" id="pe-q-evt" placeholder="Buscar por artista ou atração…" autocomplete="off">
+              </search>
+              <p class="pe-count" id="pe-count-evt" aria-live="polite"></p>
+              <button type="button" class="pe-btn pe-btn--ghost pe-btn--sm" data-all="open">Expandir todos</button>
+              <button type="button" class="pe-btn pe-btn--ghost pe-btn--sm" data-all="close">Recolher todos</button>
+            </div>
+            <div id="pe-evt-list"></div>
+          </div>
+
+          <div class="pe-panel" role="tabpanel" id="panel-docs" aria-labelledby="tab-docs" hidden>
+            <ul class="pe-steps" id="pe-steps-docs"></ul>
+          </div>
+
+          <div class="pe-panel" role="tabpanel" id="panel-atualizar" aria-labelledby="tab-atualizar" hidden>
+            <div class="pe-alert pe-alert--warn" role="note">
+              <span class="pe-alert__ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 4v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="1.1" fill="currentColor"/></svg></span>
+              <div>
+                <p class="pe-alert__title">Atenção</p>
+                <p>As alterações afetarão apenas este pedido de contratação. Os seus cadastros originais de proponente e de artista não mudam.</p>
+              </div>
+            </div>
+
+            <section class="pe-block" aria-labelledby="pe-upd-prod">
+              <div>
+                <h2 class="pe-section-title" id="pe-upd-prod">Produtor</h2>
+                <p class="pe-hint" id="pe-upd-prod-hint"></p>
+              </div>
+              <ul class="pe-steps" id="pe-steps-prod"></ul>
+            </section>
+
+            <section class="pe-block" aria-labelledby="pe-upd-art">
+              <div>
+                <h2 class="pe-section-title" id="pe-upd-art">Artistas <span class="pe-tag pe-tag--neutral" id="pe-upd-art-total"></span></h2>
+                <p class="pe-hint">Dados pessoais, profissionais, da atração e da ficha técnica de cada artista deste pedido.</p>
+              </div>
+              <div class="pe-tools">
+                <search class="pe-search">
+                  <label class="sr-only" for="pe-q-art">Buscar artista pelo nome</label>
+                  <input type="search" id="pe-q-art" placeholder="Buscar artista pelo nome…" autocomplete="off">
+                </search>
+                <p class="pe-count" id="pe-count-art" aria-live="polite"></p>
+              </div>
+              <div id="pe-art-list"></div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="pe-toast" id="pe-toast" role="status" hidden></div>
+
+<dialog class="pe-dialog" id="pe-modal" aria-labelledby="pe-modal-title">
+  <form method="dialog">
+    <div class="pe-dialog__head">
+      <div>
+        <h2 id="pe-modal-title"></h2>
+        <p class="pe-dialog__sub" id="pe-modal-sub"></p>
+      </div>
+      <button type="submit" class="pe-icon-btn" value="cancel" aria-label="Fechar"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="pe-dialog__body" id="pe-modal-body"></div>
+    <div class="pe-dialog__foot" id="pe-modal-foot"></div>
+  </form>
+</dialog>
+
+<script>
+(function () {
+'use strict';
+
+var $ = function (s) { return document.querySelector(s); };
+var esc = function (v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+};
+var norm = function (s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); };
+var orDash = function (v) { return v ? esc(v) : '<span class="pe-muted">--</span>'; };
+
+var SVG = {
+  chev: '<svg class="pe-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  edit: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 3l2.5 2.5L6 12.5H3.5V10z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>',
+  check: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  go: '<svg class="pe-step__go" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  trash: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+/* ---------- opções dos selects (mesmas listas do cadastro) ---------- */
+var OPT = {
+  genero: ['Feminino', 'Masculino', 'Não binário', 'Prefiro não informar'],
+  raca: ['Amarela', 'Branca', 'Indígena', 'Parda', 'Preta', 'Prefiro não informar'],
+  instrucao: ['Ensino fundamental completo', 'Ensino médio completo', 'Ensino superior incompleto', 'Ensino superior completo', 'Pós-graduação'],
+  nac: ['Brasileira', 'Estrangeira'],
+  simNao: ['Sim', 'Não'],
+  tipo: ['Música', 'Teatro', 'Dança', 'Circo', 'Discotecagem', 'Literatura'],
+  publico: ['Livre', 'Infantil', 'Jovem', 'Adulto', 'Família'],
+  classif: ['Livre', '10 anos', '12 anos', '14 anos', '16 anos', '18 anos']
+};
+
+/* ---------- dados fictícios: tudo vem das cópias do pedido ---------- */
+var ADDR_GRAJAU = { cep: '04843-120', logradouro: 'Rua Caiubi', numero: '215', complemento: '', bairro: 'Parque Grajaú', cidade: 'São Paulo', uf: 'SP' };
+var EMPRESA = {
+  razao: 'Circulando Produções Culturais Ltda.', fantasia: 'Circulando Produções', cnpj: '41.827.306/0001-92', ccm: '5.482.110-7',
+  resp: { nome: 'Márcia Helena Toledo', social: '', cpf: '226.781.448-05', rg: '28.114.597-1', nasc: '02/09/1981' },
+  endereco: { cep: '04814-000', logradouro: 'Av. Dona Belmira Marin', numero: '1180', complemento: 'Sala 4', bairro: 'Jardim Ellus', cidade: 'São Paulo', uf: 'SP' },
+  contato: { email: 'contato@circulando.art.br', telefone: '(11) 3456-7788' }
+};
+var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
+var pf = function (o) {
+  return Object.assign({ social: '', artistico: '', pcd: 'Não', nac: 'Brasileira', inss: '', ccm: '',
+    endereco: copy(ADDR_GRAJAU), contato: { email: '', telefone: '' } }, o);
+};
+
+var EVENTOS = [
+  {
+    id: 'a1', nome: 'Bloco do Beco', tipoArtista: 'Coletivo',
+    prof: { nome: 'Bloco do Beco', drt: '', omb: '', redes: 'https://instagram.com/blocodobeco', experiencia: 'Cortejos de rua no Grajaú desde 2009, com apresentações em CEUs, Virada Cultural e Carnaval de rua.' },
+    atracao: { tipo: 'Música', valorSugerido: 'R$ 7.000,00', categorias: 'Samba, Cultura popular', nomeEvento: 'Cortejo do Bloco do Beco', publico: 'Família', classificacao: 'Livre', duracao: '01:30', acessibilidade: 'Intérprete de Libras',
+      sinopse: 'Cortejo de samba com bateria de 25 ritmistas que percorre o entorno do equipamento e termina em roda aberta ao público.',
+      release: 'Fundado por moradores do Parque Grajaú, o Bloco do Beco mistura samba de terreiro e marchinhas autorais.',
+      repertorio: 'Sambas autorais do bloco; clássicos de Adoniran Barbosa e Geraldo Filme.' },
+    pf: pf({ nome: 'Josué Ramos da Silva', artistico: 'Mestre Josué', cpf: '318.442.908-17', rg: '34.551.209-3', nasc: '14/03/1979', genero: 'Masculino', raca: 'Preta', instrucao: 'Ensino médio completo', pis: '128.44591.33-2', contato: { email: 'josue.beco@email.com', telefone: '(11) 98451-2230' } }),
+    empresa: copy(EMPRESA),
+    membros: [
+      { nome: 'Josué Ramos da Silva', cpf: '318.442.908-17', rg: '34.551.209-3', idade: 47, nac: 'Brasileira', cargo: 'Mestre de bateria', lider: true },
+      { nome: 'Aline Prado Souza', cpf: '402.118.736-50', rg: '41.220.981-X', idade: 31, nac: 'Brasileira', cargo: 'Ritmista' },
+      { nome: 'Carlos Henrique Nunes', cpf: '377.904.218-22', rg: '39.004.552-7', idade: 38, nac: 'Brasileira', cargo: 'Ritmista' },
+      { nome: 'Dandara Lopes', cpf: '455.301.668-09', rg: '45.871.330-2', idade: 26, nac: 'Brasileira', cargo: 'Porta-estandarte' }
+    ],
+    apresentacoes: [
+      { dia: '07/11/2026', horario: '16:00 às 17:30', duracao: '01:30', valor: 6500, local: 'CEU Três Lagos', obs: 'Concentração às 15h no portão principal' },
+      { dia: '08/11/2026', horario: '16:00 às 17:30', duracao: '01:30', valor: 6500, local: 'CEU Navegantes', obs: '' }
+    ]
+  },
+  {
+    id: 'a2', nome: 'Marina Feitosa', tipoArtista: 'Individual com empresário',
+    prof: { nome: 'Marina Feitosa', drt: '', omb: '47.118/SP', redes: 'https://marinafeitosa.com.br', experiencia: 'Cantora e compositora, 12 anos de carreira, dois álbuns lançados.' },
+    atracao: { tipo: 'Música', valorSugerido: 'R$ 10.000,00', categorias: 'MPB, Samba', nomeEvento: 'Marina Feitosa canta Clementina', publico: 'Adulto', classificacao: '12 anos', duracao: '01:10', acessibilidade: 'Audiodescrição',
+      sinopse: 'Show em homenagem a Clementina de Jesus, com arranjos para voz, violão de 7 cordas e percussão.',
+      release: 'Marina Feitosa revisita o repertório de Clementina com leitura contemporânea.',
+      repertorio: 'Marinheiro Só; Benguelê; Taratá; Canto dos Escravos.' },
+    pf: pf({ nome: 'Marina Feitosa Albuquerque', artistico: 'Marina Feitosa', cpf: '389.552.017-44', rg: '37.660.214-8', nasc: '22/06/1988', genero: 'Feminino', raca: 'Parda', instrucao: 'Ensino superior completo', pis: '201.33817.45-0', contato: { email: 'marina@marinafeitosa.com.br', telefone: '(11) 97722-1180' } }),
+    empresa: copy(EMPRESA),
+    membros: [
+      { nome: 'Marina Feitosa Albuquerque', cpf: '389.552.017-44', rg: '37.660.214-8', idade: 38, nac: 'Brasileira', cargo: 'Voz', lider: true },
+      { nome: 'Paulo Sérgio Lima', cpf: '274.880.913-60', rg: '27.118.004-5', idade: 52, nac: 'Brasileira', cargo: 'Violão 7 cordas' },
+      { nome: 'Rita Campos', cpf: '351.009.448-71', rg: '33.902.117-1', idade: 44, nac: 'Brasileira', cargo: 'Percussão' }
+    ],
+    apresentacoes: [
+      { dia: '14/11/2026', horario: '19:00 às 20:10', duracao: '01:10', valor: 9800, local: 'Centro Cultural Grajaú', obs: 'Sala de espetáculos' }
+    ]
+  },
+  {
+    id: 'a3', nome: 'Cia. Pé de Vento', tipoArtista: 'Coletivo',
+    prof: { nome: 'Cia. Pé de Vento', drt: '', omb: '', redes: 'https://instagram.com/ciapedevento', experiencia: 'Teatro para a infância desde 2015, com circulação por bibliotecas e CEUs.' },
+    atracao: { tipo: 'Teatro', valorSugerido: 'R$ 4.500,00', categorias: 'Teatro infantil', nomeEvento: 'O Menino que Plantava Nuvens', publico: 'Infantil', classificacao: 'Livre', duracao: '00:50', acessibilidade: 'Intérprete de Libras, Audiodescrição',
+      sinopse: 'Um menino decide plantar nuvens para acabar com a seca da sua rua e descobre que precisa da ajuda dos vizinhos.',
+      release: 'Espetáculo com bonecos e música ao vivo, vencedor do Prêmio Zé Renato 2024.',
+      repertorio: '' },
+    pf: pf({ nome: 'Helena Vaz Moreira', cpf: '296.774.150-38', rg: '30.551.786-6', nasc: '09/11/1985', genero: 'Feminino', raca: 'Branca', instrucao: 'Pós-graduação', pis: '170.55620.18-3', contato: { email: 'producao@ciapedevento.org', telefone: '(11) 96033-4471' } }),
+    empresa: copy(EMPRESA),
+    membros: [
+      { nome: 'Helena Vaz Moreira', cpf: '296.774.150-38', rg: '30.551.786-6', idade: 40, nac: 'Brasileira', cargo: 'Atriz e direção', lider: true },
+      { nome: 'Tomás Ibarra', cpf: '', rg: '', passaporte: 'AR7731902', idade: 35, nac: 'Estrangeira', cargo: 'Ator manipulador' },
+      { nome: 'Juliana Rocha', cpf: '418.663.207-15', rg: '42.007.315-9', idade: 29, nac: 'Brasileira', cargo: 'Música ao vivo' }
+    ],
+    valorTotal: 12600,
+    apresentacoes: [
+      { dia: '21/11/2026', horario: '10:00 às 10:50', duracao: '00:50', local: 'CEU Parelheiros', obs: 'Sessão para escolas' },
+      { dia: '21/11/2026', horario: '14:00 às 14:50', duracao: '00:50', local: 'CEU Parelheiros', obs: '' },
+      { dia: '22/11/2026', horario: '10:00 às 10:50', duracao: '00:50', local: 'Centro Cultural Grajaú', obs: 'Sala de espetáculos' }
+    ]
+  },
+  {
+    id: 'a4', nome: 'DJ Kalunga', tipoArtista: 'Individual sem empresário',
+    prof: { nome: 'DJ Kalunga', drt: '', omb: '', redes: 'https://soundcloud.com/djkalunga', experiencia: 'Residente de bailes black na zona sul desde 2012.' },
+    atracao: { tipo: 'Discotecagem', valorSugerido: 'R$ 3.500,00', categorias: 'Black music, Música eletrônica', nomeEvento: 'Baile Kalunga', publico: 'Jovem', classificacao: '14 anos', duracao: '03:00', acessibilidade: '',
+      sinopse: 'Baile com discotecagem de soul, funk e música eletrônica afro-brasileira.', release: '', repertorio: '' },
+    pf: pf({ nome: 'Rodrigo Kalunga Ferreira', artistico: 'DJ Kalunga', cpf: '345.212.889-03', rg: '35.443.771-0', nasc: '30/01/1990', genero: 'Masculino', raca: 'Preta', instrucao: 'Ensino superior incompleto', pis: '190.44718.22-6', ccm: '6.001.554-2', contato: { email: 'djkalunga@email.com', telefone: '(11) 95510-6620' } }),
+    empresa: null,
+    membros: [
+      { nome: 'Rodrigo Kalunga Ferreira', cpf: '345.212.889-03', rg: '35.443.771-0', idade: 36, nac: 'Brasileira', cargo: 'DJ', lider: true }
+    ],
+    apresentacoes: [
+      { dia: '28/11/2026', horario: '18:00 às 21:00', duracao: '03:00', valor: 3500, local: 'Centro Cultural Grajaú', obs: 'Área externa' }
+    ]
+  }
+];
+
+var PRODUTOR_PF = pf({ nome: 'Márcia Helena Toledo', cpf: '226.781.448-05', rg: '28.114.597-1', nasc: '02/09/1981', genero: 'Feminino', raca: 'Branca', instrucao: 'Pós-graduação', pis: '123.88104.27-9', ccm: '4.910.233-0',
+  endereco: copy(EMPRESA.endereco), contato: { email: 'marcia.toledo@email.com', telefone: '(11) 99812-4410' } });
+
+/* rótulos públicos do portal (PUBLIC_CONTRACTING_REQUEST_STATUS); docs = assináveis liberados; upd = atualização liberada */
+var FASES = {
+  aprovacao: { label: 'Aguardando aprovação', tone: 'info', docs: false, upd: false },
+  andamento: { label: 'Processo de contratação em andamento', tone: 'cyan', docs: false, upd: false },
+  assinatura: { label: 'Aguardando assinatura', tone: 'warn', docs: true, upd: false },
+  reaberto: { label: 'Em planejamento', tone: 'neutral', docs: false, upd: true }
+};
+
+var PEDIDOS = [
+  { code: '11231', evento: 'Programação cultural gratuita no Centro Cultural Grajaú e CEUs da região sul', periodo: '07/11/2026 a 28/11/2026', fase: 'assinatura', eventos: EVENTOS },
+  { code: '11187', evento: 'Festival de Samba de Roda da Zona Sul', periodo: '12/09/2026 a 13/09/2026', fase: 'andamento', eventos: EVENTOS.slice(0, 2) },
+  { code: '11302', evento: 'Circuito de Teatro e Música nos CEUs de Parelheiros', periodo: '05/12/2026 a 19/12/2026', fase: 'aprovacao', eventos: EVENTOS.slice(1, 4) }
+];
+
+var state = { pedido: null, tab: 'eventos', prod: 'PJ', openEvt: {}, openArt: {}, done: {} };
+
+/* ---------- componentes ---------- */
+var tag = function (label, tone) { return '<span class="pe-tag pe-tag--' + tone + '">' + esc(label) + '</span>'; };
+var desc = function (pairs) {
+  return '<dl class="pe-desc">' + pairs.map(function (p) {
+    return '<div><dt>' + esc(p[0]) + '</dt><dd>' + orDash(p[1]) + '</dd></div>';
+  }).join('') + '</dl>';
+};
+var plural = function (n, one, many) { return n + ' ' + (n === 1 ? one : many); };
+var brl = function (v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); };
+/* VALUE_TOTAL (AD-019): o evento planejado tem valorTotal e as apresentações não têm valor */
+var totalEvento = function (e) {
+  if (e.valorTotal != null) return e.valorTotal;
+  return e.apresentacoes.reduce(function (s, a) { return s + a.valor; }, 0);
+};
+var statusTag = function (p) { return tag(FASES[p.fase].label, FASES[p.fase].tone); };
+var produtor = function () {
+  if (state.prod === 'PF') return { nome: PRODUTOR_PF.nome, doc: 'CPF ' + PRODUTOR_PF.cpf, tipo: 'PF' };
+  return { nome: EMPRESA.razao, doc: 'CNPJ ' + EMPRESA.cnpj, tipo: 'PJ' };
+};
+
+/* ---------- listagem ---------- */
+function renderList() {
+  $('#pe-list-body').innerHTML = PEDIDOS.map(function (p) {
+    return '<tr>' +
+      '<td class="pe-nowrap">Pedido - ' + esc(p.code) + '</td>' +
+      '<td>' + esc(p.evento) + '</td>' +
+      '<td class="pe-nowrap">' + esc(p.periodo) + '</td>' +
+      '<td class="num">' + p.eventos.length + '</td>' +
+      '<td>' + statusTag(p) + '</td>' +
+      '<td class="act"><a class="pe-btn pe-btn--sm" href="#emenda/' + esc(p.code) + '">Visualizar<span class="sr-only"> pedido ' + esc(p.code) + '</span></a></td>' +
+      '</tr>';
+  }).join('');
+}
+
+/* ---------- detalhe: cabeçalho do evento ---------- */
+function renderHeader() {
+  var p = state.pedido;
+  var prod = produtor();
+  var apresentacoes = p.eventos.reduce(function (n, e) { return n + e.apresentacoes.length; }, 0);
+  var valorContrato = p.eventos.reduce(function (s, e) { return s + totalEvento(e); }, 0);
+  $('#pe-crumb-id').textContent = 'Emenda ' + p.code;
+  $('#pe-evt-name').textContent = p.evento;
+  $('#pe-evt-code').textContent = 'Pedido - ' + p.code;
+  $('#pe-evt-status').innerHTML = statusTag(p);
+  $('#pe-evt-facts').innerHTML = [
+    ['Período do evento', p.periodo],
+    ['Produtor (proponente)', prod.nome + ' · ' + prod.doc],
+    ['Eventos planejados', String(p.eventos.length)],
+    ['Apresentações', String(apresentacoes)],
+    ['Valor total do contrato', brl(valorContrato)]
+  ].map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('');
+  $('#pe-upd-prod-hint').textContent = 'Proponente do pedido (' + prod.tipo + '): ' + prod.nome + ' · ' + prod.doc;
+}
+
+/* ---------- aba 2: documentos (mesmo StepCard de Oportunidades) ---------- */
+function renderDocs() {
+  var liberado = FASES[state.pedido.fase].docs;
+  var body = '<span class="pe-step__ico">' + SVG.edit + '</span><span class="pe-step__main"><span class="pe-step__title">Documentos assinados' +
+    (liberado ? tag('Aguardando envio', 'warn') : '') + '</span><span class="pe-step__desc">' +
+    (liberado ? 'Clique aqui para baixar e enviar os documentos assinados solicitados' : 'Disponível quando a SMC enviar os documentos do pedido para assinatura') +
+    '</span></span>' + SVG.go;
+  $('#pe-steps-docs').innerHTML = liberado
+    ? '<li><a class="pe-step" href="../documentos-assinaveis-produtor/index.html">' + body + '</a></li>'
+    : '<li><span class="pe-step" aria-disabled="true">' + body + '</span></li>';
+}
+
+/* ---------- aba 1: dados do evento, um painel por evento planejado ---------- */
+function renderEventos() {
+  var q = norm($('#pe-q-evt').value.trim());
+  var all = state.pedido.eventos;
+  var list = all.filter(function (e) { return !q || norm(e.nome + ' ' + e.atracao.nomeEvento).indexOf(q) >= 0; });
+  $('#pe-count-evt').textContent = 'Mostrando ' + list.length + ' de ' + plural(all.length, 'evento planejado', 'eventos planejados');
+  if (!list.length) {
+    $('#pe-evt-list').innerHTML = '<p class="pe-empty">Nenhum evento planejado encontrado.</p>';
+    return;
+  }
+  $('#pe-evt-list').innerHTML = list.map(function (e) {
+    var a = e.atracao;
+    var n = e.apresentacoes.length;
+    var porApresentacao = e.valorTotal == null;
+    var textos = [['Sinopse', a.sinopse], ['Release', a.release], ['Repertório', a.repertorio]].filter(function (t) { return t[1]; });
+    return '<details class="pe-grp" data-id="' + e.id + '"' + (state.openEvt[e.id] ? ' open' : '') + '>' +
+      '<summary>' + SVG.chev +
+        '<span class="pe-grp__name">' + esc(e.nome) + '</span>' +
+        '<span class="pe-grp__meta">' + esc(a.nomeEvento) + ' · ' + plural(n, 'apresentação', 'apresentações') + ' · ' + brl(totalEvento(e)) + '</span>' +
+        '<span class="pe-grp__pills">' + tag(a.tipo, 'neutral') + '</span>' +
+      '</summary>' +
+      '<div class="pe-grp__body">' +
+        '<h3 class="pe-sub">Atração</h3>' +
+        desc([
+          ['Artista', e.prof.nome], ['Tipo de evento', a.tipo],
+          ['Categoria(s) do evento', a.categorias], ['Público alvo', a.publico],
+          ['Classificação indicativa', a.classificacao], ['Duração', a.duracao],
+          ['Medidas de acessibilidade', a.acessibilidade], ['Nome sugerido para o evento', a.nomeEvento]
+        ]) +
+        (textos.length ? '<dl class="pe-text">' + textos.map(function (t) { return '<div><dt>' + t[0] + '</dt><dd>' + esc(t[1]) + '</dd></div>'; }).join('') + '</dl>' : '') +
+        '<h3 class="pe-sub">Apresentações (' + n + ')</h3>' +
+        '<div class="pe-table-wrap"><table class="pe-table"><caption class="sr-only">Apresentações de ' + esc(e.nome) + '</caption>' +
+          '<thead><tr><th>Dia</th><th>Horário</th><th>Duração</th><th>Local</th><th>Observação</th>' + (porApresentacao ? '<th class="num">Valor da apresentação</th>' : '') + '</tr></thead><tbody>' +
+          e.apresentacoes.map(function (ap) {
+            return '<tr><td class="pe-nowrap">' + esc(ap.dia) + '</td><td class="pe-nowrap">' + esc(ap.horario) + '</td><td>' + esc(ap.duracao) +
+              '</td><td>' + esc(ap.local) + '</td><td>' + orDash(ap.obs) + '</td>' + (porApresentacao ? '<td class="num">' + brl(ap.valor) + '</td>' : '') + '</tr>';
+          }).join('') +
+        '</tbody><tfoot><tr><td colspan="' + (porApresentacao ? 5 : 4) + '">' + (porApresentacao ? 'Total do evento planejado' : 'Valor total do evento planejado (não dividido por apresentação)') +
+          '</td><td class="num">' + brl(totalEvento(e)) + '</td></tr></tfoot></table></div>' +
+      '</div></details>';
+  }).join('');
+}
+
+/* ---------- aba 2: atualizar dados do contrato (StepCards, como em Oportunidades) ---------- */
+var STEPS = {
+  'Coletivo': [
+    ['prof', 'Dados profissionais do coletivo', 'Nome do grupo, DRT, OMB, redes sociais e experiência'],
+    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release e repertório'],
+    ['membros', 'Integrantes e ficha técnica', 'Integrantes do coletivo, cargos e líder'],
+    ['pf', 'Dados do líder do coletivo', 'Dados pessoais, endereço e contato do líder'],
+    ['empresa', 'Dados da empresa (empresário)', 'Razão social, CNPJ, representante legal, endereço e contato']
+  ],
+  'Individual com empresário': [
+    ['prof', 'Dados profissionais do artista', 'Nome artístico, DRT, OMB, redes sociais e experiência'],
+    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release e repertório'],
+    ['membros', 'Ficha técnica', 'Integrantes, cargos e líder'],
+    ['pf', 'Dados do artista (PF)', 'Dados pessoais, endereço e contato do artista'],
+    ['empresa', 'Dados da empresa (empresário)', 'Razão social, CNPJ, representante legal, endereço e contato']
+  ],
+  'Individual sem empresário': [
+    ['pf', 'Dados do artista (PF)', 'Dados pessoais, endereço e contato do artista'],
+    ['prof', 'Dados profissionais do artista', 'Nome artístico, DRT, OMB, redes sociais e experiência'],
+    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release e repertório'],
+    ['membros', 'Ficha técnica', 'Integrantes, cargos e líder']
+  ]
+};
+
+function step(key, title, description) {
+  var done = state.done[key];
+  return '<li><button type="button" class="pe-step" data-modal="' + key + '"' + (done ? ' data-done' : '') + '>' +
+    '<span class="pe-step__ico">' + (done ? SVG.check : SVG.edit) + '</span>' +
+    '<span class="pe-step__main"><span class="pe-step__title">' + esc(title) + (done ? tag('Alterado neste pedido', 'ok') : '') + '</span>' +
+    '<span class="pe-step__desc">' + esc(description) + '</span></span>' + SVG.go + '</button></li>';
+}
+
+function renderAtualizar() {
+  $('#pe-steps-prod').innerHTML = state.prod === 'PF'
+    ? step('produtor:pf', 'Dados do produtor (PF)', 'Dados pessoais, documentos, endereço e contato')
+    : step('produtor:empresa', 'Dados da empresa', 'Razão social, CNPJ, CCM, representante legal, endereço e contato');
+
+  var q = norm($('#pe-q-art').value.trim());
+  var all = state.pedido.eventos;
+  var list = all.filter(function (e) { return !q || norm(e.nome).indexOf(q) >= 0; });
+  $('#pe-upd-art-total').textContent = String(all.length);
+  $('#pe-count-art').textContent = 'Mostrando ' + list.length + ' de ' + plural(all.length, 'artista', 'artistas');
+  if (!list.length) {
+    $('#pe-art-list').innerHTML = '<p class="pe-empty">Nenhum artista encontrado.</p>';
+    return;
+  }
+  $('#pe-art-list').innerHTML = list.map(function (e) {
+    var changed = STEPS[e.tipoArtista].filter(function (s) { return state.done[e.id + ':' + s[0]]; }).length;
+    return '<details class="pe-grp" data-id="' + e.id + '"' + (state.openArt[e.id] ? ' open' : '') + '>' +
+      '<summary>' + SVG.chev +
+        '<span class="pe-grp__name">' + esc(e.nome) + '</span>' +
+        '<span class="pe-grp__meta">' + esc(e.tipoArtista) + '</span>' +
+        '<span class="pe-grp__pills">' + (changed ? tag(plural(changed, 'item alterado', 'itens alterados'), 'ok') : '') + '</span>' +
+      '</summary>' +
+      '<div class="pe-grp__body" style="padding-top:12px"><ul class="pe-steps">' +
+        STEPS[e.tipoArtista].map(function (s) { return step(e.id + ':' + s[0], s[1], s[2]); }).join('') +
+      '</ul></div></details>';
+  }).join('');
+}
+
+/* ---------- modais: formulários das cópias ---------- */
+var endereco = function (o) {
+  return { t: 'Endereço', o: o, f: [['CEP', 'cep'], ['Logradouro', 'logradouro'], ['Número', 'numero'], ['Complemento', 'complemento'], ['Bairro', 'bairro'], ['Cidade', 'cidade'], ['UF', 'uf']] };
+};
+var contato = function (o) { return { t: 'Contato', o: o, f: [['E-mail', 'email'], ['Telefone', 'telefone']] }; };
+
+var FORMS = {
+  pf: function (o) {
+    return [
+      { t: 'Dados pessoais', o: o, f: [
+        ['Nome completo', 'nome'], ['Nome social', 'social'], ['Nome artístico', 'artistico'], ['CPF/CIN', 'cpf'], ['RG', 'rg'],
+        ['Data de nascimento', 'nasc'], ['Gênero', 'genero', OPT.genero], ['Raça/Cor', 'raca', OPT.raca], ['PCD', 'pcd', OPT.simNao, 'radio'],
+        ['Grau de instrução', 'instrucao', OPT.instrucao], ['Nacionalidade', 'nac', OPT.nac], ['Nº Pis/Pasep', 'pis'], ['Registro INSS', 'inss'],
+        ['CCM (Cadastro de Contribuintes Mobiliários)', 'ccm']] },
+      endereco(o.endereco), contato(o.contato)
+    ];
+  },
+  empresa: function (o) {
+    return [
+      { t: 'Dados da empresa', o: o, f: [['Razão social', 'razao', null, 'full'], ['Nome fantasia', 'fantasia'], ['CNPJ', 'cnpj'], ['CCM', 'ccm']] },
+      { t: 'Representante legal', o: o.resp, f: [['Nome completo', 'nome'], ['Nome social', 'social'], ['CPF/CIN', 'cpf'], ['RG', 'rg'], ['Data de nascimento', 'nasc']] },
+      endereco(o.endereco), contato(o.contato)
+    ];
+  },
+  prof: function (o) {
+    return [{ o: o, f: [['Nome do grupo/artista/coletivo', 'nome', null, 'full'], ['DRT', 'drt'], ['OMB', 'omb'], ['Redes sociais', 'redes', null, 'full'], ['Experiência em eventos', 'experiencia', null, 'area']] }];
+  },
+  atracao: function (o) {
+    return [{ o: o, f: [
+      ['Tipo de evento', 'tipo', OPT.tipo], ['Categoria do evento', 'categorias'], ['Nome do evento', 'nomeEvento', null, 'full'],
+      ['Público alvo', 'publico', OPT.publico], ['Classificação indicativa', 'classificacao', OPT.classif], ['Duração', 'duracao'],
+      ['Medidas de acessibilidade', 'acessibilidade'], ['Valor sugerido para contratação', 'valorSugerido'], ['Sinopse', 'sinopse', null, 'area'], ['Release', 'release', null, 'area'], ['Repertório', 'repertorio', null, 'area']] }];
+  }
+};
+
+var modal = { key: null, sections: null };
+
+function field(sec, f) {
+  var id = 'f-' + sec + '-' + f[1];
+  var label = f[0], value = modal.sections[sec].o[f[1]] || '', options = f[2], kind = f[3];
+  var cls = 'pe-field' + (kind === 'full' || kind === 'area' ? ' pe-field--full' : '');
+  if (kind === 'radio') {
+    return '<fieldset class="' + cls + '"><legend>' + esc(label) + '</legend><span class="pe-radio">' + options.map(function (op) {
+      return '<label><input type="radio" name="' + id + '" value="' + esc(op) + '"' + (op === value ? ' checked' : '') + ' data-sec="' + sec + '" data-key="' + f[1] + '">' + esc(op) + '</label>';
+    }).join('') + '</span></fieldset>';
+  }
+  var data = ' id="' + id + '" data-sec="' + sec + '" data-key="' + f[1] + '"';
+  var control = options
+    ? '<select' + data + '><option value="">Selecione</option>' + options.map(function (op) { return '<option' + (op === value ? ' selected' : '') + '>' + esc(op) + '</option>'; }).join('') + '</select>'
+    : kind === 'area' ? '<textarea' + data + '>' + esc(value) + '</textarea>' : '<input type="text"' + data + ' value="' + esc(value) + '">';
+  return '<div class="' + cls + '"><label for="' + id + '">' + esc(label) + '</label>' + control + '</div>';
+}
+
+function openModal(key) {
+  var parts = key.split(':');
+  var evento = state.pedido.eventos.filter(function (e) { return e.id === parts[0]; })[0];
+  var kind = parts[1];
+  var pfTitle = 'Dados do artista (PF)';
+  if (!evento) pfTitle = 'Dados do produtor (PF)';
+  if (evento && evento.tipoArtista === 'Coletivo') pfTitle = 'Dados do líder do coletivo';
+  var titles = { pf: pfTitle, empresa: 'Dados da empresa', prof: 'Dados profissionais', atracao: 'Atração (tipo de evento)', membros: 'Ficha técnica' };
+  modal.key = key;
+  $('#pe-modal-title').textContent = titles[kind];
+  $('#pe-modal-sub').textContent = evento ? evento.nome + ' · ' + evento.tipoArtista : produtor().nome + ' · produtor do pedido';
+
+  if (kind === 'membros') {
+    modal.sections = null;
+    $('#pe-modal-body').innerHTML = renderMembros(evento);
+    $('#pe-modal-foot').innerHTML = '<button type="button" class="pe-btn" id="pe-add-membro">+ Novo membro</button><button type="submit" class="pe-btn pe-btn--primary" value="cancel">Fechar</button>';
+  } else {
+    var src = evento ? evento[kind] : { pf: PRODUTOR_PF, empresa: EMPRESA }[kind];
+    modal.sections = FORMS[kind](src);
+    $('#pe-modal-body').innerHTML = '<div class="pe-form">' + modal.sections.map(function (s, i) {
+      return (s.t ? '<p class="pe-divider">' + esc(s.t) + '</p>' : '') + s.f.map(function (f) { return field(i, f); }).join('');
+    }).join('') + '</div>';
+    $('#pe-modal-foot').innerHTML = '<button type="submit" class="pe-btn" value="cancel">Cancelar</button><button type="submit" class="pe-btn pe-btn--primary" value="ok">Salvar</button>';
+  }
+  $('#pe-modal').returnValue = '';
+  $('#pe-modal').showModal();
+}
+
+function renderMembros(evento) {
+  return '<div class="pe-table-wrap"><table class="pe-table"><caption class="sr-only">Integrantes de ' + esc(evento.nome) + '</caption>' +
+    '<thead><tr><th>Nome</th><th>CPF/CIN</th><th>RG</th><th>Passaporte</th><th class="num">Idade</th><th>Nacionalidade</th><th>Posição / Cargo</th><th class="act">Ações</th></tr></thead><tbody>' +
+    evento.membros.map(function (m, i) {
+      return '<tr><td>' + esc(m.nome) + (m.lider ? ' ' + tag('Líder do grupo', 'info') : '') + '</td><td class="pe-nowrap">' + orDash(m.cpf) + '</td><td class="pe-nowrap">' + orDash(m.rg) +
+        '</td><td>' + orDash(m.passaporte) + '</td><td class="num">' + m.idade + '</td><td>' + esc(m.nac) + '</td><td>' + esc(m.cargo) + '</td>' +
+        '<td class="act"><button type="button" class="pe-icon-btn" data-edit-membro="' + i + '" aria-label="Alterar ' + esc(m.nome) + '">' + SVG.edit + '</button>' +
+        (m.lider ? '' : '<button type="button" class="pe-icon-btn" data-del-membro="' + i + '" aria-label="Remover ' + esc(m.nome) + '">' + SVG.trash + '</button>') + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+function saveModal() {
+  document.querySelectorAll('#pe-modal-body [data-key]').forEach(function (el) {
+    if (el.type === 'radio' && !el.checked) return;
+    modal.sections[el.dataset.sec].o[el.dataset.key] = el.value;
+  });
+  state.done[modal.key] = true;
+  render();
+  toast('Dados atualizados neste pedido de contratação.');
+}
+
+/* ---------- navegação e eventos ---------- */
+function toast(msg) {
+  var el = $('#pe-toast');
+  el.textContent = msg;
+  el.hidden = false;
+  clearTimeout(toast.t);
+  toast.t = setTimeout(function () { el.hidden = true; }, 2800);
+}
+
+function setTab(tab) {
+  if (tab === 'atualizar' && !FASES[state.pedido.fase].upd) return;
+  state.tab = tab;
+  ['eventos', 'docs', 'atualizar'].forEach(function (t) {
+    $('#tab-' + t).setAttribute('aria-selected', String(t === tab));
+    $('#panel-' + t).hidden = t !== tab;
+  });
+}
+
+function render() {
+  var upd = FASES[state.pedido.fase].upd;
+  renderList();
+  renderHeader();
+  renderEventos();
+  renderDocs();
+  renderAtualizar();
+  var tabUpd = $('#tab-atualizar');
+  tabUpd.disabled = !upd;
+  tabUpd.title = upd ? '' : 'Disponível somente quando o pedido for reaberto para correção';
+  if (!upd && state.tab === 'atualizar') setTab('eventos');
+  document.querySelectorAll('[data-fase]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.fase === state.pedido.fase)); });
+  document.querySelectorAll('[data-prod]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.prod === state.prod)); });
+}
+
+function route() {
+  var m = location.hash.match(/^#emenda\/(\d+)/);
+  var pedido = m && PEDIDOS.filter(function (p) { return p.code === m[1]; })[0];
+  $('#view-list').hidden = !!pedido;
+  $('#view-detail').hidden = !pedido;
+  if (pedido) {
+    if (state.pedido !== pedido) {
+      state.pedido = pedido;
+      state.openEvt = {}; state.openEvt[pedido.eventos[0].id] = true;
+      state.openArt = {};
+      $('#pe-q-evt').value = ''; $('#pe-q-art').value = '';
+      setTab('eventos');
+    }
+    render();
+    document.title = 'Emenda ' + pedido.code + ' — Portal do produtor';
+  }
+  if (!pedido) document.title = 'Emendas — Portal do produtor';
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.pe-tab').forEach(function (b) {
+  b.addEventListener('click', function () { setTab(b.id.replace('tab-', '')); });
+});
+$('#pe-q-evt').addEventListener('input', renderEventos);
+$('#pe-q-art').addEventListener('input', renderAtualizar);
+
+['#pe-evt-list', '#pe-art-list'].forEach(function (sel) {
+  var bag = sel === '#pe-evt-list' ? 'openEvt' : 'openArt';
+  $(sel).addEventListener('toggle', function (ev) {
+    if (ev.target.dataset && ev.target.dataset.id) state[bag][ev.target.dataset.id] = ev.target.open;
+  }, true);
+});
+
+document.querySelectorAll('[data-all]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var open = b.dataset.all === 'open';
+    document.querySelectorAll('#pe-evt-list .pe-grp').forEach(function (d) { d.open = open; });
+  });
+});
+
+document.addEventListener('click', function (ev) {
+  var stepBtn = ev.target.closest('[data-modal]');
+  if (stepBtn) { openModal(stepBtn.dataset.modal); return; }
+  var del = ev.target.closest('[data-del-membro]');
+  if (del) {
+    var evento = state.pedido.eventos.filter(function (e) { return e.id === modal.key.split(':')[0]; })[0];
+    evento.membros.splice(Number(del.dataset.delMembro), 1);
+    $('#pe-modal-body').innerHTML = renderMembros(evento);
+    state.done[modal.key] = true;
+    render();
+    return;
+  }
+  if (ev.target.closest('[data-edit-membro]') || ev.target.closest('#pe-add-membro')) {
+    toast('No sistema, abre o formulário do integrante (fora do escopo deste protótipo).');
+  }
+});
+
+$('#pe-modal').addEventListener('close', function () {
+  if ($('#pe-modal').returnValue === 'ok' && modal.sections) saveModal();
+});
+
+document.querySelectorAll('[data-fase]').forEach(function (b) {
+  b.addEventListener('click', function () { state.pedido.fase = b.dataset.fase; render(); });
+});
+document.querySelectorAll('[data-prod]').forEach(function (b) {
+  b.addEventListener('click', function () { state.prod = b.dataset.prod; render(); });
+});
+
+window.addEventListener('hashchange', route);
+renderList();
+route();
+})();
+</script>
+</body>
+</html>
