@@ -3,30 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V1 · Card do artista — Acompanhamento</title>
+<title>V2 · Card do artista — Acompanhamento</title>
 <link rel="stylesheet" href="../../styles/global.css">
 <style>
 .page-wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
 .intro{margin:0 0 16px}
 .intro h1{font-size:20px;margin-bottom:4px}
 .intro p{margin:0;color:var(--c-text-2);font-size:13px}
-.switcher{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 12px;margin-bottom:16px;border:1px dashed var(--st-draft-border);background:var(--st-draft-bg);color:var(--st-draft-text);border-radius:var(--radius);font-size:12px}
-.switcher strong{font-size:12px}
-.variant-note{margin:-6px 0 16px;font-size:12px;color:var(--c-text-2)}
 
 /* ---------- card do artista ---------- */
 .ac{border:1px solid var(--c-border-2);border-radius:var(--radius);background:#fff}
 .ac+.ac{margin-top:12px}
 .ac--warn{border-left:3px solid var(--c-warn)}
 .ac--danger{border-left:3px solid var(--c-danger)}
-.ac__head{display:grid;grid-template-columns:auto 56px minmax(0,1fr) auto;align-items:center;gap:14px;padding:14px 16px;cursor:pointer}
+.ac__head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:14px 16px;cursor:pointer}
 .ac__head:hover{background:#fafafa}
 .ac__head:focus-visible{outline:2px solid var(--c-primary);outline-offset:-2px}
 .ac[data-open="true"] .ac__head{border-bottom:1px solid var(--c-border-2)}
 .ac[data-open="false"] .card__chev{transform:rotate(-90deg)}
 .ac[data-open="false"] .ac__body{display:none}
-.ac__cover{width:56px;height:56px;border-radius:8px;display:grid;place-items:center;font-weight:700;font-size:18px;color:#fff;flex:none}
-.ac__cover--empty{background:#f0f0f0;color:var(--c-text-3);font-size:11px;font-weight:600;text-align:center;line-height:1.2}
 .ac__title{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
 .ac__title h2{font-size:15px}
 .ac__sub{color:var(--c-text-2);font-size:13px}
@@ -37,16 +32,7 @@
 .ac__alerts{display:grid;gap:6px;margin-bottom:14px}
 .ac__foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 16px;border-top:1px solid var(--c-border-2);background:#fcfcfc;border-radius:0 0 var(--radius) var(--radius)}
 
-/* abas (proposta A) */
-.tabs{display:flex;gap:2px;border-bottom:1px solid var(--c-border-2);margin:-4px 0 16px;overflow-x:auto}
-.tabs button{border:0;background:none;padding:8px 12px;font:inherit;font-size:13px;color:var(--c-text-2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
-.tabs button:hover{color:var(--c-primary)}
-.tabs button[aria-selected="true"]{color:var(--c-primary);border-bottom-color:var(--c-primary);font-weight:600}
-.tabs button:focus-visible{outline:2px solid var(--c-primary);outline-offset:-2px}
-.tabs .count{font-size:11px;padding:0 6px;border-radius:999px;background:#f0f0f0;color:var(--c-text-2);font-weight:600}
-.tabs .count--warn{background:var(--c-warn-bg);color:var(--c-warn-text)}
-
-/* duas colunas (proposta B) */
+/* duas colunas */
 .cols{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
 @media (max-width:860px){.cols{grid-template-columns:1fr}}
 .cols>*,.cols aside>*{min-width:0}
@@ -83,24 +69,14 @@
   <a class="appbar__back" href="../../index.html" aria-label="Voltar para a galeria">&larr;</a>
   <span class="appbar__title">Card do artista · Acompanhamento</span>
   <span class="appbar__spacer"></span>
-  <span class="appbar__updated">Atualizado em 13/10/2026 14:00</span>
+  <span class="appbar__updated">Atualizado em 13/10/2026 16:00</span>
 </header>
 
 <main class="page-wrap" id="main-content">
   <div class="intro">
     <h1>Card do artista — proposta de melhoria</h1>
-    <p>Seção “Artistas” do acompanhamento do pedido de emenda. Junta no card o que hoje fica no modal “Ver dados da atração” e o que faltava: fotos para divulgação, necessidades técnicas e notas fiscais da atração.</p>
+    <p>Versão escolhida: duas colunas, sem foto no cabeçalho. Seção “Artistas” do acompanhamento do pedido de emenda. Junta no card o que hoje fica no modal “Ver dados da atração” e o que faltava: fotos para divulgação, necessidades técnicas e notas fiscais da atração.</p>
   </div>
-
-  <div class="switcher" role="group" aria-label="Escolher proposta">
-    <strong>Proposta:</strong>
-    <div class="seg" id="variant">
-      <button type="button" data-variant="tabs" aria-pressed="true">A · Abas dentro do card</button>
-      <button type="button" data-variant="cols" aria-pressed="false">B · Duas colunas</button>
-    </div>
-    <span>Dados fictícios · 2 artistas (um completo com temporada, um com pendências)</span>
-  </div>
-  <p class="variant-note" id="variant-note"></p>
 
   <section class="card">
     <div class="card__head">
@@ -147,24 +123,17 @@ var ARTISTS = [
   }
 ];
 
-var variant = 'tabs';
 var openIds = { a1: true, a2: true };
-var activeTab = { a1: 'shows', a2: 'shows' };
 
 function money(v) { return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
 function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
 function initials(name) { return name.split(' ').filter(function (w) { return w.length > 2; }).slice(0, 2).map(function (w) { return w[0]; }).join('').toUpperCase(); }
 function occurrences(a) { return a.schedules.reduce(function (t, s) { return t + (s.season ? s.count : 1); }, 0); }
 
-function cover(a) {
-  if (!a.photos.length) return '<span class="ac__cover ac__cover--empty" aria-label="Sem foto">sem<br>foto</span>';
-  return '<span class="ac__cover" style="background:linear-gradient(135deg,' + GRADIENTS[0] + ')" role="img" aria-label="Foto de divulgação de ' + a.name + '"></span>';
-}
-
 function head(a) {
   var tone = a.docs[0] === 'danger' ? 'pill--danger' : 'pill--ok';
   return '<div class="ac__head" role="button" tabindex="0" aria-expanded="' + !!openIds[a.id] + '" data-toggle="' + a.id + '">' +
-    CHEV + cover(a) +
+    CHEV +
     '<div style="min-width:0">' +
       '<div class="ac__title"><h2>' + a.name + '</h2><span class="pill pill--neutral">' + a.kind + '</span></div>' +
       '<div class="ac__sub">' + a.attraction + ' · ' + a.eventType + ' · ' + a.language + '</div>' +
@@ -244,30 +213,6 @@ function filesBlock(a) {
     '<div class="block"><h3 class="subhead">Notas fiscais</h3>' + fileList(a.invoices, 'Nenhuma nota fiscal anexada.', false) + '</div>';
 }
 
-function tabsBody(a) {
-  var filesCount = a.rider.length + a.invoices.length;
-  var tabs = [
-    ['shows', 'Apresentações', occurrences(a), false],
-    ['attraction', 'Atração', null, false],
-    ['members', 'Ficha técnica', a.members.length, false],
-    ['photos', 'Fotos', a.photos.length, !a.photos.length],
-    ['files', 'Técnico e fiscal', filesCount, !a.rider.length]
-  ];
-  var current = activeTab[a.id];
-  var bar = '<div class="tabs" role="tablist" aria-label="Dados de ' + a.name + '">' + tabs.map(function (t) {
-    var count = t[2] === null ? '' : ' <span class="count' + (t[3] ? ' count--warn' : '') + '">' + (t[3] ? '!' : t[2]) + '</span>';
-    return '<button type="button" role="tab" id="tab-' + a.id + '-' + t[0] + '" aria-controls="panel-' + a.id + '" aria-selected="' + (t[0] === current) + '" tabindex="' + (t[0] === current ? 0 : -1) + '" data-tab="' + a.id + ':' + t[0] + '">' + t[1] + count + '</button>';
-  }).join('') + '</div>';
-  var panels = {
-    shows: showsTable(a),
-    attraction: attractionFacts(a) + '<div class="block" style="margin-top:20px">' + longText('syn-' + a.id, 'Sinopse', a.synopsis) + '</div><div class="block">' + longText('rel-' + a.id, 'Release', a.release) + '</div>',
-    members: membersTable(a),
-    photos: photosHead(a) + gallery(a),
-    files: filesBlock(a)
-  };
-  return bar + '<div role="tabpanel" id="panel-' + a.id + '" aria-labelledby="tab-' + a.id + '-' + current + '">' + panels[current] + '</div>';
-}
-
 function colsBody(a) {
   return attractionFacts(a) +
     '<div class="cols" style="margin-top:20px">' +
@@ -290,7 +235,7 @@ function card(a) {
     : '';
   return '<article class="ac' + tone + '" data-open="' + !!openIds[a.id] + '" aria-label="' + a.name + '">' +
     head(a) +
-    '<div class="ac__body">' + alerts + (variant === 'tabs' ? tabsBody(a) : colsBody(a)) + '</div>' +
+    '<div class="ac__body">' + alerts + colsBody(a) + '</div>' +
     '<div class="ac__foot" ' + (openIds[a.id] ? '' : 'hidden') + '>' +
       '<button class="btn btn--sm" type="button">Ver cadastro completo da atração</button>' +
       '<button class="btn btn--sm btn--primary" type="button">Ver documentos para assinatura deste artista →</button>' +
@@ -298,35 +243,13 @@ function card(a) {
   '</article>';
 }
 
-var NOTES = {
-  tabs: 'A: o cabeçalho resume tudo (foto, linguagem, apresentações, cachê, situação dos documentos). Dentro do card, uma aba por assunto — o card fica curto mesmo com muitos dados. Abas com “!” têm pendência.',
-  cols: 'B: tudo visível sem clique. Resumo da atração no topo; apresentações, ficha técnica e sinopse à esquerda; fotos, rider e notas fiscais numa coluna à direita (empilha em telas estreitas).'
-};
-
 function render() {
   document.getElementById('artists').innerHTML = ARTISTS.map(card).join('');
-  document.getElementById('variant-note').textContent = NOTES[variant];
 }
-
-document.getElementById('variant').addEventListener('click', function (e) {
-  var b = e.target.closest('button[data-variant]');
-  if (!b) return;
-  variant = b.getAttribute('data-variant');
-  this.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-  render();
-});
 
 document.getElementById('artists').addEventListener('click', function (e) {
   var toggle = e.target.closest('[data-toggle]');
   if (toggle) { var id = toggle.getAttribute('data-toggle'); openIds[id] = !openIds[id]; render(); return; }
-  var tab = e.target.closest('[data-tab]');
-  if (tab) {
-    var parts = tab.getAttribute('data-tab').split(':');
-    activeTab[parts[0]] = parts[1];
-    render();
-    document.getElementById('tab-' + parts[0] + '-' + parts[1]).focus();
-    return;
-  }
   var expand = e.target.closest('[data-expand]');
   if (expand) {
     var el = document.getElementById(expand.getAttribute('data-expand'));
@@ -338,12 +261,7 @@ document.getElementById('artists').addEventListener('click', function (e) {
 
 document.getElementById('artists').addEventListener('keydown', function (e) {
   var toggle = e.target.closest('[data-toggle]');
-  if (toggle && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle.click(); return; }
-  var tab = e.target.closest('[role="tab"]');
-  if (!tab || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
-  var tabs = Array.prototype.slice.call(tab.parentNode.querySelectorAll('[role="tab"]'));
-  var next = tabs[(tabs.indexOf(tab) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
-  next.click();
+  if (toggle && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle.click(); }
 });
 
 render();
