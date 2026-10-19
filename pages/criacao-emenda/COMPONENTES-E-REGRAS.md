@@ -247,6 +247,25 @@ Botão "+ Data" adiciona linha de cronograma (`.schedule-row`):
 
 ---
 
+## 7b. Bloco Despesas extraordinárias (`ExtraordinaryExpenses`) — PBI 57330
+
+**Regra de negócio central:** as despesas fora do cachê são informadas **por evento planejado**; o total de cada evento é a soma dos detalhes, entra no valor do contrato e é reservado na dotação junto com o cachê (uma reserva de despesa por evento que tem despesa).
+
+| Componente | Descrição |
+|---|---|
+| Card por evento planejado (`.xp`) | Um por evento do bloco anterior, na mesma ordem; título "Evento planejado N — título" e resumo ("Sem despesas" ou "N despesas · R$ X"). |
+| `xpJust-{evento}` (textarea) | Justificativa; aparece quando há detalhe e é obrigatória nesse caso. |
+| Linhas de detalhe | Descrição (obrigatória), Valor R$ (obrigatório, > 0), Observação (opcional) e remover. Botão "+ Adicionar despesa". |
+| Total do evento | Soma dos detalhes, só leitura. |
+
+### Regras
+- Bloco opcional: evento sem detalhe não tem despesa nem reserva de despesa; sem eventos planejados, o bloco pede que eles sejam criados antes.
+- Remover todos os detalhes de um evento remove a despesa dele (a justificativa sai junto).
+- Sem anexos nesta versão (ficaram para depois).
+- A soma das despesas de todos os eventos aparece, só leitura, no bloco "Valor do contrato".
+
+---
+
 ## 8. Bloco 5 — Valor do contrato (`ContractingRequest.amount`)
 
 **Regra de negócio central:** valor global a ser empenhado no contrato — **não pode ser menor que a soma dos cachês dos eventos planejados** (+ despesas extraordinárias).
@@ -256,13 +275,11 @@ Botão "+ Data" adiciona linha de cronograma (`.schedule-row`):
 |---|---|
 | `contractValueInfo` (readonly) | Quantidade de eventos planejados e datas, soma dos cachês, despesas extraordinárias, valor mínimo do contrato (cachês + extraordinárias), margem sobre o mínimo (destacada em vermelho se negativa, verde se ≥ 0). |
 | `contractValue` (R$) | Obrigatório, > 0. |
-| `extraordinaryValue` (R$) | Opcional; não pode ser negativo (erro *live*); custos fora do cachê (transporte, cenografia, acessibilidade). |
+| `extraordinaryReadonly` (leitura) | Soma das despesas extraordinárias dos eventos, vinda do bloco "Despesas extraordinárias" (PBI 57330). Não é mais digitada aqui. |
 | Botão **"Usar a soma dos eventos planejados"** | Preenche `contractValue` com `schedulesTotal() + extraordinaryAmount()`; toast de aviso se não houver nenhum cachê informado ainda. |
-| `contractValueJustification` (textarea) | Obrigatória **somente se** houver despesas extraordinárias > 0; caso contrário opcional. |
+| `contractValueJustification` (textarea) | Observação, opcional. A justificativa das despesas passou para cada evento, no bloco "Despesas extraordinárias". |
 
 ### Regras de validação
-- Despesas extraordinárias, se preenchidas, não podem ser negativas.
-- Se despesas extraordinárias > 0 → justificativa obrigatória.
 - Valor do contrato obrigatório e > 0.
 - Valor do contrato não pode ser menor que o mínimo exigido (soma dos cachês + despesas extraordinárias) — erro *live*, mensagem inclui o valor mínimo calculado.
 

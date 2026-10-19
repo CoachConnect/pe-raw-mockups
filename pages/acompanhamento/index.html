@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V3 · Acompanhamento — Pedido 11231</title>
+<title>V4 · Acompanhamento — Pedido 11231</title>
 <link rel="stylesheet" href="../../styles/global.css">
 <style>
 /* v3: geração de documentos em lote */
@@ -14,8 +14,6 @@ body[data-page="acompanhamento"] .btn:disabled:hover{opacity:.5;cursor:not-allow
 body[data-page="acompanhamento"] .btn--primary:disabled,
 body[data-page="acompanhamento"] .btn--primary:disabled:hover{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
 input[type="checkbox"]:focus-visible,input[type="radio"]:focus-visible{outline:2px solid var(--c-primary);outline-offset:2px}
-.demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:8px 12px;margin-bottom:14px;border:1px dashed var(--st-draft-border);background:var(--st-draft-bg);color:var(--st-draft-text);border-radius:var(--radius);font-size:12px}
-.demo label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
 .deadline--expired{border-color:var(--c-danger-border);background:var(--c-danger-bg)}
 .deadline--expired .deadline__date{color:var(--c-danger-text)}
 .deadline__lock{display:block;margin-top:4px;color:var(--c-danger-text);font-weight:600;font-size:12px}
@@ -54,6 +52,60 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
 .gen-summary{font-size:13px;color:var(--c-text)}
 .regen-list{margin:10px 0 0;padding-left:18px;font-size:13px}
 .regen-list li{margin-bottom:4px}
+
+/* v4: reabertura e cancelamento (PBI 57330) */
+.demo-strip{max-width:1520px;margin:0 auto;padding:14px 20px 0}
+.demo-strip .demo{margin:0}
+.demo .seg button{padding:3px 10px}
+.subhead-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;margin:0 0 10px}
+.subhead-row .subhead{margin:0}
+body[data-page="acompanhamento"] .card__body>*+.subhead-row{margin-top:24px}
+.grp__body>*+.subhead-row{margin-top:20px}
+.edit-ico{width:12px;height:12px;vertical-align:-1px;margin-right:4px}
+.edit-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin:0 0 14px;padding:8px 12px;border:1px solid #ffd591;background:#fff7e6;border-radius:6px;font-size:12px;color:#ad4e00}
+.edit-bar__actions{display:flex;flex-wrap:wrap;gap:6px}
+.consent-note{display:flex;gap:8px;align-items:flex-start;margin:0 0 14px;padding:8px 12px;border:1px dashed var(--c-border);border-radius:6px;background:#fafafa;font-size:12px;color:var(--c-text-2)}
+.xp-just{margin:0 0 10px;font-size:13px;color:var(--c-text-2)}
+.rail-text{margin:10px 0 0;font-size:12px;color:var(--c-text-2)}
+.rail-actions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.rail-actions .btn{width:100%}
+.rail-error{margin-top:12px}
+.rail-error .btn{margin:6px 6px 0 0}
+.pre{white-space:pre-line}
+.toast{z-index:80}
+/* Drawer (antd Drawer): variante lateral do modal, mesma cabeça/corpo/rodapé */
+.modal--drawer{justify-content:flex-end;align-items:stretch;padding:0}
+.modal--drawer .modal__panel{width:min(760px,100%);max-height:none;height:100%;border-radius:0;box-shadow:-6px 0 16px rgba(0,0,0,.08),-9px 0 28px 8px rgba(0,0,0,.05);animation:drawer-in .2s ease-out}
+.modal--drawer .modal__body{flex:1;padding:16px 20px 24px}
+.modal--drawer dl.kv{margin-top:0}
+.modal--drawer fieldset legend{padding:0}
+.drawer__head{display:flex;align-items:flex-start;gap:12px}
+.drawer__head>div{flex:1;min-width:0}
+.drawer__close{border:0;background:none;color:var(--c-text-3);font-size:16px;line-height:1;cursor:pointer;padding:6px 8px;border-radius:4px}
+.drawer__close:hover{background:#f5f5f5;color:var(--c-text)}
+@keyframes drawer-in{from{transform:translateX(32px);opacity:.4}}
+@media (prefers-reduced-motion:reduce){.modal--drawer .modal__panel{animation:none}}
+.form-sec{margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--c-border-2);font-size:13px;font-weight:600;color:var(--c-text)}
+.form-sec:first-child{margin-top:0}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.form-grid .field--full{grid-column:1/-1}
+@media (max-width:640px){.form-grid{grid-template-columns:1fr}}
+.drawer-list{border:1px solid var(--c-border-2);border-radius:6px;padding:12px;margin-bottom:10px;background:#fcfcfc}
+.drawer-list .field{margin-bottom:10px}
+.drawer-total{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;margin:4px 0 12px;border-radius:6px;background:#fafafa;font-size:13px}
+.member-form{margin-top:12px;padding:12px;border:1px solid var(--c-primary-border);border-radius:6px;background:#f0f7ff}
+.radio-row{display:flex;flex-wrap:wrap;gap:6px 18px;padding:4px 0}
+.radio-row label{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+/* responsáveis da PJ e fotos de divulgação nos Drawers */
+.resp-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.resp-principal{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;cursor:pointer}
+.modal--drawer input[readonly]{background:#f5f5f5;color:var(--c-text-2)}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:10px}
+.photo-item{margin:0;display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--c-border-2);border-radius:6px;background:#fcfcfc}
+.photo-item .field{margin:0}
+.photo-item .btn{align-self:flex-start}
+.photo-thumb{display:block;width:100%;aspect-ratio:4/3;border-radius:4px;object-fit:cover}
+.thumbs img{width:56px;height:40px;border-radius:4px;object-fit:cover}
 </style>
 </head>
 <body data-page="acompanhamento">
@@ -66,9 +118,10 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
     <span class="appbar__name">Circulando Produções Culturais · Emenda 2026.0417</span>
   </div>
   <span class="pill pill--neutral">Emenda parlamentar</span>
-  <span class="pill pill--warn">Aguardando documentação assinada</span>
+  <span class="pill pill--warn" id="appbar-status">Aguardando documentação assinada</span>
+  <span class="pill" id="appbar-seal" hidden>Aguardando produtor</span>
   <div class="appbar__spacer"></div>
-  <span class="appbar__updated">Atualizado em 30/09/2026 16:37</span>
+  <span class="appbar__updated">Atualizado em 18/10/2026 22:39</span>
 </header>
 
 <div class="ribbon">
@@ -76,7 +129,7 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
     <div class="kpi kpi--ok">
       <div class="kpi__label">Valor do contrato</div>
       <div class="kpi__value" id="kpi-valor">—</div>
-      <div class="kpi__hint">Parcela única · soma dos artistas</div>
+      <div class="kpi__hint" id="kpi-valor-hint">Parcela única · soma dos artistas</div>
     </div>
     <div class="kpi">
       <div class="kpi__label">Artistas</div>
@@ -85,7 +138,7 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
     </div>
     <div class="kpi">
       <div class="kpi__label">Produtor (proponente)</div>
-      <div class="kpi__value">Circulando Produções</div>
+      <div class="kpi__value" id="kpi-prod">Circulando Produções</div>
       <div class="kpi__hint">PJ · envia todos os documentos</div>
     </div>
     <div class="kpi kpi--danger">
@@ -103,6 +156,21 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
       <div class="kpi__value" id="kpi-pendencias">—</div>
       <div class="kpi__hint" id="kpi-pendencias-hint">—</div>
     </div>
+  </div>
+</div>
+
+<div class="demo-strip">
+  <div class="demo" role="group" aria-label="Controles de demonstração do protótipo">
+    <b>Demonstração</b>
+    <span id="demo-state-label">Estado do pedido:</span>
+    <div class="seg" role="group" aria-labelledby="demo-state-label" id="demo-state">
+      <button type="button" data-state="atual" aria-pressed="true">Aguardando documentação (atual)</button>
+      <button type="button" data-state="reaberto" aria-pressed="false">Pedido reaberto</button>
+      <button type="button" data-state="aguardando" aria-pressed="false">Aguardando produtor</button>
+      <button type="button" data-state="cancelado" aria-pressed="false">Cancelado</button>
+    </div>
+    <label id="demo-conclude-wrap" hidden><input type="checkbox" id="demo-conclude-error"> Simular bloco com erro ao concluir</label>
+    <button class="btn btn--sm" type="button" id="demo-producer-sent" hidden>Simular: produtor enviou a atualização</button>
   </div>
 </div>
 
@@ -161,23 +229,24 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
         <span class="pill pill--ok">Completo</span>
       </div>
       <div class="card__body">
+        <div id="prop-edit-slot"></div>
         <div class="alert alert--info" style="margin-bottom:14px">
           <span aria-hidden="true">ℹ</span>
           <span>O produtor agencia todos os artistas deste pedido e é quem envia os documentos assinados.</span>
         </div>
         <dl class="kv kv--3">
-          <div><dt>Razão social</dt><dd>Circulando Produções Culturais Ltda.</dd></div>
-          <div><dt>Nome fantasia</dt><dd>Circulando Produções</dd></div>
-          <div><dt>CNPJ</dt><dd class="mono">41.827.306/0001-92 <button class="copy" type="button" title="Copiar CNPJ" aria-label="Copiar CNPJ">⧉</button></dd></div>
-          <div><dt>CCM</dt><dd class="mono">7.412.908-3</dd></div>
-          <div><dt>Endereço</dt><dd>Rua Cel. Luís Barroso, 212 — Santo Amaro, São Paulo/SP, 04750-030</dd></div>
-          <div><dt>Representante legal</dt><dd>Márcia Helena Toledo</dd></div>
+          <div><dt>Razão social</dt><dd id="prop-razao">Circulando Produções Culturais Ltda.</dd></div>
+          <div><dt>Nome fantasia</dt><dd id="prop-fantasia">Circulando Produções</dd></div>
+          <div><dt>CNPJ</dt><dd class="mono"><span id="prop-cnpj">41.827.306/0001-92</span> <button class="copy" type="button" title="Copiar CNPJ" aria-label="Copiar CNPJ">⧉</button></dd></div>
+          <div><dt>CCM</dt><dd class="mono" id="prop-ccm">7.412.908-3</dd></div>
+          <div><dt>Endereço</dt><dd id="prop-endereco">Rua Cel. Luís Barroso, 212 — Santo Amaro, São Paulo/SP, 04750-030</dd></div>
+          <div><dt>Representante legal</dt><dd id="prop-rep">Márcia Helena Toledo</dd></div>
         </dl>
         <h3 class="subhead">Dados bancários</h3>
         <dl class="kv kv--3">
-          <div><dt>Banco</dt><dd>001 — Banco do Brasil</dd></div>
-          <div><dt>Agência</dt><dd class="mono">1532-8</dd></div>
-          <div><dt>Conta corrente</dt><dd class="mono">48.219-0</dd></div>
+          <div><dt>Banco</dt><dd id="prop-banco">001 — Banco do Brasil</dd></div>
+          <div><dt>Agência</dt><dd class="mono" id="prop-agencia">1532-8</dd></div>
+          <div><dt>Conta corrente</dt><dd class="mono" id="prop-conta">48.219-0</dd></div>
         </dl>
         <div class="alert alert--info" style="margin-top:14px">
           <span aria-hidden="true">ℹ</span>
@@ -257,24 +326,26 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
         <span class="pill pill--danger">1 pendência</span>
       </div>
       <div class="card__body">
+        <div id="ct-contract-slot"></div>
         <dl class="kv kv--3">
           <div><dt>Processo SEI do pedido *</dt><dd><span class="miss">Não informado</span> <button class="btn btn--sm" type="button">Informar</button></dd></div>
-          <div><dt>Status de acompanhamento</dt><dd>Aguardando documentação assinada</dd></div>
-          <div><dt>Fundamento legal</dt><dd>Portaria nº 34/SMC · art. 74, Lei 14.133/2021</dd></div>
+          <div><dt>Status de acompanhamento</dt><dd id="ct-status">Aguardando documentação assinada</dd></div>
+          <div><dt>Fundamento legal</dt><dd id="ct-fundamento">Portaria nº 34/SMC · art. 74, Lei 14.133/2021</dd></div>
           <div><dt>Emenda parlamentar</dt><dd class="mono">2026.0417</dd></div>
           <div><dt>Código do pedido</dt><dd class="mono">11231</dd></div>
-          <div><dt>Unidade requisitante</dt><dd>Centro Cultural Grajaú</dd></div>
-          <div><dt>Responsável pelo pedido</dt><dd>Fábio Penna Montanini</dd></div>
-          <div><dt>Fiscal</dt><dd>Elizabete Alves Honorato <span class="file__meta">(SMC/CCULT/CCGPC)</span></dd></div>
-          <div><dt>Suplente</dt><dd>Leandro Dias de Camargo <span class="file__meta">(SMC/CCULT/CCPC)</span></dd></div>
+          <div><dt>Unidade requisitante</dt><dd id="ct-unidade">Centro Cultural Grajaú</dd></div>
+          <div><dt>Responsável pelo pedido</dt><dd id="ct-responsavel">Fábio Penna Montanini</dd></div>
+          <div><dt>Fiscal</dt><dd id="ct-fiscal">Elizabete Alves Honorato <span class="file__meta">(SMC/CCULT/CCGPC)</span></dd></div>
+          <div><dt>Suplente</dt><dd id="ct-suplente">Leandro Dias de Camargo <span class="file__meta">(SMC/CCULT/CCPC)</span></dd></div>
         </dl>
 
-        <h3 class="subhead">Dotação e valores</h3>
+        <div class="subhead-row"><h3 class="subhead">Dotação e valores</h3><span id="ct-values-slot"></span></div>
         <dl class="kv kv--3">
           <div><dt>Nº da dotação</dt><dd class="mono">25.10.13.392.3001.6.392.33903900.00.1.500.9001.1 <button class="copy" type="button" title="Copiar dotação" aria-label="Copiar dotação">⧉</button></dd></div>
           <div><dt>Valor do contrato</dt><dd><b id="ct-valor">—</b> <span class="file__meta" id="ct-valor-hint"></span></dd></div>
-          <div><dt>Forma de pagamento</dt><dd>Parcela única — 30º dia após a entrega da documentação correta</dd></div>
+          <div><dt>Forma de pagamento</dt><dd id="ct-forma">Parcela única — 30º dia após a entrega da documentação correta</dd></div>
         </dl>
+        <div id="ct-values-alert"></div>
 
         <details class="grp" style="margin-top:14px">
           <summary>
@@ -284,13 +355,13 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
           </summary>
           <div class="grp__body tbl-wrap">
             <table class="tbl">
-              <thead><tr><th>Artista</th><th class="num">Apresentações</th><th class="num">Valor</th></tr></thead>
+              <thead id="ct-comp-head"><tr><th>Artista</th><th class="num">Apresentações</th><th class="num">Valor</th></tr></thead>
               <tbody id="ct-comp-rows"></tbody>
             </table>
           </div>
         </details>
 
-        <h3 class="subhead">Processos de pagamento</h3>
+        <div class="subhead-row"><h3 class="subhead">Processos de pagamento</h3><span id="ct-payment-slot"></span></div>
         <div class="tbl-wrap">
           <table class="tbl">
             <thead><tr><th>Parcela</th><th class="num">Valor</th><th>Vencimento</th><th>Situação</th><th style="width:120px"></th></tr></thead>
@@ -395,6 +466,7 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
         <span class="pill pill--neutral">3 textos</span>
       </div>
       <div class="card__body">
+        <div id="just-edit-slot"></div>
         <h3 class="subhead">Justificativa da contratação</h3>
         <div class="longtext" data-clamped="true" id="txt-j1">
           <p>A presente contratação decorre da emenda parlamentar 2026.0417, destinada à programação cultural gratuita do Centro Cultural Grajaú e dos CEUs da região sul, com atividades em diferentes linguagens: circo, música popular, cultura popular, dança urbana e forró.</p>
@@ -404,12 +476,12 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
         <button class="btn btn--sm btn--ghost longtext__toggle" type="button" data-expand="txt-j1">Ler tudo ▾</button>
 
         <h3 class="subhead">Justificativa do valor</h3>
-        <div class="longtext">
+        <div class="longtext" id="txt-j2">
           <p>Os valores seguem a Tabela de Valores da Portaria nº 34/SMC/G/2023 para cada linguagem e número de integrantes; a composição por artista está em “Contrato e pagamento”.</p>
         </div>
 
         <h3 class="subhead">Justificativa da escolha do contratado</h3>
-        <div class="longtext">
+        <div class="longtext" id="txt-j3">
           <p>A Circulando Produções detém a representação exclusiva dos artistas listados, comprovada pelas declarações de exclusividade de cada artista.</p>
         </div>
       </div>
@@ -418,7 +490,9 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
   </main>
 
   <aside class="rail">
-    <section class="card">
+    <section class="card" id="rail-actions" aria-labelledby="rail-actions-title"></section>
+
+    <section class="card" id="rail-legacy">
       <div class="card__head" style="cursor:default">
         <h2>Reabertura em aberto</h2>
         <span class="pill pill--warn">Enviado</span>
@@ -454,9 +528,9 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
       <div class="card__head" style="cursor:default"><h2>Contato do produtor</h2></div>
       <div class="card__body">
         <dl class="kv" style="grid-template-columns:1fr;gap:10px">
-          <div><dt>Responsável</dt><dd>Márcia Helena Toledo</dd></div>
-          <div><dt>E-mail</dt><dd>contato@circulandoproducoes.com.br <button class="copy" type="button" aria-label="Copiar e-mail">⧉</button></dd></div>
-          <div><dt>Telefone</dt><dd class="mono">(11) 98412-3307 <button class="copy" type="button" aria-label="Copiar telefone">⧉</button></dd></div>
+          <div><dt>Responsável</dt><dd id="contact-name">Márcia Helena Toledo</dd></div>
+          <div><dt>E-mail</dt><dd><span id="contact-email">contato@circulandoproducoes.com.br</span> <button class="copy" type="button" aria-label="Copiar e-mail">⧉</button></dd></div>
+          <div><dt>Telefone</dt><dd class="mono"><span id="contact-phone">(11) 98412-3307</span> <button class="copy" type="button" aria-label="Copiar telefone">⧉</button></dd></div>
         </dl>
       </div>
     </section>
@@ -478,13 +552,13 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
   <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
     <div class="modal__head">
       <h3 class="modal__title" id="historyModalTitle">Histórico completo</h3>
-      <p class="modal__hint">8 eventos registrados neste pedido.</p>
+      <p class="modal__hint" id="history-count">8 eventos registrados neste pedido.</p>
     </div>
     <div class="modal__body">
       <div class="tbl-wrap">
         <table class="tbl">
           <thead><tr><th style="width:120px">Data</th><th>Evento</th><th>Transição</th><th>Responsável</th></tr></thead>
-          <tbody>
+          <tbody id="history-rows">
             <tr><td>29/09/2026</td><td>Produtor enviou documentos assinados (5)</td><td class="file__meta">Aguardando documentação assinada</td><td>Márcia H. Toledo</td></tr>
             <tr><td>28/09/2026</td><td>Declaração de exclusividade reprovada — Mestre Zé do Pife</td><td class="file__meta">Enviado → Reprovado</td><td>Fabrícia C. B. da Silva</td></tr>
             <tr><td>28/09/2026</td><td>Reabertura — ficha técnica do Maracatu Baque Forte</td><td class="file__meta">Pedido aprovado → Pedido reaberto</td><td>Fabrícia C. B. da Silva</td></tr>
@@ -567,6 +641,43 @@ body[data-page="acompanhamento"] .gen-progress__title:focus-visible{outline:none
   </div>
 </div>
 
+<!-- 57330: confirmação das ações da reabertura e texto das pendências -->
+<div class="modal" id="flowModal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="flowTitle" aria-describedby="flowBody" style="width:min(560px,100%)">
+    <div class="modal__head"><h3 class="modal__title" id="flowTitle"></h3></div>
+    <div class="modal__body" id="flowBody"></div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg">Pedido #11231</span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn" data-modal-close id="flowCancel">Cancelar</button>
+        <button type="button" class="btn btn--primary" id="flowOk"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 57330: Drawer de edição de bloco (antd Drawer) -->
+<div class="modal modal--drawer" id="editDrawer" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="modal__head drawer__head">
+      <div>
+        <h3 class="modal__title" id="drawerTitle"></h3>
+        <p class="modal__hint" id="drawerHint" style="margin:0"></p>
+      </div>
+      <button class="drawer__close" type="button" data-modal-close aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal__body" id="drawerBody"></div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg" id="drawerMsg"></span>
+      <div class="modal__foot-actions" id="drawerActions"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
 <script>
 var PRODUTOR = 'Circulando Produções';
 var TODAY = '30/09/2026';
@@ -588,6 +699,7 @@ var BASE_ARTISTS = [
   },
   {
     id: 'a2', name: 'Mestre Zé do Pife', kind: 'Solo', lead: 'José Aparecido dos Santos', category: 'Música popular', attraction: 'Pife, Zabumba e Memória',
+    consent: false, // Artist.givesConsentToEdit do cadastro (A-22): sem ele, o operador não edita o lado do artista
     synopsis: 'Mestre Zé apresenta o repertório tradicional das bandas de pífanos do sertão pernambucano, intercalando música e causos sobre as festas de santo e a vida no interior. Apresentação intimista, voltada a toda a família.',
     photos: 2, credit: 'Acervo do artista',
     events: [['18/10/2026', '16:00 – 17:00', 'Centro Cultural Grajaú', 3500]],
@@ -781,8 +893,7 @@ function renderArtist(a) {
     ? '<span class="pill pill--warn">CPF ausente em ' + missing + '</span>'
     : '<span class="pill pill--neutral">' + plural(a.members.length, 'integrante', 'integrantes') + '</span>';
 
-  var thumbs = '';
-  for (var i = 0; i < a.photos; i++) thumbs += '<span style="background:linear-gradient(135deg,' + GRADIENTS[i % GRADIENTS.length] + ')" role="img" aria-label="Foto ' + (i + 1) + '"></span>';
+  var thumbs = photoListOf(a).map(thumbHtml).join('');
 
   var files = a.files.map(function (name) {
     return '<div class="file"><span class="file__ico">PDF</span><span class="file__name">' + name + '</span><span class="file__meta">enviado 22/09/2026</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>';
@@ -798,19 +909,21 @@ function renderArtist(a) {
       '</summary>' +
       '<div class="grp__body">' +
         pendAlerts +
+        artistEditBar(a) +
         '<dl class="kv kv--3">' +
           '<div><dt>' + (a.kind === 'Solo' ? 'Nome civil' : 'Líder do grupo') + '</dt><dd>' + a.lead + '</dd></div>' +
           '<div><dt>Atração</dt><dd>' + a.attraction + '</dd></div>' +
           '<div><dt>Linguagem</dt><dd>' + a.category + '</dd></div>' +
         '</dl>' +
-        '<h3 class="subhead">Eventos e apresentações <span class="pill pill--neutral">' + a.events.length + '</span></h3>' +
+        subhead('Eventos e apresentações <span class="pill pill--neutral">' + a.events.length + '</span>', isEditable() ? editButton('evento', a.id, 'Editar evento', 'Editar evento de ' + a.name) : '') +
         '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Data</th><th>Horário</th><th>Local</th><th class="num">Valor</th></tr></thead><tbody>' + events + '</tbody></table></div>' +
-        '<h3 class="subhead">Sinopse e release</h3>' +
+        expensesView(a) +
+        subhead('Sinopse e release', artistSideButton(a, 'atracao', 'Editar atração')) +
         '<div class="longtext" data-clamped="true" id="txt-' + a.id + '"><p>' + a.synopsis + '</p></div>' +
         '<button class="btn btn--sm btn--ghost longtext__toggle" type="button" data-expand="txt-' + a.id + '">Ler tudo ▾</button>' +
         '<h3 class="subhead">Fotos para divulgação <span class="pill pill--neutral">' + a.photos + ' · crédito: ' + a.credit + '</span></h3>' +
         '<div class="thumbs">' + thumbs + '<button class="btn btn--sm" type="button">Baixar todas</button></div>' +
-        '<h3 class="subhead">Ficha técnica ' + membersPill + '</h3>' +
+        subhead('Ficha técnica ' + membersPill, artistSideButton(a, 'integrantes', 'Editar integrantes')) +
         '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Integrante</th><th>Nome artístico</th><th>CPF/CIN</th><th>Função</th></tr></thead><tbody>' + members + '</tbody></table></div>' +
         '<h3 class="subhead">Documentos do artista</h3>' +
         '<div style="border:1px solid var(--c-border-2);border-radius:6px">' + files + '</div>' +
@@ -998,10 +1111,16 @@ function render() {
   var total = artists.reduce(function (sum, a) { return sum + artistValue(a); }, 0);
   var shows = artists.reduce(function (sum, a) { return sum + a.events.length; }, 0);
   var blocking = 1 + withPendency.length;
+  // A-30: o valor do contrato é digitado; só acompanha a soma (cachês + despesas) até alguém mexer nos valores
+  var expensesSum = artists.reduce(function (sum, a) { return sum + expensesTotal(a); }, 0);
+  var suggested = total + expensesSum;
+  var value = flow.contractValue === null ? suggested : flow.contractValue;
+  var matchesSum = Math.abs(value - suggested) < 0.005;
 
   replaceKeepingState('art-list', artists.map(renderArtist).join(''));
 
-  $('kpi-valor').textContent = money(total);
+  $('kpi-valor').textContent = money(value);
+  $('kpi-valor-hint').textContent = matchesSum ? 'Parcela única · soma dos artistas' : 'Parcela única · soma atual ' + money(suggested);
   $('kpi-artistas').textContent = plural(artists.length, 'artista', 'artistas');
   $('kpi-artistas-hint').textContent = plural(shows, 'apresentação', 'apresentações') + ' · ' + complete.length + ' completos';
   $('kpi-pendencias').textContent = plural(blocking, 'bloqueante', 'bloqueantes');
@@ -1013,13 +1132,25 @@ function render() {
   $('art-head-count').textContent = plural(artists.length, 'artista', 'artistas');
   $('art-head-pill').textContent = plural(withPendency.length, 'com pendência', 'com pendência');
   $('decision-msg').innerHTML = '<b>' + plural(blocking, 'pendência bloqueante', 'pendências bloqueantes') + '</b> (1 do pedido, ' + withPendency.length + ' de artistas) impedem a homologação.';
-  $('ct-valor').textContent = money(total);
-  $('ct-valor-hint').textContent = 'soma de ' + plural(artists.length, 'artista', 'artistas') + ' · ' + plural(shows, 'apresentação', 'apresentações');
-  $('ct-parcela').textContent = money(total);
-  $('ct-comp-meta').textContent = plural(artists.length, 'artista', 'artistas') + ' · ' + money(total);
+  $('ct-valor').textContent = money(value);
+  $('ct-valor-hint').textContent = matchesSum
+    ? 'soma de ' + plural(artists.length, 'artista', 'artistas') + ' · ' + plural(shows, 'apresentação', 'apresentações')
+    : 'soma atual de cachês e despesas: ' + money(suggested);
+  $('ct-parcela').textContent = money(value);
+  $('ct-comp-meta').textContent = plural(artists.length, 'artista', 'artistas') + ' · ' + money(suggested);
+  $('ct-comp-head').innerHTML = expensesSum
+    ? '<tr><th>Artista</th><th class="num">Apresentações</th><th class="num">Cachê</th><th class="num">Despesas</th><th class="num">Valor</th></tr>'
+    : '<tr><th>Artista</th><th class="num">Apresentações</th><th class="num">Valor</th></tr>';
   $('ct-comp-rows').innerHTML = artists.map(function (a) {
-    return '<tr><td>' + a.name + '</td><td class="num">' + a.events.length + '</td><td class="num">' + money(artistValue(a)) + '</td></tr>';
-  }).join('') + '<tr><td><b>Total</b></td><td class="num"><b>' + shows + '</b></td><td class="num"><b>' + money(total) + '</b></td></tr>';
+    var extra = expensesSum ? '<td class="num">' + money(artistValue(a)) + '</td><td class="num">' + money(expensesTotal(a)) + '</td>' : '';
+    return '<tr><td>' + a.name + '</td><td class="num">' + a.events.length + '</td>' + extra + '<td class="num">' + money(reservedOf(a)) + '</td></tr>';
+  }).join('') + '<tr><td><b>Total</b></td><td class="num"><b>' + shows + '</b></td>' +
+    (expensesSum ? '<td class="num"><b>' + money(total) + '</b></td><td class="num"><b>' + money(expensesSum) + '</b></td>' : '') +
+    '<td class="num"><b>' + money(suggested) + '</b></td></tr>';
+  $('ct-values-alert').innerHTML = matchesSum ? '' :
+    '<div class="alert alert--warn" style="margin-top:14px"><span aria-hidden="true">▲</span><span><b>O valor do contrato difere da soma de cachês e despesas</b>' +
+    'Valor salvo: ' + money(value) + '. Soma atual: ' + money(suggested) + '. O bloco Valor fica pendente até o valor ser revisto' +
+    (isEditable() ? ' em “Editar valores”.' : '.') + '</span></div>';
 
   $('pend-art-rows').innerHTML = withPendency.map(function (x) {
     var items = x.a.pend.length ? x.a.pend : ['Documento reprovado'];
@@ -1465,7 +1596,7 @@ function buildSimulatedArtists() {
     var source = BASE_ARTISTS[i % BASE_ARTISTS.length];
     var docs = {};
     Object.keys(source.docs).forEach(function (k) { docs[k] = source.docs[k].slice(); });
-    return Object.assign({}, source, { id: 'x' + i, name: name, attraction: name, docs: docs, stale: null });
+    return Object.assign({}, source, { id: 'x' + i, name: name, attraction: name, docs: docs, stale: null, copy: null });
   });
   return BASE_ARTISTS.concat(extra);
 }
@@ -1583,6 +1714,7 @@ $('simulate').addEventListener('click', function () {
   this.setAttribute('aria-pressed', String(simulated));
   this.textContent = simulated ? 'Voltar para 6 artistas' : 'Simular pedido com 20 artistas';
   state.artists = simulated ? buildSimulatedArtists() : BASE_ARTISTS;
+  flow.contractValue = null;
   job = null;
   state.groupGen = {};
   resetFilters('art');
@@ -1625,7 +1757,1227 @@ document.addEventListener('keydown', function (event) {
   if (event.key === 'Escape' && modalStack.length) closeModal(modalStack[modalStack.length - 1]);
 });
 
-render();
+/* ==========================================================================
+   v4 · PBI 57330 — reabrir, editar por bloco (Drawer), concluir e pedir
+   atualização ao produtor. Só os cargos Amendments, Admin e Developer veem
+   estas ações (A-18); o protótipo não simula cargo.
+   ========================================================================== */
+var PREVIOUS_STATUS = 'Aguardando documentação assinada';
+var OPERATOR = 'Fabrícia Cibelle Barros da Silva';
+var OPERATOR_SHORT = 'Fabrícia C. B. da Silva';
+var DOTACAO = '25.10.13.392.3001.6.392.33903900.00.1.500.9001.1';
+var RESERVES = {
+  'ro-0311': 'RO-0311 · Coordenação de Programação Cultural 2026',
+  'ro-0418': 'RO-0418 · Emendas parlamentares — complementar 2026'
+};
+var EDIT_ICON = '<svg class="edit-ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10.5 3l2.5 2.5L6 12.5H3.5V10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+
+var flow = {
+  state: 'atual',
+  contractValue: null,
+  reserve: 'ro-0311',
+  balances: { 'ro-0311': 2500, 'ro-0418': 120000 },
+  reopenedBy: OPERATOR,
+  reopenedAt: TODAY + ' 09:12',
+  requestedBy: OPERATOR,
+  requestedAt: TODAY + ' 09:30',
+  requestText: '1) Mestre Zé do Pife — pessoa física: o nome civil e o CPF não conferem com a assinatura da declaração de exclusividade. Confira e corrija.\n2) Dados da empresa: atualize o endereço da sede, que mudou em setembro.',
+  canceledBy: OPERATOR,
+  canceledAt: TODAY + ' 11:05',
+  cancelReason: 'A programação do Centro Cultural Grajaú foi suspensa pela reforma do teatro; os artistas serão contratados em outro pedido.',
+  concludeError: false
+};
+
+var STATE_META = {
+  atual: { label: PREVIOUS_STATUS, cls: 'pill--warn' },
+  reaberto: { label: 'Pedido reaberto', cls: 'pill--orange' },
+  aguardando: { label: 'Pedido reaberto', cls: 'pill--orange' },
+  cancelado: { label: 'Cancelado', cls: 'pill--danger' }
+};
+
+var PROPONENT = {
+  razao: 'Circulando Produções Culturais Ltda.', fantasia: 'Circulando Produções', cnpj: '41.827.306/0001-92', ccm: '7.412.908-3',
+  responsaveis: [
+    { nome: 'Márcia Helena Toledo', social: '', cpf: '226.781.448-05', rg: '28.114.597-1', nasc: '02/09/1981', email: 'marcia@circulandoproducoes.com.br', telefone: '(11) 98412-3307', principal: true },
+    { nome: 'Rafael Brandão Lima', social: '', cpf: '301.556.218-40', rg: '33.180.442-9', nasc: '15/04/1984', email: 'rafael@circulandoproducoes.com.br', telefone: '(11) 97730-2211', principal: false }
+  ],
+  end: { cep: '04750-030', logradouro: 'Rua Cel. Luís Barroso', numero: '212', complemento: '', bairro: 'Santo Amaro', cidade: 'São Paulo', uf: 'SP' },
+  contato: { email: 'contato@circulandoproducoes.com.br', telefone: '(11) 98412-3307' }
+};
+
+var PROPONENT_AT_SUBMIT = JSON.stringify(PROPONENT);
+
+var CONTRACT = {
+  fiscal: 'Elizabete Alves Honorato (SMC/CCULT/CCGPC)', suplente: 'Leandro Dias de Camargo (SMC/CCULT/CCPC)',
+  cadastro: 'Salete de Campos Dias', unidade: 'Centro Cultural Grajaú', inicial: 'Fábio Penna Montanini',
+  fundamento: 'Portaria nº 34/SMC · art. 74, Lei 14.133/2021', objeto: 'Programação cultural gratuita — Emenda 2026.0417',
+  seiMae: '60250.001187/2026-41', obs: '', reserva: 'global',
+  jContratacao: 'A presente contratação decorre da emenda parlamentar 2026.0417, destinada à programação cultural gratuita do Centro Cultural Grajaú e dos CEUs da região sul, com atividades em diferentes linguagens: circo, música popular, cultura popular, dança urbana e forró.\n\nA contratação é realizada com base no artigo 74, caput, da Lei 14.133/2021, dada a singularidade dos serviços prestados pelos artistas agenciados pela Circulando Produções Culturais, demonstrada nos materiais artísticos anexados a cada artista.\n\nA reunião dos artistas em um único pedido, sob o mesmo produtor, simplifica a gestão contratual e garante uma programação coesa entre outubro e novembro de 2026.',
+  jValor: 'Os valores seguem a Tabela de Valores da Portaria nº 34/SMC/G/2023 para cada linguagem e número de integrantes; a composição por artista está em “Contrato e pagamento”.',
+  jEscolha: 'A Circulando Produções detém a representação exclusiva dos artistas listados, comprovada pelas declarações de exclusividade de cada artista.'
+};
+
+var PAYMENT = {
+  forma: 'unica', kit: '2026-10-30', obs: '',
+  banco: '001 — Banco do Brasil', agencia: '1532-8', conta: '48.219-0',
+  parcelas: [['Capela do Socorro', 51000], ['Parelheiros', 14000]]
+};
+
+var OPT = {
+  genero: ['Feminino', 'Masculino', 'Não binário', 'Prefiro não informar'],
+  raca: ['Amarela', 'Branca', 'Indígena', 'Parda', 'Preta', 'Prefiro não informar'],
+  instrucao: ['Ensino fundamental completo', 'Ensino médio completo', 'Ensino superior incompleto', 'Ensino superior completo', 'Pós-graduação'],
+  nac: ['Brasileira', 'Estrangeira'],
+  simNao: ['Sim', 'Não'],
+  tipo: ['Música', 'Teatro', 'Dança', 'Circo', 'Discotecagem', 'Literatura'],
+  publico: ['Livre', 'Infantil', 'Jovem', 'Adulto', 'Família'],
+  classif: ['Livre', '10 anos', '12 anos', '14 anos', '16 anos', '18 anos'],
+  fiscais: ['Elizabete Alves Honorato (SMC/CCULT/CCGPC)', 'Leandro Dias de Camargo (SMC/CCULT/CCPC)', 'Julio Cesar Doria Alves (SMC/CCULT)', 'Renata Aparecida Souza (SMC/CCULT/AHM)'],
+  unidades: ['Centro Cultural Grajaú', 'Coordenadoria de Emendas Parlamentares', 'Centro Cultural São Paulo'],
+  responsaveis: ['Fábio Penna Montanini', 'Vanessa Mariliz Gomes', 'Salete de Campos Dias'],
+  fundamentos: ['Portaria nº 34/SMC · art. 74, Lei 14.133/2021', 'Inexigibilidade — art. 74, II', 'Dispensa de licitação', 'Emenda parlamentar'],
+  locais: ['Centro Cultural Grajaú', 'CEU Três Lagos', 'CEU Parelheiros', 'CEU Vila Rubi'],
+  subprefeituras: ['Capela do Socorro', 'Parelheiros', 'Cidade Ademar', 'M\'Boi Mirim', 'Santo Amaro'],
+  formas: [['unica', 'Parcela única'], ['parcelado', 'Parcelado'], ['bilheteria', 'Reversão de bilheteria'], ['outros', 'Outros'], ['sem-cache', 'Sem cachê']]
+};
+
+/* ---------- helpers ---------- */
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function getPath(obj, path) { return path.split('.').reduce(function (o, k) { return o == null ? '' : o[k]; }, obj); }
+function setPath(obj, path, value) {
+  var keys = path.split('.');
+  var last = keys.pop();
+  var target = keys.reduce(function (o, k) { o[k] = o[k] || {}; return o[k]; }, obj);
+  target[last] = value;
+}
+function brToIso(br) { var p = br.split('/'); return p[2] + '-' + p[1] + '-' + p[0]; }
+function isoToBr(iso) { var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function addMinutes(hhmm, minutes) {
+  var p = hhmm.split(':');
+  var t = +p[0] * 60 + +p[1] + Number(minutes);
+  return String(Math.floor(t / 60) % 24).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+}
+function parseRange(range) {
+  var m = range.match(/(\d{2}):(\d{2})\s*–\s*(\d{2}):(\d{2})/);
+  if (!m) return { start: '', minutes: '', allDay: true };
+  return { start: m[1] + ':' + m[2], minutes: (+m[3] * 60 + +m[4]) - (+m[1] * 60 + +m[2]), allDay: false };
+}
+function isEditable() { return flow.state === 'reaberto' || flow.state === 'aguardando'; }
+function canEditArtistSide(a) { return isEditable() && a.consent !== false; }
+// A-16: proponente editável se ao menos um artista do pedido ligado ao produtor consentiu
+function canEditProponent() { return isEditable() && state.artists.some(function (a) { return a.consent !== false; }); }
+function expensesTotal(a) { return a.expenses ? a.expenses.items.reduce(function (sum, it) { return sum + it[1]; }, 0) : 0; }
+function reservedOf(a) { return artistValue(a) + expensesTotal(a); }
+function suggestedValue() { return state.artists.reduce(function (sum, a) { return sum + reservedOf(a); }, 0); }
+function contractValue() { return flow.contractValue === null ? suggestedValue() : flow.contractValue; }
+function balance() { return flow.balances[flow.reserve]; }
+function railFocus() { return document.querySelector('#rail-actions [data-flow]'); }
+
+var toastTimer = null;
+function toast(message) {
+  var node = $('toast');
+  node.textContent = message;
+  node.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { node.hidden = true; }, 4500);
+}
+
+/* ---------- pedaços de UI dos cards ---------- */
+function editButton(kind, artistId, label, ariaLabel) {
+  return '<button class="btn btn--sm" type="button" data-edit="' + kind + '"' +
+    (artistId ? ' data-artist="' + artistId + '"' : '') +
+    (ariaLabel ? ' aria-label="' + esc(ariaLabel) + '"' : '') + '>' + EDIT_ICON + label + '</button>';
+}
+function editBar(text, buttons) {
+  return '<div class="edit-bar"><span>' + text + '</span><span class="edit-bar__actions">' + buttons + '</span></div>';
+}
+function subhead(html, action) {
+  if (!action) return '<h3 class="subhead">' + html + '</h3>';
+  return '<div class="subhead-row"><h3 class="subhead">' + html + '</h3>' + action + '</div>';
+}
+function artistSideButton(a, kind, label) {
+  if (!canEditArtistSide(a)) return '';
+  return editButton(kind, a.id, label, label + ' de ' + a.name);
+}
+function artistEditBar(a) {
+  if (!isEditable()) return '';
+  if (a.consent === false) {
+    return '<div class="consent-note"><span aria-hidden="true">🔒</span><span>O artista não autorizou a edição dos dados dele pelo operador: dados do artista, pessoa física, atração e integrantes ficam só para leitura. Peça a correção ao produtor (“Solicitar atualização ao produtor”). Evento e despesas continuam editáveis.</span></div>';
+  }
+  return editBar('Cópias deste pedido: alterar aqui não muda o cadastro do artista.',
+    editButton('artista', a.id, 'Editar dados do artista', 'Editar dados do artista ' + a.name) +
+    editButton('pf', a.id, 'Editar pessoa física', 'Editar pessoa física de ' + a.name) +
+    editButton('pj', a.id, 'Editar pessoa jurídica', 'Editar pessoa jurídica (empresário) de ' + a.name));
+}
+function expensesView(a) {
+  var has = !!(a.expenses && a.expenses.items.length);
+  var editable = isEditable();
+  if (!has && !editable) return '';
+  var action = editable ? editButton('despesas', a.id, has ? 'Editar despesas' : 'Adicionar despesas', (has ? 'Editar' : 'Adicionar') + ' despesas extraordinárias de ' + a.name) : '';
+  var head = subhead('Despesas extraordinárias' + (has ? ' <span class="pill pill--neutral">' + money(expensesTotal(a)) + '</span>' : ''), action);
+  if (!has) return head + '<p class="file__meta" style="margin:0">Sem despesas extraordinárias neste evento.</p>';
+  var rows = a.expenses.items.map(function (it) {
+    return '<tr><td>' + esc(it[0]) + '</td><td>' + (it[2] ? esc(it[2]) : '<span class="file__meta">—</span>') + '</td><td class="num">' + money(it[1]) + '</td></tr>';
+  }).join('');
+  return head + '<p class="xp-just"><b>Justificativa:</b> ' + esc(a.expenses.justification) + '</p>' +
+    '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Descrição</th><th>Observação</th><th class="num">Valor</th></tr></thead><tbody>' + rows +
+    '<tr><td colspan="2"><b>Total do evento</b></td><td class="num"><b>' + money(expensesTotal(a)) + '</b></td></tr></tbody></table></div>';
+}
+
+/* ---------- trilho direito: ações da reabertura (A-20/A-21) ---------- */
+function renderRailActions() {
+  var box = $('rail-actions');
+  var s = flow.state;
+  if (s === 'atual') {
+    box.innerHTML = '<div class="card__head" style="cursor:default"><h2 id="rail-actions-title">Ações do pedido</h2></div>' +
+      '<div class="card__body">' +
+        '<p class="rail-text" style="margin-top:0">Reabra o pedido para corrigir dados já enviados. Ao concluir a reabertura, ele volta para “' + PREVIOUS_STATUS + '”.</p>' +
+        '<div class="rail-actions"><button class="btn" type="button" data-flow="reopen">Reabrir pedido</button></div>' +
+      '</div>';
+    return;
+  }
+  if (s === 'cancelado') {
+    box.innerHTML = '<div class="card__head" style="cursor:default"><h2 id="rail-actions-title">Pedido cancelado</h2><span class="pill pill--danger">Cancelado</span></div>' +
+      '<div class="card__body"><dl class="kv" style="grid-template-columns:1fr;gap:10px;margin:0">' +
+        '<div><dt>Cancelado por</dt><dd>' + esc(flow.canceledBy) + '</dd></div>' +
+        '<div><dt>Cancelado em</dt><dd>' + esc(flow.canceledAt) + '</dd></div>' +
+        '<div><dt>Status anterior</dt><dd>' + PREVIOUS_STATUS + '</dd></div>' +
+        '<div><dt>Devolvido à dotação</dt><dd>' + money(suggestedValue()) + '</dd></div>' +
+        '<div><dt>Motivo</dt><dd class="pre">' + esc(flow.cancelReason) + '</dd></div>' +
+      '</dl><p class="rail-text">O cancelamento é definitivo: o pedido não pode ser reaberto nem editado.</p></div>';
+    return;
+  }
+  var waiting = s === 'aguardando';
+  var error = flow.concludeError
+    ? '<div class="alert alert--danger rail-error" role="alert" tabindex="-1" id="conclude-error"><span aria-hidden="true">●</span><span><b>Não foi possível concluir a reabertura</b>Há blocos com erro. Corrija e tente de novo:<br>' +
+        '<button class="btn btn--sm" type="button" data-goto-section="s-contrato">Pagamento</button>' +
+        '<button class="btn btn--sm" type="button" data-goto-artist="a3">Evento — Maracatu Baque Forte</button></span></div>'
+    : '';
+  box.innerHTML = '<div class="card__head" style="cursor:default"><h2 id="rail-actions-title">Pedido reaberto</h2>' + (waiting ? '<span class="pill">Aguardando produtor</span>' : '') + '</div>' +
+    '<div class="card__body"><dl class="kv" style="grid-template-columns:1fr;gap:10px;margin:0">' +
+      '<div><dt>Reaberto por</dt><dd>' + esc(flow.reopenedBy) + '</dd></div>' +
+      '<div><dt>Reaberto em</dt><dd>' + esc(flow.reopenedAt) + '</dd></div>' +
+      '<div><dt>Ao concluir, volta para</dt><dd>' + PREVIOUS_STATUS + '</dd></div>' +
+      (waiting
+        ? '<div><dt>Atualização solicitada em</dt><dd>' + esc(flow.requestedAt) + ' · ' + esc(flow.requestedBy) + '</dd></div>' +
+          '<div><dt>Pendências enviadas ao produtor</dt><dd class="pre">' + esc(flow.requestText) + '</dd></div>'
+        : '') +
+    '</dl>' +
+    '<p class="rail-text">' + (waiting
+      ? 'O produtor corrige os dados de proponente e de artistas pelo portal. Você também pode editar; concluir encerra o acesso do produtor.'
+      : 'Corrija os dados pelo botão “Editar” de cada card. Proponente e artistas não podem ser trocados, nem eventos incluídos ou removidos.') + '</p>' +
+    error +
+    '<div class="rail-actions">' +
+      '<button class="btn btn--primary" type="button" data-flow="conclude">Concluir reabertura</button>' +
+      (waiting ? '' : '<button class="btn" type="button" data-flow="request">Solicitar atualização ao produtor</button>') +
+    '</div></div>';
+}
+
+/* ---------- histórico (Andamento + modal) ---------- */
+var BASE_TIMELINE = $('timeline').innerHTML;
+var BASE_HISTORY = $('history-rows').innerHTML;
+var BASE_HISTORY_COUNT = 8;
+var logCount = 0;
+var PRESET_LOG = {
+  atual: [],
+  reaberto: [['Pedido reaberto', PREVIOUS_STATUS + ' → Pedido reaberto', TODAY + ' · 09:12']],
+  aguardando: [
+    ['Pedido reaberto', PREVIOUS_STATUS + ' → Pedido reaberto', TODAY + ' · 09:12'],
+    ['Atualização de dados solicitada', 'Pendências enviadas ao produtor · visível no portal', TODAY + ' · 09:30']
+  ],
+  cancelado: [['Pedido cancelado', PREVIOUS_STATUS + ' → Cancelado · valor devolvido à dotação', TODAY + ' · 11:05']]
+};
+
+function logEvent(what, flowText, when, who) {
+  when = when || TODAY + ' · ' + nowTime();
+  $('timeline').insertAdjacentHTML('afterbegin', '<li><div class="timeline__when">' + esc(when) + '</div><div class="timeline__what">' + esc(what) + '</div>' +
+    (flowText ? '<div class="timeline__flow">' + esc(flowText) + '</div>' : '') + '</li>');
+  $('history-rows').insertAdjacentHTML('afterbegin', '<tr><td>' + esc(when.split(' ')[0]) + '</td><td>' + esc(what) + '</td><td class="file__meta">' + esc(flowText || '—') + '</td><td>' + esc(who || OPERATOR_SHORT) + '</td></tr>');
+  logCount++;
+  $('history-count').textContent = (BASE_HISTORY_COUNT + logCount) + ' eventos registrados neste pedido.';
+}
+
+function resetLog(s) {
+  $('timeline').innerHTML = BASE_TIMELINE;
+  $('history-rows').innerHTML = BASE_HISTORY;
+  logCount = 0;
+  $('history-count').textContent = BASE_HISTORY_COUNT + ' eventos registrados neste pedido.';
+  PRESET_LOG[s].forEach(function (entry) { logEvent(entry[0], entry[1], entry[2]); });
+}
+
+/* ---------- estado do pedido ---------- */
+function setFlowState(next, preset) {
+  flow.state = next;
+  flow.concludeError = false;
+  if (preset) resetLog(next);
+  applyFlow();
+}
+
+function applyFlow() {
+  var meta = STATE_META[flow.state];
+  var editable = isEditable();
+  $('appbar-status').className = 'pill ' + meta.cls;
+  $('appbar-status').textContent = meta.label;
+  $('appbar-seal').hidden = flow.state !== 'aguardando';
+  $('ct-status').textContent = meta.label;
+  $('rail-legacy').hidden = flow.state !== 'atual';
+  document.querySelectorAll('#demo-state [data-state]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.state === flow.state)); });
+  $('demo-conclude-wrap').hidden = !editable;
+  $('demo-producer-sent').hidden = flow.state !== 'aguardando';
+  $('prop-edit-slot').innerHTML = canEditProponent()
+    ? editBar('Cópia deste pedido: alterar aqui não muda o cadastro da empresa.', editButton('proponente', null, 'Editar proponente'))
+    : '';
+  $('ct-contract-slot').innerHTML = editable ? editBar('Dados gerais do contrato (bloco Contrato).', editButton('contrato', null, 'Editar contrato')) : '';
+  $('ct-values-slot').innerHTML = editable ? editButton('valores', null, 'Editar valores', 'Editar valor do contrato e dotação') : '';
+  $('ct-payment-slot').innerHTML = editable ? editButton('pagamento', null, 'Editar pagamento') : '';
+  $('just-edit-slot').innerHTML = editable ? editBar('As justificativas fazem parte do bloco Contrato.', editButton('contrato', null, 'Editar justificativas')) : '';
+  renderRailActions();
+  render();
+}
+
+/* ---------- modal das ações (confirmação e texto das pendências) ---------- */
+var flowOk = null;
+function openFlowModal(opts, trigger) {
+  $('flowTitle').textContent = opts.title;
+  $('flowBody').innerHTML = opts.body;
+  $('flowOk').textContent = opts.okText;
+  $('flowCancel').textContent = opts.cancelText || 'Cancelar';
+  flowOk = opts.onOk;
+  openModal('flowModal', trigger);
+}
+$('flowOk').addEventListener('click', function () {
+  var result = flowOk();
+  if (result === false) return;
+  closeModal($('flowModal'), result && result.nodeType ? result : null);
+});
+
+function textLengthError(text, emptyMessage, rangeMessage) {
+  if (!text) return emptyMessage;
+  if (text.length < 10 || text.length > 1000) return rangeMessage;
+  return '';
+}
+
+function confirmReopen(trigger) {
+  openFlowModal({
+    title: 'Reabrir o pedido #11231?',
+    body: '<p style="margin:0">O pedido passa para “Pedido reaberto” e os cards ganham o botão “Editar”. Ao concluir a reabertura, ele volta para “' + PREVIOUS_STATUS + '”.</p>' +
+      '<p class="file__meta" style="margin:10px 0 0">As cópias de proponente e de artistas e os documentos já gerados continuam os mesmos.</p>',
+    okText: 'Reabrir pedido',
+    onOk: function () {
+      flow.reopenedBy = OPERATOR;
+      flow.reopenedAt = TODAY + ' ' + nowTime();
+      logEvent('Pedido reaberto', PREVIOUS_STATUS + ' → Pedido reaberto');
+      setFlowState('reaberto');
+      toast('Pedido reaberto. Corrija os dados pelo botão “Editar” de cada card.');
+      return railFocus();
+    }
+  }, trigger);
+}
+
+function confirmConclude(trigger) {
+  var waiting = flow.state === 'aguardando';
+  openFlowModal({
+    title: 'Concluir a reabertura?',
+    body: '<p style="margin:0">O pedido volta para “' + PREVIOUS_STATUS + '” com os dados corrigidos. Nenhuma cópia nova é criada.</p>' +
+      (waiting ? '<div class="alert alert--warn" style="margin-top:10px"><span aria-hidden="true">▲</span><span><b>O produtor ainda não enviou a atualização</b>Concluir agora encerra o acesso dele à aba “Atualizar informações” do portal.</span></div>' : ''),
+    okText: 'Concluir reabertura',
+    onOk: function () {
+      if ($('demo-conclude-error').checked) {
+        flow.concludeError = true;
+        renderRailActions();
+        return $('conclude-error');
+      }
+      logEvent('Reabertura concluída', 'Pedido reaberto → ' + PREVIOUS_STATUS);
+      setFlowState('atual');
+      toast('Reabertura concluída. O pedido voltou para “' + PREVIOUS_STATUS + '”.');
+      return railFocus();
+    }
+  }, trigger);
+}
+
+function openRequestUpdate(trigger) {
+  openFlowModal({
+    title: 'Solicitar atualização ao produtor',
+    body: '<p style="margin:0 0 12px;color:var(--c-text-2)">A Circulando Produções recebe e-mail e aviso no sistema e corrige os dados de proponente e de artistas na aba “Atualizar informações” do portal. O pedido continua reaberto: você ainda pode editar e concluir.</p>' +
+      '<div class="field" id="pend-field" style="margin:0">' +
+        '<label class="field__label" for="pend-text">Pendências para o produtor<span class="req" aria-hidden="true">*</span></label>' +
+        '<textarea id="pend-text" rows="6" maxlength="1000" data-autofocus aria-describedby="pend-count pend-error" placeholder="Descreva o que o produtor precisa corrigir e onde."></textarea>' +
+        '<div class="field__count" id="pend-count">0 / 1000</div>' +
+        '<p class="field__error" id="pend-error"></p>' +
+      '</div>',
+    okText: 'Solicitar atualização',
+    onOk: function () {
+      var text = $('pend-text').value.trim();
+      var error = textLengthError(text, 'Informe as pendências para o produtor.', 'As pendências precisam ter de 10 a 1000 caracteres.');
+      if (error) {
+        $('pend-field').classList.add('has-error');
+        $('pend-error').textContent = error;
+        $('pend-text').setAttribute('aria-invalid', 'true');
+        $('pend-text').focus();
+        return false;
+      }
+      flow.requestText = text;
+      flow.requestedBy = OPERATOR;
+      flow.requestedAt = TODAY + ' ' + nowTime();
+      logEvent('Atualização de dados solicitada', 'Pendências enviadas ao produtor · visível no portal');
+      setFlowState('aguardando');
+      toast('Atualização solicitada. O produtor foi avisado por e-mail e no sistema.');
+      return railFocus();
+    }
+  }, trigger);
+}
+
+/* ---------- Drawer: formulário do bloco (A-19) ---------- */
+var rowUid = 0;
+var drawer = null;
+
+function fld(k, label, value, o) {
+  o = o || {};
+  var id = 'df-' + k.replace(/[^\w-]/g, '-');
+  var attrs = ' id="' + id + '" data-k="' + k + '"' + (o.disabled ? ' disabled' : '') + (o.readonly ? ' readonly' : '') + (o.req ? ' aria-required="true"' : '');
+  var control;
+  if (o.options) {
+    control = '<select' + attrs + '>' + (o.placeholder ? '<option value="">' + esc(o.placeholder) + '</option>' : '') +
+      o.options.map(function (op) {
+        var v = Array.isArray(op) ? op[0] : op;
+        var l = Array.isArray(op) ? op[1] : op;
+        return '<option value="' + esc(v) + '"' + (String(v) === String(value) ? ' selected' : '') + '>' + esc(l) + '</option>';
+      }).join('') + '</select>';
+  } else if (o.area) {
+    control = '<textarea' + attrs + ' rows="' + (o.rows || 3) + '">' + esc(value) + '</textarea>';
+  } else {
+    control = '<input type="' + (o.type || 'text') + '"' + attrs + ' value="' + esc(value) + '"' +
+      (o.step ? ' step="' + o.step + '"' : '') + (o.min != null ? ' min="' + o.min + '"' : '') +
+      (o.placeholder ? ' placeholder="' + esc(o.placeholder) + '"' : '') + '>';
+  }
+  return '<div class="field' + (o.full ? ' field--full' : '') + '"><label class="field__label" for="' + id + '">' + esc(label) +
+    (o.req ? '<span class="req" aria-hidden="true">*</span>' : '') + '</label>' + control +
+    (o.help ? '<p class="field__help">' + o.help + '</p>' : '') + '<p class="field__error"></p></div>';
+}
+
+function radios(k, label, value, options, o) {
+  o = o || {};
+  return '<fieldset class="field' + (o.full ? ' field--full' : '') + '" style="border:0;padding:0;margin:0 0 16px"><legend class="field__label">' + esc(label) +
+    (o.req ? '<span class="req" aria-hidden="true">*</span>' : '') + '</legend><div class="radio-row' + (o.stack ? ' radio-stack' : '') + '">' +
+    options.map(function (op) {
+      var v = Array.isArray(op) ? op[0] : op;
+      var l = Array.isArray(op) ? op[1] : op;
+      return '<label><input type="radio" name="' + k + '" value="' + esc(v) + '" data-k="' + k + '"' + (v === value ? ' checked' : '') + '> ' + esc(l) + '</label>';
+    }).join('') + '</div>' + (o.help ? '<p class="field__help">' + o.help + '</p>' : '') + '<p class="field__error"></p></fieldset>';
+}
+
+function formSection(title, inner) { return (title ? '<h4 class="form-sec">' + esc(title) + '</h4>' : '') + '<div class="form-grid">' + inner + '</div>'; }
+
+var COPY_NOTE = '<div class="alert alert--info" style="margin-bottom:16px"><span aria-hidden="true">ℹ</span><span>As alterações valem só para este pedido. O cadastro original do proponente e do artista não muda.</span></div>';
+var ADDRESS = [['CEP', 'end.cep'], ['Logradouro', 'end.logradouro'], ['Número', 'end.numero'], ['Complemento', 'end.complemento'], ['Bairro', 'end.bairro'], ['Cidade', 'end.cidade'], ['UF', 'end.uf']];
+var CONTACT = [['E-mail', 'contato.email'], ['Telefone', 'contato.telefone']];
+// mesmos campos dos formulários do portal do produtor (AD-024: um bloco agnóstico para os dois lados)
+var COPY_FORMS = {
+  empresa: [
+    ['Dados da empresa', [['Razão social', 'razao', { full: true }], ['Nome fantasia', 'fantasia'], ['CNPJ', 'cnpj'], ['CCM', 'ccm']]],
+    ['Responsáveis', 'responsaveis'],
+    ['Endereço', ADDRESS],
+    ['Contato', CONTACT]
+  ],
+  prof: [
+    ['', [['Nome do grupo/artista/coletivo', 'nome', { full: true }], ['DRT', 'drt'], ['OMB', 'omb'], ['Redes sociais', 'redes', { full: true }], ['Experiência em eventos', 'experiencia', { full: true, area: true }]]]
+  ],
+  pf: [
+    ['Dados pessoais', [['Nome completo', 'nome'], ['Nome social', 'social'], ['Nome artístico', 'artistico'], ['CPF/CIN', 'cpf'], ['RG', 'rg'],
+      ['Data de nascimento', 'nasc'], ['Gênero', 'genero', { options: OPT.genero, placeholder: 'Selecione' }], ['Raça/Cor', 'raca', { options: OPT.raca, placeholder: 'Selecione' }],
+      ['PCD', 'pcd', { radio: OPT.simNao }], ['Grau de instrução', 'instrucao', { options: OPT.instrucao, placeholder: 'Selecione' }],
+      ['Nacionalidade', 'nac', { options: OPT.nac }], ['Nº Pis/Pasep', 'pis'], ['Registro INSS', 'inss'], ['CCM (Cadastro de Contribuintes Mobiliários)', 'ccm']]],
+    ['Endereço', ADDRESS],
+    ['Contato', CONTACT]
+  ],
+  atracao: [
+    ['', [['Tipo de evento', 'tipo', { options: OPT.tipo }], ['Categoria do evento', 'categorias'], ['Nome do evento', 'nomeEvento', { full: true }],
+      ['Público alvo', 'publico', { options: OPT.publico }], ['Classificação indicativa', 'classificacao', { options: OPT.classif }], ['Duração', 'duracao'],
+      ['Medidas de acessibilidade', 'acessibilidade'], ['Valor sugerido para contratação', 'valorSugerido'],
+      ['Sinopse', 'sinopse', { full: true, area: true, rows: 4 }], ['Release', 'release', { full: true, area: true }], ['Repertório', 'repertorio', { full: true, area: true }]]],
+    ['Fotos para divulgação', 'fotos']
+  ]
+};
+
+// seções em lista dos blocos agnósticos: responsáveis da PJ e fotos da atração
+var COPY_LISTS = {
+  responsaveis: function (data) {
+    return '<h4 class="form-sec">Responsáveis</h4>' +
+      '<p class="field__help" style="margin:-4px 0 10px">Marque o representante principal. O CPF de quem já está cadastrado não muda; para trocar a pessoa, remova e cadastre outra.</p>' +
+      '<div id="resp-rows">' + data.responsaveis.map(function (r) { return respRow(r, false); }).join('') + '</div>' +
+      '<button class="btn btn--sm" type="button" id="resp-add">+ Adicionar responsável</button>';
+  },
+  fotos: function (data) {
+    return '<h4 class="form-sec">Fotos para divulgação</h4>' +
+      '<p class="field__help" style="margin:-4px 0 10px">Pelo menos uma foto é obrigatória; o crédito é opcional. <span id="photo-count"></span></p>' +
+      '<div class="photo-grid" id="photo-list">' + data.fotos.map(photoItem).join('') + '</div>' +
+      '<p class="block-error" data-err="fotos"></p>' +
+      '<input type="file" id="photo-input" accept="image/*" multiple hidden>' +
+      '<button class="btn btn--sm" type="button" id="photo-add">Enviar foto</button>';
+  }
+};
+
+function respRow(r, isNew) {
+  var uid = 'r' + (++rowUid);
+  var data = r || { nome: '', social: '', cpf: '', rg: '', nasc: '', email: '', telefone: '', principal: false };
+  return '<div class="drawer-list" data-row="resp" data-new="' + (isNew ? 1 : 0) + '">' +
+    '<div class="resp-head"><label class="resp-principal"><input type="radio" name="resp-principal" data-k="' + uid + '.principal"' + (data.principal ? ' checked' : '') + '> Representante principal</label>' +
+    '<button class="btn btn--sm btn--ghost" type="button" data-remove-row aria-label="Remover responsável ' + esc(data.nome || 'novo') + '">Remover</button></div>' +
+    '<div class="form-grid">' +
+      fld(uid + '.nome', 'Nome completo', data.nome, { req: true }) +
+      fld(uid + '.social', 'Nome social', data.social) +
+      fld(uid + '.cpf', 'CPF/CIN', data.cpf, isNew ? { req: true } : { readonly: true, help: 'Para trocar a pessoa, remova e cadastre outra.' }) +
+      fld(uid + '.rg', 'RG', data.rg) +
+      fld(uid + '.nasc', 'Data de nascimento', data.nasc) +
+      fld(uid + '.email', 'E-mail', data.email, { req: isNew }) +
+      fld(uid + '.telefone', 'Telefone', data.telefone, { req: isNew }) +
+    '</div></div>';
+}
+
+function gradientOf(src) { return GRADIENTS[Number(src.slice(5)) % GRADIENTS.length]; }
+function photoListOf(a) {
+  if (a.photoList) return a.photoList;
+  var list = [];
+  for (var i = 0; i < a.photos; i++) list.push({ src: 'grad:' + i, credito: a.credit });
+  return list;
+}
+function thumbHtml(p, i) {
+  if (p.src.indexOf('grad:') === 0) return '<span style="background:linear-gradient(135deg,' + gradientOf(p.src) + ')" role="img" aria-label="Foto ' + (i + 1) + '"></span>';
+  return '<img src="' + esc(p.src) + '" alt="Foto ' + (i + 1) + '">';
+}
+function photoItem(p) {
+  var uid = 'r' + (++rowUid);
+  var thumb = p.src.indexOf('grad:') === 0
+    ? '<span class="photo-thumb" role="img" aria-label="Foto de divulgação" style="background:linear-gradient(135deg,' + gradientOf(p.src) + ')"></span>'
+    : '<img class="photo-thumb" src="' + esc(p.src) + '" alt="' + esc(p.nome || 'Foto enviada') + '">';
+  return '<figure class="photo-item" data-row="photo">' + thumb +
+    '<input type="hidden" data-k="' + uid + '.src" value="' + esc(p.src) + '">' +
+    fld(uid + '.credito', 'Crédito', p.credito || '', { placeholder: 'Opcional' }) +
+    '<button class="btn btn--sm btn--ghost" type="button" data-remove-row aria-label="Remover foto">Remover</button></figure>';
+}
+
+// um e só um principal; o último responsável não sai (a PJ precisa de representante)
+function syncResponsibles() {
+  var rows = Array.prototype.slice.call($('resp-rows').querySelectorAll('[data-row="resp"]'));
+  var hasPrincipal = rows.some(function (row) { return row.querySelector('input[type="radio"]').checked; });
+  if (rows.length && !hasPrincipal) rows[0].querySelector('input[type="radio"]').checked = true;
+  rows.forEach(function (row) { row.querySelector('[data-remove-row]').hidden = rows.length < 2; });
+}
+
+function validateResponsibles(v) {
+  var errors = [];
+  v.rows.filter(function (r) { return r.kind === 'resp'; }).forEach(function (r) {
+    if (!r.nome) errors.push({ k: r.keys.nome, msg: 'Informe o nome.' });
+    if (!r.isNew) return;
+    if (!r.cpf) errors.push({ k: r.keys.cpf, msg: 'Informe o CPF/CIN.' });
+    if (!r.email) errors.push({ k: r.keys.email, msg: 'Informe o e-mail.' });
+    if (r.email && r.email.indexOf('@') === -1) errors.push({ k: r.keys.email, msg: 'E-mail inválido.' });
+    if (!r.telefone) errors.push({ k: r.keys.telefone, msg: 'Informe o telefone.' });
+  });
+  return errors;
+}
+
+function legalPersonFromValues(v, base) {
+  var pj = JSON.parse(JSON.stringify(base));
+  Object.keys(v).forEach(function (k) { if (k !== 'rows') setPath(pj, k, v[k]); });
+  pj.responsaveis = v.rows.filter(function (r) { return r.kind === 'resp'; }).map(function (r) {
+    return { nome: r.nome, social: r.social, cpf: r.cpf, rg: r.rg, nasc: r.nasc, email: r.email, telefone: r.telefone, principal: r.principal };
+  });
+  return pj;
+}
+function principalOf(pj) { return pj.responsaveis.filter(function (r) { return r.principal; })[0] || pj.responsaveis[0]; }
+
+function renderCopyForm(spec, data) {
+  return COPY_NOTE + spec.map(function (section) {
+    if (typeof section[1] === 'string') return COPY_LISTS[section[1]](data);
+    return formSection(section[0], section[1].map(function (f) {
+      var o = f[2] || {};
+      if (o.radio) return radios(f[1], f[0], getPath(data, f[1]), o.radio);
+      return fld(f[1], f[0], getPath(data, f[1]), o);
+    }).join(''));
+  }).join('');
+}
+
+function copyOf(a) {
+  if (a.copy) return a.copy;
+  var leader = a.members[0] || [];
+  var tipo = /Circo/.test(a.category) ? 'Circo' : (/Dança/.test(a.category) ? 'Dança' : 'Música');
+  a.copy = {
+    prof: { nome: a.name, drt: '', omb: '', redes: '', experiencia: '' },
+    pf: {
+      nome: a.lead, social: '', artistico: a.kind === 'Solo' ? a.name : (leader[1] && leader[1] !== '—' ? leader[1] : ''), cpf: leader[2] || '', rg: '', nasc: '',
+      genero: '', raca: '', pcd: 'Não', instrucao: '', nac: 'Brasileira', pis: '', inss: '', ccm: '',
+      end: { cep: '04843-120', logradouro: 'Rua Caiubi', numero: '215', complemento: '', bairro: 'Parque Grajaú', cidade: 'São Paulo', uf: 'SP' },
+      contato: { email: '', telefone: '' }
+    },
+    atracao: {
+      tipo: tipo, categorias: a.category, nomeEvento: a.attraction, publico: 'Livre', classificacao: 'Livre', duracao: '', acessibilidade: '', valorSugerido: '', sinopse: a.synopsis, release: '', repertorio: '',
+      fotos: photoListOf(a).map(function (p) { return { src: p.src, credito: p.credito }; })
+    },
+    // empresa que representa o artista (empresário): cópia própria, feita no envio a partir da empresa do produtor
+    pj: JSON.parse(PROPONENT_AT_SUBMIT)
+  };
+  return a.copy;
+}
+
+function readDrawer() {
+  var body = $('drawerBody');
+  var values = { rows: [] };
+  body.querySelectorAll('[data-k]').forEach(function (node) {
+    if (node.closest('[data-row]') || node.closest('.member-form')) return;
+    if (node.type === 'radio') {
+      if (node.checked) values[node.dataset.k] = node.value;
+      return;
+    }
+    values[node.dataset.k] = node.type === 'checkbox' ? node.checked : node.value.trim();
+  });
+  body.querySelectorAll('[data-row]').forEach(function (row) {
+    var r = { keys: {}, kind: row.dataset.row, isNew: row.dataset.new === '1' };
+    row.querySelectorAll('[data-k]').forEach(function (node) {
+      var name = node.dataset.k.split('.').pop();
+      r[name] = node.type === 'checkbox' || node.type === 'radio' ? node.checked : node.value.trim();
+      r.keys[name] = node.dataset.k;
+    });
+    values.rows.push(r);
+  });
+  return values;
+}
+
+function clearDrawerErrors() {
+  var body = $('drawerBody');
+  body.querySelectorAll('.has-error').forEach(function (n) { n.classList.remove('has-error'); });
+  body.querySelectorAll('.field__error').forEach(function (n) { n.textContent = ''; });
+  body.querySelectorAll('[aria-invalid]').forEach(function (n) { n.removeAttribute('aria-invalid'); });
+  body.querySelectorAll('[data-err]').forEach(function (n) { n.classList.remove('is-visible'); n.textContent = ''; });
+  $('drawerMsg').textContent = '';
+}
+
+function showDrawerErrors(errors) {
+  var body = $('drawerBody');
+  var first = null;
+  errors.forEach(function (e) {
+    if (e.block) {
+      var block = body.querySelector('[data-err="' + e.block + '"]');
+      if (block) { block.textContent = e.msg; block.classList.add('is-visible'); }
+      return;
+    }
+    var node = body.querySelector('[data-k="' + e.k + '"]');
+    if (!node) return;
+    var field = node.closest('.field');
+    field.classList.add('has-error');
+    field.querySelector('.field__error').textContent = e.msg;
+    node.setAttribute('aria-invalid', 'true');
+    if (!first) first = node;
+  });
+  $('drawerMsg').textContent = errors.length === 1 ? 'Corrija o item destacado.' : 'Corrija os ' + errors.length + ' itens destacados.';
+  if (first) first.focus();
+}
+
+function required(values, keys, errors) {
+  keys.forEach(function (k) { if (!values[k]) errors.push({ k: k, msg: 'Campo obrigatório.' }); });
+}
+
+function setDrawerActions(done) {
+  $('drawerActions').innerHTML = done
+    ? '<button type="button" class="btn btn--primary" data-modal-close>Fechar</button>'
+    : '<button type="button" class="btn" data-modal-close>Cancelar</button><button type="button" class="btn btn--primary" id="drawerSave">Salvar</button>';
+}
+
+function openDrawer(kind, artistId, trigger) {
+  var a = artistId ? artistById(artistId) : null;
+  var def = DRAWERS[kind];
+  drawer = { kind: kind, artist: a, def: def, members: null, editingMember: null };
+  $('drawerTitle').textContent = def.title(a);
+  $('drawerHint').textContent = def.hint(a);
+  $('drawerBody').innerHTML = def.body(a);
+  setDrawerActions(false);
+  clearDrawerErrors();
+  openModal('editDrawer', trigger);
+  updateDrawerLive();
+}
+
+function saveDrawer() {
+  clearDrawerErrors();
+  if (drawer.editingMember !== null) {
+    $('drawerMsg').textContent = 'Salve ou cancele o integrante em edição antes de salvar.';
+    return;
+  }
+  var values = readDrawer();
+  var errors = drawer.def.validate ? drawer.def.validate(values) : [];
+  if (errors.length) {
+    showDrawerErrors(errors);
+    return;
+  }
+  var result = drawer.def.apply(values, drawer.artist) || {};
+  applyFlow();
+  // o botão que abriu o Drawer foi re-renderizado: o foco volta para o equivalente novo
+  $('editDrawer')._trigger = document.querySelector('[data-edit="' + drawer.kind + '"]' + (drawer.artist ? '[data-artist="' + drawer.artist.id + '"]' : ''));
+  if (result.negative) {
+    // REOP-10 / A-26: grava mesmo assim e avisa com alerta amarelo
+    $('drawerBody').querySelectorAll('input, select, textarea, button').forEach(function (n) { n.disabled = true; });
+    $('drawerBody').insertAdjacentHTML('afterbegin', '<div class="alert alert--warn" role="alert" tabindex="-1" id="drawer-negative" style="margin-bottom:16px"><span aria-hidden="true">▲</span><span>' +
+      '<b>Alteração salva, mas o saldo ficou negativo</b>O saldo disponível da reserva ' + esc(RESERVES[flow.reserve].split(' · ')[0]) + ' ficou em ' + money(balance()) +
+      '. O valor foi reservado mesmo assim; reduza os valores ou troque a dotação em “Editar valores”.</span></div>');
+    $('drawerBody').scrollTop = 0;
+    $('drawerMsg').textContent = 'Alteração salva.';
+    setDrawerActions(true);
+    $('drawer-negative').focus();
+    toast('Alteração salva com saldo negativo na reserva.');
+    return;
+  }
+  closeModal($('editDrawer'));
+  toast(result.message || 'Alterações salvas.');
+}
+
+// cachê e despesas são reservados na dotação: muda a reserva pela diferença (A-08, REOP-09)
+function applyMoneyChange(a, mutate) {
+  if (flow.contractValue === null) flow.contractValue = suggestedValue();
+  var before = reservedOf(a);
+  mutate();
+  var delta = reservedOf(a) - before;
+  flow.balances[flow.reserve] -= delta;
+  return delta;
+}
+function moneyResult(delta, message) {
+  if (delta !== 0 && balance() < 0) return { negative: true };
+  return { message: message };
+}
+
+function balanceHelp() {
+  return 'Saldo disponível hoje na reserva ' + esc(RESERVES[flow.reserve].split(' · ')[0]) + ': <b>' + money(balance()) + '</b>.';
+}
+
+/* linhas de lista dentro do Drawer (cronograma, despesas, subprefeituras) */
+function scheduleRow(e) {
+  var uid = 'r' + (++rowUid);
+  var range = parseRange(e ? e[1] : '');
+  return '<div class="drawer-list" data-row="schedule"><div class="form-grid">' +
+    fld(uid + '.local', 'Local', e ? e[2] : '', { options: OPT.locais, placeholder: 'Selecione o local', req: true }) +
+    fld(uid + '.inicio', 'Data de início', e ? brToIso(e[0]) : '', { type: 'date', req: true }) +
+    fld(uid + '.termino', 'Data de término', '', { type: 'date', help: 'Só em temporadas/recorrências.' }) +
+    '<div class="field toggle-field"><label class="switch"><input type="checkbox" id="df-' + uid + '-dia" data-k="' + uid + '.diaInteiro"' + (e && range.allDay ? ' checked' : '') + '><span class="switch__track"></span></label><label for="df-' + uid + '-dia" class="field__label" style="margin:0">Dia inteiro</label></div>' +
+    fld(uid + '.hora', 'Horário de início', range.start, { type: 'time', req: true }) +
+    fld(uid + '.duracao', 'Duração (min)', range.minutes, { type: 'number', min: 1, req: true }) +
+    fld(uid + '.valor', 'Valor do cachê (R$)', e ? e[3] : '', { type: 'number', step: '0.01', min: 0, req: true }) +
+    '</div><div class="row-actions"><button class="btn btn--sm btn--ghost" type="button" data-remove-row>Remover data</button></div></div>';
+}
+
+function expenseRow(it) {
+  var uid = 'r' + (++rowUid);
+  return '<div class="drawer-list" data-row="expense"><div class="form-grid">' +
+    fld(uid + '.descricao', 'Descrição', it ? it[0] : '', { req: true, full: true, placeholder: 'Ex.: Transporte de cenário' }) +
+    fld(uid + '.valor', 'Valor (R$)', it ? it[1] : '', { type: 'number', step: '0.01', min: 0, req: true }) +
+    fld(uid + '.observacao', 'Observação', it ? it[2] : '', { placeholder: 'Opcional' }) +
+    '</div><div class="row-actions"><button class="btn btn--sm btn--ghost" type="button" data-remove-row>Remover despesa</button></div></div>';
+}
+
+function subprefectureRow(p) {
+  var uid = 'r' + (++rowUid);
+  return '<div class="drawer-list" data-row="sub"><div class="form-grid">' +
+    fld(uid + '.subprefeitura', 'Subprefeitura', p ? p[0] : '', { options: OPT.subprefeituras, placeholder: 'Selecione', req: true }) +
+    fld(uid + '.valor', 'Valor (R$)', p ? p[1] : '', { type: 'number', step: '0.01', min: 0, req: true }) +
+    '</div><div class="row-actions"><button class="btn btn--sm btn--ghost" type="button" data-remove-row>Remover valor</button></div></div>';
+}
+
+function sumRows(rows) { return rows.reduce(function (sum, r) { return sum + (Number(r.valor) || 0); }, 0); }
+
+/* integrantes: tabela + formulário do integrante */
+function memberRows() {
+  return drawer.members.map(function (m, i) {
+    var cpf = m[2] ? esc(m[2]) : '<span style="color:var(--c-danger-text);font-weight:600">Não informado</span>';
+    return '<tr' + (m[2] ? '' : ' style="background:var(--c-warn-bg)"') + '><td>' + esc(m[0]) + (i === 0 ? ' <span class="pill pill--neutral">Líder</span>' : '') + '</td><td>' + esc(m[1]) + '</td><td class="mono">' + cpf + '</td><td>' + esc(m[3]) + '</td>' +
+      '<td style="white-space:nowrap"><button class="btn btn--sm" type="button" data-member-edit="' + i + '" aria-label="Alterar ' + esc(m[0]) + '">Alterar</button>' +
+      (i === 0 ? '' : ' <button class="btn btn--sm btn--danger" type="button" data-member-del="' + i + '" aria-label="Remover ' + esc(m[0]) + '">Remover</button>') + '</td></tr>';
+  }).join('');
+}
+function renderMembers() {
+  $('mem-rows').innerHTML = memberRows();
+  $('mem-count').textContent = plural(drawer.members.length, 'integrante', 'integrantes') + ' · ' + plural(drawer.members.filter(function (m) { return !m[2]; }).length, 'sem CPF', 'sem CPF');
+}
+function openMemberForm(index) {
+  var m = index === -1 ? ['', '', '', '', '', '', 'Brasileira'] : drawer.members[index];
+  drawer.editingMember = index;
+  $('mem-form-slot').innerHTML = '<div class="member-form" role="group" aria-labelledby="mem-form-title"><h4 class="form-sec" id="mem-form-title" style="margin-top:0">' + (index === -1 ? 'Novo integrante' : 'Alterar integrante') + '</h4><div class="form-grid">' +
+    fld('m.nome', 'Nome completo', m[0], { req: true }) + fld('m.artistico', 'Nome artístico', m[1] === '—' ? '' : m[1]) +
+    fld('m.cpf', 'CPF/CIN', m[2] || '') + fld('m.rg', 'RG', m[4] || '') +
+    fld('m.passaporte', 'Passaporte', m[5] || '', { help: 'Para integrante estrangeiro sem CPF.' }) + fld('m.nac', 'Nacionalidade', m[6] || 'Brasileira', { options: OPT.nac }) +
+    fld('m.funcao', 'Função/cargo', m[3], { req: true, full: true }) +
+    '</div><div class="stack-actions"><button class="btn btn--sm btn--primary" type="button" id="mem-save">Salvar integrante</button><button class="btn btn--sm" type="button" id="mem-cancel">Cancelar</button></div></div>';
+  $('df-m-nome').focus();
+}
+function saveMemberForm() {
+  var get = function (k) { return $('drawerBody').querySelector('[data-k="m.' + k + '"]').value.trim(); };
+  var errors = [];
+  if (!get('nome')) errors.push({ k: 'm.nome', msg: 'Informe o nome do integrante.' });
+  if (!get('funcao')) errors.push({ k: 'm.funcao', msg: 'Informe a função do integrante.' });
+  if (errors.length) { showDrawerErrors(errors); return; }
+  var member = [get('nome'), get('artistico') || '—', get('cpf') || null, get('funcao'), get('rg'), get('passaporte'), get('nac')];
+  if (drawer.editingMember === -1) drawer.members.push(member);
+  if (drawer.editingMember !== -1) drawer.members[drawer.editingMember] = member;
+  closeMemberForm();
+  renderMembers();
+  $('mem-add').focus();
+}
+function closeMemberForm() {
+  drawer.editingMember = null;
+  $('mem-form-slot').innerHTML = '';
+  clearDrawerErrors();
+}
+
+var DRAWERS = {
+  proponente: {
+    title: function () { return 'Editar proponente'; },
+    hint: function () { return PROPONENT.razao + ' · Pessoa Jurídica · cópia do pedido #11231'; },
+    body: function () { return renderCopyForm(COPY_FORMS.empresa, PROPONENT); },
+    validate: validateResponsibles,
+    apply: function (v) {
+      PROPONENT = legalPersonFromValues(v, PROPONENT);
+      $('prop-razao').textContent = PROPONENT.razao;
+      $('prop-fantasia').textContent = PROPONENT.fantasia;
+      $('prop-cnpj').textContent = PROPONENT.cnpj;
+      $('prop-ccm').textContent = PROPONENT.ccm;
+      $('prop-rep').textContent = principalOf(PROPONENT).nome;
+      $('prop-endereco').textContent = PROPONENT.end.logradouro + ', ' + PROPONENT.end.numero + (PROPONENT.end.complemento ? ' ' + PROPONENT.end.complemento : '') + ' — ' + PROPONENT.end.bairro + ', ' + PROPONENT.end.cidade + '/' + PROPONENT.end.uf + ', ' + PROPONENT.end.cep;
+      $('kpi-prod').textContent = PROPONENT.fantasia;
+      $('contact-name').textContent = principalOf(PROPONENT).nome;
+      $('contact-email').textContent = PROPONENT.contato.email;
+      $('contact-phone').textContent = PROPONENT.contato.telefone;
+      logEvent('Proponente alterado', 'Cópia da pessoa jurídica do pedido · ' + plural(PROPONENT.responsaveis.length, 'responsável', 'responsáveis'));
+      return { message: 'Dados do proponente salvos.' };
+    }
+  },
+  pj: {
+    title: function () { return 'Editar pessoa jurídica (empresário)'; },
+    hint: function (a) { return a.name + ' · empresa que representa o artista · cópia do pedido #11231'; },
+    body: function (a) { return renderCopyForm(COPY_FORMS.empresa, copyOf(a).pj); },
+    validate: validateResponsibles,
+    apply: function (v, a) {
+      a.copy = Object.assign({}, copyOf(a), { pj: legalPersonFromValues(v, copyOf(a).pj) });
+      logEvent('Pessoa jurídica do artista alterada', a.name);
+      return { message: 'Pessoa jurídica salva.' };
+    }
+  },
+  artista: {
+    title: function () { return 'Editar dados do artista'; },
+    hint: function (a) { return a.name + ' · ' + a.kind + ' · cópia do pedido #11231'; },
+    body: function (a) { return renderCopyForm(COPY_FORMS.prof, copyOf(a).prof); },
+    apply: function (v, a) {
+      delete v.rows;
+      a.copy = Object.assign({}, copyOf(a), { prof: v });
+      if (v.nome) a.name = v.nome;
+      logEvent('Dados do artista alterados', a.name);
+      return { message: 'Dados do artista salvos.' };
+    }
+  },
+  pf: {
+    title: function (a) { return a.kind === 'Solo' ? 'Editar pessoa física do artista' : 'Editar pessoa física do líder do grupo'; },
+    hint: function (a) { return a.name + ' · cópia do pedido #11231'; },
+    body: function (a) { return renderCopyForm(COPY_FORMS.pf, copyOf(a).pf); },
+    apply: function (v, a) {
+      var pf = JSON.parse(JSON.stringify(copyOf(a).pf));
+      Object.keys(v).forEach(function (k) { if (k !== 'rows') setPath(pf, k, v[k]); });
+      a.copy = Object.assign({}, copyOf(a), { pf: pf });
+      if (pf.nome) a.lead = pf.nome;
+      logEvent('Pessoa física do artista alterada', a.name);
+      return { message: 'Pessoa física salva.' };
+    }
+  },
+  atracao: {
+    title: function () { return 'Editar atração'; },
+    hint: function (a) { return a.name + ' · cópia do pedido #11231'; },
+    body: function (a) { return renderCopyForm(COPY_FORMS.atracao, copyOf(a).atracao); },
+    validate: function (v) {
+      if (v.rows.length) return [];
+      return [{ block: 'fotos', msg: 'É necessário ter pelo menos uma foto de divulgação.' }];
+    },
+    apply: function (v, a) {
+      var fotos = v.rows.map(function (r) { return { src: r.src, credito: r.credito }; });
+      var credits = fotos.map(function (f) { return f.credito; }).filter(function (c, i, all) { return c && all.indexOf(c) === i; });
+      delete v.rows;
+      v.fotos = fotos;
+      a.copy = Object.assign({}, copyOf(a), { atracao: v });
+      if (v.nomeEvento) a.attraction = v.nomeEvento;
+      if (v.sinopse) a.synopsis = v.sinopse;
+      if (v.categorias) a.category = v.categorias;
+      a.photoList = fotos;
+      a.photos = fotos.length;
+      a.credit = credits.length ? credits.join(', ') : 'não informado';
+      logEvent('Atração alterada', a.name + ' · ' + plural(fotos.length, 'foto', 'fotos'));
+      return { message: 'Atração salva.' };
+    }
+  },
+  integrantes: {
+    title: function () { return 'Editar integrantes'; },
+    hint: function (a) { return a.name + ' · ficha técnica · cópia do pedido #11231'; },
+    body: function (a) {
+      drawer.members = a.members.map(function (m) { return m.slice(); });
+      return COPY_NOTE + '<p class="file__meta" id="mem-count" style="margin:0 0 8px"></p>' +
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Integrante</th><th>Nome artístico</th><th>CPF/CIN</th><th>Função</th><th style="width:150px">Ações</th></tr></thead><tbody id="mem-rows">' + memberRows() + '</tbody></table></div>' +
+        '<div style="margin-top:10px"><button class="btn btn--sm" type="button" id="mem-add">+ Novo integrante</button></div><div id="mem-form-slot"></div>';
+    },
+    apply: function (v, a) {
+      a.members = drawer.members.map(function (m) { return m.slice(); });
+      var missingCpf = a.members.filter(function (m) { return !m[2]; }).length;
+      a.pend = a.pend
+        .filter(function (p) { return missingCpf > 0 || p.indexOf('CPF ausente') === -1; })
+        .map(function (p) { return p.replace(/CPF ausente em \d+ integrantes?/, 'CPF ausente em ' + plural(missingCpf, 'integrante', 'integrantes')); });
+      logEvent('Integrantes alterados', a.name + ' · ' + plural(a.members.length, 'integrante', 'integrantes'));
+      return { message: 'Integrantes salvos.' };
+    }
+  },
+  evento: {
+    title: function () { return 'Editar evento'; },
+    hint: function (a) { return a.name + ' · ' + a.attraction; },
+    body: function (a) {
+      return '<div class="alert alert--info" style="margin-bottom:16px"><span aria-hidden="true">ℹ</span><span>Artista e atração ficam travados na reabertura, e não é possível incluir nem remover eventos. Altere título, cronograma e cachê.</span></div>' +
+        formSection('', fld('artista', 'Artista', a.name, { options: [a.name], disabled: true }) +
+          fld('atracao', 'Atração do artista', a.attraction, { options: [a.attraction], disabled: true }) +
+          fld('titulo', 'Título do evento planejado', a.eventTitle || a.attraction, { req: true, full: true }) +
+          fld('descricao', 'Descrição', a.eventDescription || '', { area: true, full: true })) +
+        '<h4 class="form-sec">Cronograma — datas do evento (mínimo 1)</h4><div id="ev-rows">' + a.events.map(scheduleRow).join('') + '</div>' +
+        '<p class="block-error" data-err="rows"></p><button class="btn btn--sm" type="button" id="ev-add">+ Data</button>' +
+        '<div class="drawer-total" style="margin-top:14px"><span>Cachê do evento <span class="file__meta">(antes ' + money(artistValue(a)) + ')</span></span><b id="ev-total"></b></div>' +
+        '<p class="field__help">A diferença de cachê ajusta a reserva na dotação. ' + balanceHelp() + '</p>';
+    },
+    validate: function (v) {
+      var errors = [];
+      required(v, ['titulo'], errors);
+      if (!v.rows.length) errors.push({ block: 'rows', msg: 'Defina ao menos uma data no cronograma.' });
+      v.rows.forEach(function (r) {
+        if (!r.local) errors.push({ k: r.keys.local, msg: 'Selecione o local.' });
+        if (!r.inicio) errors.push({ k: r.keys.inicio, msg: 'Informe a data de início.' });
+        if (r.termino && r.inicio && r.termino < r.inicio) errors.push({ k: r.keys.termino, msg: 'O término não pode ser antes do início.' });
+        if (!r.diaInteiro && !r.hora) errors.push({ k: r.keys.hora, msg: 'Informe o horário.' });
+        if (!r.diaInteiro && !(Number(r.duracao) > 0)) errors.push({ k: r.keys.duracao, msg: 'A duração deve ser maior que zero.' });
+        if (!(Number(r.valor) > 0)) errors.push({ k: r.keys.valor, msg: 'O valor deve ser maior que zero.' });
+      });
+      return errors;
+    },
+    apply: function (v, a) {
+      var before = artistValue(a);
+      var delta = applyMoneyChange(a, function () {
+        a.eventTitle = v.titulo;
+        a.eventDescription = v.descricao;
+        a.events = v.rows.map(function (r) {
+          return [isoToBr(r.inicio), r.diaInteiro ? 'Dia inteiro' : r.hora + ' – ' + addMinutes(r.hora, r.duracao), r.local, Number(r.valor)];
+        });
+      });
+      logEvent('Evento alterado — ' + a.name, delta ? 'Cachê: ' + money(before) + ' → ' + money(artistValue(a)) : 'Título ou cronograma');
+      return moneyResult(delta, 'Evento salvo.');
+    }
+  },
+  despesas: {
+    title: function () { return 'Despesas extraordinárias'; },
+    hint: function (a) { return a.name + ' · evento planejado do pedido #11231'; },
+    body: function (a) {
+      var items = a.expenses ? a.expenses.items : [];
+      drawer.hadExpenses = items.length > 0;
+      return formSection('', fld('justificativa', 'Justificativa', a.expenses ? a.expenses.justification : '', { area: true, full: true, req: true, rows: 3, help: 'Obrigatória quando há despesa. Ex.: por que o evento precisa de custos fora do cachê.' })) +
+        '<h4 class="form-sec">Detalhes</h4><div id="xp-rows">' + items.map(expenseRow).join('') + '</div>' +
+        '<p class="file__meta" id="xp-empty" style="margin:0 0 10px"></p>' +
+        '<button class="btn btn--sm" type="button" id="xp-add">+ Adicionar despesa</button>' +
+        '<div class="drawer-total" style="margin-top:14px"><span>Total das despesas do evento <span class="file__meta">(soma dos detalhes)</span></span><b id="xp-total"></b></div>' +
+        '<p class="field__help">O total é reservado na dotação junto com o cachê. ' + balanceHelp() + ' Anexos ficam para depois.</p>';
+    },
+    validate: function (v) {
+      var errors = [];
+      if (v.rows.length && !v.justificativa) errors.push({ k: 'justificativa', msg: 'Justifique as despesas deste evento.' });
+      v.rows.forEach(function (r) {
+        if (!r.descricao) errors.push({ k: r.keys.descricao, msg: 'Descreva a despesa.' });
+        if (!(Number(r.valor) > 0)) errors.push({ k: r.keys.valor, msg: 'O valor deve ser maior que zero.' });
+      });
+      return errors;
+    },
+    apply: function (v, a) {
+      var removed = !v.rows.length;
+      var delta = applyMoneyChange(a, function () {
+        a.expenses = removed ? null : { justification: v.justificativa, items: v.rows.map(function (r) { return [r.descricao, Number(r.valor), r.observacao]; }) };
+      });
+      logEvent((removed ? 'Despesas extraordinárias removidas — ' : 'Despesas extraordinárias alteradas — ') + a.name, removed ? 'Reserva de despesa cancelada com estorno' : 'Total: ' + money(expensesTotal(a)));
+      return moneyResult(delta, removed ? 'Despesas do evento removidas.' : 'Despesas extraordinárias salvas.');
+    }
+  },
+  contrato: {
+    title: function () { return 'Editar contrato'; },
+    hint: function () { return 'Pedido #11231 · dados gerais e justificativas'; },
+    body: function () {
+      var c = CONTRACT;
+      return formSection('Dados gerais',
+          fld('fiscal', 'Fiscal', c.fiscal, { options: OPT.fiscais, req: true }) +
+          fld('suplente', 'Suplente', c.suplente, { options: OPT.fiscais, placeholder: 'Sem suplente' }) +
+          fld('cadastro', 'Responsável pelo cadastro', c.cadastro, { req: true }) +
+          fld('unidade', 'Unidade Requisitante', c.unidade, { options: OPT.unidades, req: true }) +
+          fld('inicial', 'Responsável pela solicitação inicial', c.inicial, { options: OPT.responsaveis, req: true }) +
+          fld('fundamento', 'Fundamento Legal da Contratação', c.fundamento, { options: OPT.fundamentos, req: true }) +
+          fld('objeto', 'Objeto do contrato', c.objeto, { req: true, full: true }) +
+          fld('seiMae', 'Processo SEI Mãe', c.seiMae, { req: true, placeholder: '00000.000000/0000-00' }) +
+          fld('obs', 'Observação', c.obs) +
+          radios('reserva', 'Pedido de Reserva', c.reserva, [['padrao', 'Padrão'], ['global', 'Global']], { full: true, help: 'Global: uma única reserva cobre todos os eventos planejados do contrato.' })) +
+        formSection('Justificativas',
+          fld('jContratacao', 'Justificativa da contratação', c.jContratacao, { area: true, rows: 5, req: true, full: true }) +
+          fld('jEscolha', 'Justificativa da escolha do contratado', c.jEscolha, { area: true, req: true, full: true }) +
+          fld('jValor', 'Justificativa do valor da contratação', c.jValor, { area: true, full: true }));
+    },
+    validate: function (v) {
+      var errors = [];
+      required(v, ['fiscal', 'cadastro', 'unidade', 'inicial', 'fundamento', 'objeto', 'seiMae', 'jContratacao', 'jEscolha'], errors);
+      if (v.suplente && v.suplente === v.fiscal) errors.push({ k: 'suplente', msg: 'O suplente deve ser diferente do fiscal.' });
+      if (v.seiMae && !/^\d{5}\.\d{6}\/\d{4}-\d{2}$/.test(v.seiMae)) errors.push({ k: 'seiMae', msg: 'Formato esperado: 00000.000000/0000-00.' });
+      ['jContratacao', 'jEscolha'].forEach(function (k) { if (v[k] && v[k].length < 20) errors.push({ k: k, msg: 'Mínimo de 20 caracteres.' }); });
+      return errors;
+    },
+    apply: function (v) {
+      delete v.rows;
+      Object.assign(CONTRACT, v);
+      var person = function (text) {
+        var i = text.indexOf(' (');
+        return i === -1 ? esc(text) : esc(text.slice(0, i)) + ' <span class="file__meta">' + esc(text.slice(i + 1)) + '</span>';
+      };
+      var paragraphs = function (text) { return text.split(/\n\s*\n/).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join(''); };
+      $('ct-fundamento').textContent = CONTRACT.fundamento;
+      $('ct-unidade').textContent = CONTRACT.unidade;
+      $('ct-responsavel').textContent = CONTRACT.inicial;
+      $('ct-fiscal').innerHTML = person(CONTRACT.fiscal);
+      $('ct-suplente').innerHTML = CONTRACT.suplente ? person(CONTRACT.suplente) : '—';
+      $('txt-j1').innerHTML = paragraphs(CONTRACT.jContratacao);
+      $('txt-j2').innerHTML = paragraphs(CONTRACT.jValor || '—');
+      $('txt-j3').innerHTML = paragraphs(CONTRACT.jEscolha);
+      logEvent('Contrato alterado', 'Dados gerais e justificativas');
+      return { message: 'Contrato salvo.' };
+    }
+  },
+  valores: {
+    title: function () { return 'Editar valor do contrato e dotação'; },
+    hint: function () { return 'Pedido #11231 · bloco Valor do contrato'; },
+    body: function () {
+      var suggested = suggestedValue();
+      var value = contractValue();
+      var fees = state.artists.reduce(function (s, a) { return s + artistValue(a); }, 0);
+      var dates = state.artists.reduce(function (s, a) { return s + a.events.length; }, 0);
+      var reserveOptions = Object.keys(RESERVES).map(function (id) {
+        return [id, RESERVES[id] + ' — saldo disponível ' + money(flow.balances[id])];
+      });
+      return '<dl class="kv kv--3" style="margin-bottom:16px">' +
+          '<div><dt>Eventos planejados</dt><dd>' + state.artists.length + '</dd></div>' +
+          '<div><dt>Datas no cronograma</dt><dd>' + dates + '</dd></div>' +
+          '<div><dt>Soma dos cachês</dt><dd>' + money(fees) + '</dd></div>' +
+          '<div><dt>Despesas extraordinárias</dt><dd>' + money(suggested - fees) + '</dd></div>' +
+          '<div><dt>Cachês + despesas</dt><dd><b>' + money(suggested) + '</b></dd></div>' +
+        '</dl>' +
+        (Math.abs(value - suggested) < 0.005 ? '' :
+          '<div class="alert alert--warn" style="margin-bottom:16px"><span aria-hidden="true">▲</span><span><b>O cachê ou as despesas mudaram depois de o valor do contrato ser salvo</b>Valor salvo: ' + money(value) + '. Soma atual: ' + money(suggested) + '.<br><button class="btn btn--sm" type="button" id="use-suggested" style="margin-top:8px">Usar a soma atual</button></span></div>') +
+        formSection('',
+          fld('valor', 'Valor do contrato (R$)', value.toFixed(2), { type: 'number', step: '0.01', min: 0, req: true, help: 'Sugestão: soma dos cachês + despesas (' + money(suggested) + '). Pode ser editado; mudar só o valor não mexe na reserva.' }) +
+          fld('dotacao', 'Dotação', DOTACAO, { options: [DOTACAO], req: true, help: 'Só a dotação do vereador da emenda.' }) +
+          fld('reserva', 'Reserva', flow.reserve, { options: reserveOptions, req: true, full: true, help: 'Trocar a reserva devolve o valor reservado deste pedido (' + money(suggested) + ') à reserva atual e reserva o total na nova.' }));
+    },
+    validate: function (v) {
+      var errors = [];
+      if (!(Number(v.valor) > 0)) errors.push({ k: 'valor', msg: 'O valor do contrato deve ser maior que zero.' });
+      required(v, ['dotacao', 'reserva'], errors);
+      return errors;
+    },
+    apply: function (v) {
+      var swapped = v.reserva !== flow.reserve;
+      var oldValue = contractValue();
+      var newValue = Number(v.valor);
+      var reserved = suggestedValue();
+      if (swapped) {
+        var from = RESERVES[flow.reserve].split(' · ')[0];
+        flow.balances[flow.reserve] += reserved;
+        flow.balances[v.reserva] -= reserved;
+        flow.reserve = v.reserva;
+        logEvent('Dotação alterada', from + ' → ' + RESERVES[flow.reserve].split(' · ')[0] + ' · ' + money(reserved) + ' estornados e reservados de novo');
+      }
+      if (Math.abs(newValue - oldValue) >= 0.005) {
+        flow.contractValue = newValue;
+        logEvent('Valor do contrato alterado', money(oldValue) + ' → ' + money(newValue));
+      }
+      if (swapped && balance() < 0) return { negative: true };
+      return { message: swapped ? 'Dotação alterada: o valor voltou para a reserva anterior e foi reservado na nova.' : 'Valor do contrato salvo.' };
+    }
+  },
+  pagamento: {
+    title: function () { return 'Editar pagamento'; },
+    hint: function () { return 'Pedido #11231 · forma de pagamento e parcelas'; },
+    body: function () {
+      var p = PAYMENT;
+      return '<dl class="kv kv--3" style="margin-bottom:16px"><div><dt>Valor do contrato</dt><dd><b>' + money(contractValue()) + '</b></dd></div><div><dt>Cachês + despesas</dt><dd>' + money(suggestedValue()) + '</dd></div></dl>' +
+        formSection('',
+          radios('forma', 'Forma de pagamento', p.forma, OPT.formas, { req: true, full: true, help: 'O pagamento se dará no 30º dia após a entrega de toda a documentação correta.' }) +
+          fld('kit', 'Data prevista para entrega (Kit)', p.kit, { type: 'date' })) +
+        '<h4 class="form-sec">Valores por subprefeitura — 1ª parcela</h4><div id="pay-rows">' + p.parcelas.map(subprefectureRow).join('') + '</div>' +
+        '<p class="block-error" data-err="rows"></p><button class="btn btn--sm" type="button" id="pay-add">+ Adicionar valor por subprefeitura</button>' +
+        '<div class="drawer-total" style="margin-top:14px"><span>Total da parcela</span><b id="pay-total"></b></div><div id="pay-warn"></div>' +
+        formSection('', fld('obs', 'Observação do pagamento', p.obs, { full: true })) +
+        formSection('Dados bancários', fld('banco', 'Nome do banco', p.banco, { full: true }) + fld('agencia', 'Agência', p.agencia) + fld('conta', 'Conta', p.conta));
+    },
+    validate: function (v) {
+      var errors = [];
+      required(v, ['forma'], errors);
+      var hasInstallments = v.forma === 'unica' || v.forma === 'parcelado';
+      if (hasInstallments && !v.rows.length) errors.push({ block: 'rows', msg: 'Informe ao menos um valor por subprefeitura.' });
+      if (!hasInstallments) return errors;
+      var seen = {};
+      v.rows.forEach(function (r) {
+        if (!r.subprefeitura) errors.push({ k: r.keys.subprefeitura, msg: 'Selecione a subprefeitura.' });
+        if (r.subprefeitura && seen[r.subprefeitura]) errors.push({ k: r.keys.subprefeitura, msg: 'Esta subprefeitura já tem valor nesta parcela.' });
+        seen[r.subprefeitura] = true;
+        if (!(Number(r.valor) > 0)) errors.push({ k: r.keys.valor, msg: 'O valor deve ser maior que zero.' });
+      });
+      return errors;
+    },
+    apply: function (v) {
+      PAYMENT = { forma: v.forma, kit: v.kit, obs: v.obs, banco: v.banco, agencia: v.agencia, conta: v.conta, parcelas: v.rows.map(function (r) { return [r.subprefeitura, Number(r.valor)]; }) };
+      var label = OPT.formas.filter(function (f) { return f[0] === v.forma; })[0][1];
+      $('ct-forma').textContent = label + (v.forma === 'unica' || v.forma === 'parcelado' ? ' — 30º dia após a entrega da documentação correta' : '');
+      $('prop-banco').textContent = v.banco;
+      $('prop-agencia').textContent = v.agencia;
+      $('prop-conta').textContent = v.conta;
+      logEvent('Pagamento alterado', label);
+      return { message: 'Pagamento salvo.' };
+    }
+  }
+};
+
+function toggleRemoveButtons(listId) {
+  var rows = $(listId).querySelectorAll('[data-row]');
+  rows.forEach(function (row) { row.querySelector('[data-remove-row]').hidden = listId === 'ev-rows' && rows.length < 2; });
+}
+
+function updateDrawerLive() {
+  if (!drawer || $('editDrawer').hidden) return;
+  var v = readDrawer();
+  if (drawer.kind === 'evento') {
+    $('ev-total').textContent = money(sumRows(v.rows));
+    $('ev-rows').querySelectorAll('[data-row]').forEach(function (row) {
+      var allDay = row.querySelector('[data-k$=".diaInteiro"]').checked;
+      row.querySelector('[data-k$=".hora"]').disabled = allDay;
+      row.querySelector('[data-k$=".duracao"]').disabled = allDay;
+    });
+    toggleRemoveButtons('ev-rows');
+  }
+  if (drawer.kind === 'despesas') {
+    $('xp-total').textContent = money(sumRows(v.rows));
+    $('xp-empty').hidden = v.rows.length > 0;
+    $('xp-empty').textContent = drawer.hadExpenses
+      ? 'Sem detalhes: ao salvar, as despesas deste evento são removidas e a reserva de despesa é estornada.'
+      : 'Nenhuma despesa extraordinária neste evento. Adicione a primeira.';
+  }
+  if (drawer.kind === 'pagamento') {
+    var total = sumRows(v.rows);
+    $('pay-total').textContent = money(total);
+    $('pay-warn').innerHTML = Math.abs(total - contractValue()) < 0.005 || !v.rows.length ? '' :
+      '<div class="alert alert--warn" style="margin-bottom:12px"><span aria-hidden="true">▲</span><span>A soma das parcelas (' + money(total) + ') difere do valor do contrato (' + money(contractValue()) + '). O bloco Pagamento fica pendente até fechar.</span></div>';
+  }
+  if (drawer.kind === 'integrantes') renderMembers();
+  if (drawer.kind === 'proponente' || drawer.kind === 'pj') syncResponsibles();
+  if (drawer.kind === 'atracao') $('photo-count').textContent = '(' + plural(v.rows.length, 'foto', 'fotos') + ')';
+}
+
+// "Enviar foto": só pré-visualização local, sem upload
+document.addEventListener('change', function (event) {
+  if (event.target.id !== 'photo-input') return;
+  Array.prototype.forEach.call(event.target.files, function (file) {
+    $('photo-list').insertAdjacentHTML('beforeend', photoItem({ src: URL.createObjectURL(file), credito: '', nome: file.name }));
+  });
+  event.target.value = '';
+  var block = $('drawerBody').querySelector('[data-err="fotos"]');
+  block.classList.remove('is-visible');
+  block.textContent = '';
+  updateDrawerLive();
+  var credits = $('photo-list').querySelectorAll('[data-k$=".credito"]');
+  if (credits.length) credits[credits.length - 1].focus();
+});
+
+$('drawerBody').addEventListener('input', updateDrawerLive);
+$('drawerBody').addEventListener('change', updateDrawerLive);
+
+document.addEventListener('input', function (event) {
+  if (event.target.id === 'pend-text') $('pend-count').textContent = event.target.value.length + ' / 1000';
+});
+
+document.addEventListener('click', function (event) {
+  var t = event.target;
+  var el;
+  if ((el = t.closest('[data-flow]'))) {
+    if (el.dataset.flow === 'reopen') confirmReopen(el);
+    if (el.dataset.flow === 'conclude') confirmConclude(el);
+    if (el.dataset.flow === 'request') openRequestUpdate(el);
+    return;
+  }
+  if ((el = t.closest('[data-edit]'))) {
+    openDrawer(el.dataset.edit, el.dataset.artist || null, el);
+    return;
+  }
+  if (t.closest('#drawerSave')) {
+    saveDrawer();
+    return;
+  }
+  if (!t.closest('#drawerBody')) return;
+  if ((el = t.closest('[data-remove-row]'))) {
+    var list = el.closest('[data-row]').parentNode;
+    el.closest('[data-row]').remove();
+    updateDrawerLive();
+    var next = list.querySelector('[data-row] input:not([type="hidden"]), [data-row] select') || $('drawerBody').querySelector('[id$="-add"]');
+    if (next) next.focus();
+    return;
+  }
+  var adders = { 'ev-add': ['ev-rows', scheduleRow], 'xp-add': ['xp-rows', expenseRow], 'pay-add': ['pay-rows', subprefectureRow] };
+  if (adders[t.id]) {
+    $(adders[t.id][0]).insertAdjacentHTML('beforeend', adders[t.id][1](null));
+    updateDrawerLive();
+    var rows = $(adders[t.id][0]).querySelectorAll('[data-row]');
+    rows[rows.length - 1].querySelector('input, select').focus();
+    return;
+  }
+  if (t.id === 'resp-add') {
+    $('resp-rows').insertAdjacentHTML('beforeend', respRow(null, true));
+    updateDrawerLive();
+    var added = $('resp-rows').querySelectorAll('[data-row="resp"]');
+    added[added.length - 1].querySelector('[data-k$=".nome"]').focus();
+    return;
+  }
+  if (t.id === 'photo-add') {
+    $('photo-input').click();
+    return;
+  }
+  if (t.id === 'use-suggested') {
+    $('drawerBody').querySelector('[data-k="valor"]').value = suggestedValue().toFixed(2);
+    $('drawerBody').querySelector('[data-k="valor"]').focus();
+    return;
+  }
+  if (t.id === 'mem-add') { openMemberForm(-1); return; }
+  if ((el = t.closest('[data-member-edit]'))) { openMemberForm(Number(el.dataset.memberEdit)); return; }
+  if ((el = t.closest('[data-member-del]'))) {
+    drawer.members.splice(Number(el.dataset.memberDel), 1);
+    closeMemberForm();
+    renderMembers();
+    $('mem-add').focus();
+    return;
+  }
+  if (t.id === 'mem-save') { saveMemberForm(); return; }
+  if (t.id === 'mem-cancel') { closeMemberForm(); $('mem-add').focus(); }
+});
+
+/* ---------- controles de demonstração do estado ---------- */
+$('demo-state').addEventListener('click', function (event) {
+  var b = event.target.closest('[data-state]');
+  if (!b) return;
+  setFlowState(b.dataset.state, true);
+});
+$('demo-producer-sent').addEventListener('click', function () {
+  logEvent('Dados atualizados pelo produtor', 'Aguardando produtor → Pedido reaberto · aviso para quem solicitou', null, 'Márcia H. Toledo');
+  setFlowState('reaberto');
+  toast('O produtor enviou a atualização. Revise os dados e conclua a reabertura.');
+});
+
+var requestedState = new URLSearchParams(location.search).get('estado');
+setFlowState(STATE_META[requestedState] ? requestedState : 'atual', true);
 
 // scrollspy do índice lateral
 var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));

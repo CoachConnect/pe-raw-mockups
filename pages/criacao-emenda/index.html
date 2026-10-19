@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Criação de Emenda — v5</title>
+<title>Criação de Emenda — v6</title>
 <link rel="stylesheet" href="../../styles/global.css">
 <style>
   .modal__panel--narrow{width:min(640px, 100%)}
@@ -36,7 +36,7 @@
   <div class="layout">
     <nav id="sidenav" class="sidenav" aria-label="Blocos da criação da emenda">
       <div class="sidenav__title">Criação de Emenda</div>
-      <span class="sidenav__updated">Atualizado em 23/09/2026 15:18</span>
+      <span class="sidenav__updated">Atualizado em 18/10/2026 21:53</span>
       <div class="sidenav__order">
         <div class="order__head">
           <span class="order__label">Emenda</span>
@@ -46,7 +46,7 @@
         <span class="chip order__status" id="requestStatus" data-status="draft">✎ Emenda em rascunho</span>
       </div>
       <div class="sidenav__progress">
-        <span class="progress__text" id="progressText" role="status">0 de 5 blocos corretos</span>
+        <span class="progress__text" id="progressText" role="status">0 de 6 blocos corretos</span>
         <div class="progress__track"><div class="progress__bar" id="progressBar"></div></div>
       </div>
 
@@ -69,6 +69,13 @@
           <span class="nav__icon" aria-hidden="true">○</span>
           <span class="nav__text">
             <span class="nav__label">Artistas e eventos planejados</span>
+            <span class="nav__status">Salvo</span>
+          </span>
+        </a>
+        <a href="#sec-despesas" class="nav__item" data-section="sec-despesas" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Despesas extraordinárias</span>
             <span class="nav__status">Salvo</span>
           </span>
         </a>
@@ -121,6 +128,12 @@
     </nav>
 
     <main class="content">
+      <div class="demo" role="group" aria-label="Controles de demonstração do protótipo">
+        <b>Demonstração</b>
+        <button type="button" class="btn btn--secondary btn--sm" id="btnFillExample">Preencher pedido de exemplo</button>
+        <span>Proponente, 2 eventos planejados e despesas no evento 1, para ver o bloco “Despesas extraordinárias”.</span>
+      </div>
+
       <!-- ============ BLOCO 1 — EventManagement (somente leitura) ============ -->
       <section id="sec-evento" class="card" data-status="readonly" aria-label="Evento da Emenda — somente leitura">
         <div class="card__head">
@@ -203,6 +216,30 @@
           <div class="card__foot">
             <span class="card__foot-msg" data-foot-for="sec-eventos" data-status="empty">Nenhum campo preenchido.</span>
             <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-eventos" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 3b — Despesas extraordinárias por evento planejado (PBI 57330, DESP-01..02) ============ -->
+      <section id="sec-despesas" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Despesas extraordinárias</h2>
+            <p class="card__hint">Custos de cada evento planejado fora do cachê (transporte, cenografia, acessibilidade). Por evento: justificativa e detalhes; o total do evento é a soma dos detalhes, entra no valor do contrato e é reservado na dotação junto com o cachê. Opcional: evento sem despesa não tem reserva de despesa.</p>
+            <span class="card__entity">ExtraordinaryExpenses · ExtraordinaryExpenseDetail</span>
+          </div>
+          <span class="chip" data-chip-for="sec-despesas" data-status="empty">○ Salvo</span>
+        </div>
+
+        <form id="form-despesas" class="js-form" data-section="sec-despesas" novalidate>
+          <p class="hint-empty" id="expensesEmpty">Adicione eventos planejados no bloco anterior para informar as despesas de cada um.</p>
+          <div id="expensesList"></div>
+          <p class="block-error" data-error-for="expensesBlock"></p>
+          <p class="field__help" style="margin:0">Remover todos os detalhes de um evento remove a despesa dele. Anexos das despesas ficam para uma próxima entrega.</p>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-despesas" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-despesas" disabled>Salvar alterações</button>
           </div>
         </form>
       </section>
@@ -361,10 +398,9 @@
               <p class="field__error" data-error-for="contractValue"></p>
             </div>
             <div class="field">
-              <label class="field__label" for="extraordinaryValue">Despesas extraordinárias (R$)</label>
-              <input type="number" id="extraordinaryValue" name="extraordinaryValue" min="0" step="0.01" placeholder="0,00">
-              <p class="field__help">Custos fora do cachê (transporte, cenografia, acessibilidade).</p>
-              <p class="field__error" data-error-for="extraordinaryValue"></p>
+              <span class="field__label">Despesas extraordinárias (R$)</span>
+              <div class="readonly-box money" id="extraordinaryReadonly" style="padding:8px 12px">R$ 0,00</div>
+              <p class="field__help">Soma das despesas dos eventos, informadas no bloco “Despesas extraordinárias”.</p>
             </div>
           </div>
 
@@ -481,7 +517,7 @@
         <div class="card__head">
           <div>
             <h2 class="card__title">Resumo</h2>
-            <p class="card__hint">Consolidação dos 6 blocos. Revise antes de criar a emenda.</p>
+            <p class="card__hint">Consolidação dos 7 blocos. Revise antes de criar a emenda.</p>
           </div>
         </div>
         <div id="summaryContent"></div>
@@ -986,7 +1022,22 @@
   const scheduleAmount = (schedule) => (schedule.amount === '' ? 0 : Number(schedule.amount));
   const eventTotal = (event) => event.schedules.reduce((total, schedule) => total + scheduleAmount(schedule), 0);
   const schedulesTotal = () => eventsData().reduce((total, event) => total + eventTotal(event), 0);
-  const extraordinaryAmount = () => (val('extraordinaryValue') === '' ? 0 : Number(val('extraordinaryValue')));
+
+  /* Despesas extraordinárias por evento planejado (PBI 57330): justificativa + detalhes; total = soma. */
+  function expensesData() {
+    return Array.from(document.querySelectorAll('#expensesList .xp')).map((card) => ({
+      epId: card.dataset.xpFor,
+      justification: card.querySelector('[data-role="xp-just"]').value.trim(),
+      rows: Array.from(card.querySelectorAll('tr[data-xp-row]')).map((row) => ({
+        rowId: row.dataset.xpRow,
+        description: row.querySelector('[data-role="xp-desc"]').value.trim(),
+        value: row.querySelector('[data-role="xp-value"]').value.trim(),
+        observation: row.querySelector('[data-role="xp-obs"]').value.trim(),
+      })),
+    }));
+  }
+  const expenseTotal = (expense) => expense.rows.reduce((total, row) => total + (row.value === '' ? 0 : Number(row.value)), 0);
+  const extraordinaryAmount = () => expensesData().reduce((total, expense) => total + expenseTotal(expense), 0);
   const requiredContractValue = () => schedulesTotal() + extraordinaryAmount();
   const contractValueAmount = () => (val('contractValue') === '' ? null : Number(val('contractValue')));
 
@@ -1088,6 +1139,28 @@
       },
     },
     {
+      id: 'sec-despesas',
+      formId: 'form-despesas',
+      label: 'Despesas extraordinárias',
+      filled: () => expensesData().some((expense) => expense.rows.length > 0 || expense.justification),
+      validate() {
+        if (eventsData().length === 0) {
+          return [missing('expensesBlock', 'Adicione eventos planejados no bloco anterior para informar as despesas.')];
+        }
+        const errors = [];
+        expensesData().forEach((expense) => {
+          if (expense.rows.length === 0) return;
+          if (!expense.justification) errors.push(missing(`xpJust-${expense.epId}`, 'Justifique as despesas deste evento.'));
+          expense.rows.forEach((row) => {
+            if (!row.description) errors.push(missing(`xpDesc-${row.rowId}`, 'Descreva a despesa.'));
+            if (row.value === '') errors.push(missing(`xpValue-${row.rowId}`, 'Informe o valor.'));
+            else if (!(Number(row.value) > 0)) errors.push(wrong(`xpValue-${row.rowId}`, 'O valor deve ser maior que zero.'));
+          });
+        });
+        return errors;
+      },
+    },
+    {
       id: 'sec-contrato',
       formId: 'form-contrato',
       label: 'Contrato',
@@ -1172,21 +1245,14 @@
       id: 'sec-valor',
       formId: 'form-valor',
       label: 'Valor do contrato',
-      filled: () => Boolean(val('contractValue') || val('extraordinaryValue') || val('contractValueJustification') || val('budgetAllocationId')),
+      filled: () => Boolean(val('contractValue') || val('contractValueJustification') || val('budgetAllocationId')),
       validate() {
         const errors = [];
         const value = contractValueAmount();
-        const extraordinary = extraordinaryAmount();
         const minimum = requiredContractValue();
 
+        /* A justificativa das despesas agora fica em cada evento, no bloco "Despesas extraordinárias". */
         if (!val('budgetAllocationId')) errors.push(missing('budgetAllocationId', 'Selecione a dotação.'));
-
-        if (val('extraordinaryValue') !== '' && !(extraordinary >= 0)) {
-          errors.push(wrong('extraordinaryValue', 'O valor das despesas extraordinárias não pode ser negativo.'));
-        }
-        if (extraordinary > 0 && !val('contractValueJustification')) {
-          errors.push(missing('contractValueJustification', 'Justifique as despesas extraordinárias.'));
-        }
 
         if (value === null) {
           errors.push(missing('contractValue', 'Informe o valor do contrato.'));
@@ -1678,6 +1744,7 @@
     }
     const value = contractValueAmount();
     el('contractValueHelp').textContent = `Sugestão: soma dos cachês + despesas extraordinárias (${brl(minimum)}). Pode ser editado.`;
+    el('extraordinaryReadonly').textContent = brl(extraordinary);
     const events = eventsData();
     const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
     const balance = value === null ? null : value - minimum;
@@ -1987,8 +2054,110 @@
     });
   }
 
-  /* ---------------- parcelamento (parcelas x subprefeituras) ---------------- */
+  /* ---------------- despesas extraordinárias (um card por evento planejado) ---------------- */
   const TRASH_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  let expenseRowCount = 0;
+
+  function expenseCardHtml(epId) {
+    return `
+      <details class="ep xp" data-xp-for="${epId}" open>
+        <summary class="ep__head">
+          <div>
+            <div class="ep__title" data-xp-title>Evento planejado</div>
+            <div class="ep__meta" data-xp-meta>Sem despesas</div>
+          </div>
+        </summary>
+        <div class="field" data-xp-just-wrap>
+          <label class="field__label" for="xpJust-${epId}">Justificativa<span class="req">*</span></label>
+          <textarea id="xpJust-${epId}" data-role="xp-just" placeholder="Por que este evento precisa de custos fora do cachê…"></textarea>
+          <p class="field__error" data-error-for="xpJust-${epId}"></p>
+        </div>
+        <div class="table__scroll" data-xp-table>
+          <table class="table table--parcela">
+            <thead><tr><th>Descrição</th><th style="width:150px">Valor (R$)</th><th>Observação</th><th style="width:56px">Ações</th></tr></thead>
+            <tbody data-xp-rows></tbody>
+          </table>
+        </div>
+        <p class="hint-empty" data-xp-empty style="padding:12px">Nenhuma despesa extraordinária neste evento.</p>
+        <div class="parcela__foot">
+          <span class="parcela__total" data-xp-total>Total do evento: R$ 0,00</span>
+          <button type="button" class="btn btn--secondary btn--sm js-add-xp">+ Adicionar despesa</button>
+        </div>
+      </details>`;
+  }
+
+  function addExpenseRow(card, data) {
+    expenseRowCount += 1;
+    const rowId = `${card.dataset.xpFor}-${expenseRowCount}`;
+    card.querySelector('[data-xp-rows]').insertAdjacentHTML('beforeend', `
+      <tr data-xp-row="${rowId}">
+        <td><div class="field field--cell"><input type="text" id="xpDesc-${rowId}" data-role="xp-desc" placeholder="Ex: Transporte de cenário" aria-label="Descrição da despesa"><p class="field__error" data-error-for="xpDesc-${rowId}"></p></div></td>
+        <td><div class="field field--cell"><input type="number" id="xpValue-${rowId}" data-role="xp-value" min="0" step="0.01" placeholder="0,00" aria-label="Valor da despesa (R$)"><p class="field__error" data-error-for="xpValue-${rowId}"></p></div></td>
+        <td><div class="field field--cell"><input type="text" id="xpObs-${rowId}" data-role="xp-obs" placeholder="Opcional" aria-label="Observação da despesa"></div></td>
+        <td class="table__actions"><button type="button" class="icon-btn js-remove-xp" title="Remover despesa" aria-label="Remover despesa">${TRASH_ICON}</button></td>
+      </tr>`);
+    const row = card.querySelector(`tr[data-xp-row="${rowId}"]`);
+    if (data) {
+      row.querySelector('[data-role="xp-desc"]').value = data.description;
+      row.querySelector('[data-role="xp-value"]').value = data.value;
+      row.querySelector('[data-role="xp-obs"]').value = data.observation || '';
+    }
+    return row;
+  }
+
+  /*
+   * Um card por evento planejado do bloco anterior, na mesma ordem. Cards novos entram no fim e
+   * os de eventos removidos saem; os existentes não são re-renderizados, para não perder o foco.
+   */
+  function syncExpenseCards() {
+    const events = eventsData();
+    const ids = events.map((event) => event.epId);
+    const list = el('expensesList');
+    list.querySelectorAll('.xp').forEach((card) => { if (!ids.includes(card.dataset.xpFor)) card.remove(); });
+    const expenses = Object.fromEntries(expensesData().map((expense) => [expense.epId, expense]));
+
+    events.forEach((event) => {
+      let card = list.querySelector(`.xp[data-xp-for="${event.epId}"]`);
+      if (!card) {
+        list.insertAdjacentHTML('beforeend', expenseCardHtml(event.epId));
+        card = list.querySelector(`.xp[data-xp-for="${event.epId}"]`);
+      }
+      const expense = expenses[event.epId] || { rows: [], justification: '' };
+      const artist = findArtist(event.artistId);
+      const total = expenseTotal(expense);
+      const hasRows = expense.rows.length > 0;
+      card.querySelector('[data-xp-title]').textContent =
+        `Evento planejado ${event.index + 1}${event.title ? ` — ${event.title}` : (artist ? ` — ${artist.nameGroup}` : '')}`;
+      card.querySelector('[data-xp-meta]').textContent = hasRows
+        ? `${plural(expense.rows.length, 'despesa', 'despesas')} · ${brl(total)}`
+        : 'Sem despesas';
+      card.querySelector('[data-xp-just-wrap]').hidden = !hasRows;
+      card.querySelector('[data-xp-table]').hidden = !hasRows;
+      card.querySelector('[data-xp-empty]').hidden = hasRows;
+      card.querySelector('[data-xp-total]').textContent = `Total do evento: ${brl(total)} (soma dos detalhes)`;
+    });
+    el('expensesEmpty').hidden = events.length > 0;
+  }
+
+  el('expensesList').addEventListener('click', (event) => {
+    const card = event.target.closest('.xp');
+    if (!card) return;
+    if (event.target.closest('.js-add-xp')) {
+      const row = addExpenseRow(card);
+      refresh();
+      row.querySelector('[data-role="xp-desc"]').focus();
+      return;
+    }
+    if (event.target.closest('.js-remove-xp')) {
+      event.target.closest('tr[data-xp-row]').remove();
+      /* Sem detalhes, a despesa do evento sai inteira (DESP-02): a justificativa vai junto. */
+      if (!card.querySelector('tr[data-xp-row]')) card.querySelector('[data-role="xp-just"]').value = '';
+      refresh();
+      card.querySelector('.js-add-xp').focus();
+    }
+  });
+
+  /* ---------------- parcelamento (parcelas x subprefeituras) ---------------- */
 
   let parcelaCount = 0;
   let subCount = 0;
@@ -2367,6 +2536,7 @@
     renderProponentPanel();
     renderArtistsPanel();
     renumberEvents();
+    syncExpenseCards();
     renderContractValueInfo();
     syncPaymentPanels();
     renumberParcelas();
@@ -2521,6 +2691,7 @@
           : summaryRow('Artistas agenciados', proponent ? String(proponentArtists(proponent.id).length) : '—')))}
       ${summaryGroup('Artistas e eventos planejados', statusById['sec-eventos'], '')}
       ${eventsHtml}
+      ${summaryGroup('Despesas extraordinárias', statusById['sec-despesas'], expensesSummaryRows())}
       ${summaryGroup('Contrato', statusById['sec-contrato'], contratoRows)}
       ${summaryGroup('Valor do contrato', statusById['sec-valor'],
         summaryRow('Soma dos cachês', brl(schedules)) +
@@ -2534,6 +2705,19 @@
         ${summaryRow('Datas programadas', String(schedulesCount))}
         <div class="summary-row"><span class="summary-row__label">Valor do contrato</span><span class="summary-row__value money">${contractValue === null ? '—' : brl(contractValue)}</span></div>
       </div>`;
+  }
+
+  function expensesSummaryRows() {
+    const events = eventsData();
+    if (events.length === 0) return summaryRow('Despesas por evento', '—');
+    const expenses = Object.fromEntries(expensesData().map((expense) => [expense.epId, expense]));
+    return events.map((event) => {
+      const expense = expenses[event.epId] || { rows: [] };
+      return summaryRow(
+        `Evento planejado ${event.index + 1}`,
+        expense.rows.length ? `${plural(expense.rows.length, 'despesa', 'despesas')} · ${brl(expenseTotal(expense))}` : 'Sem despesas'
+      );
+    }).join('') + summaryRow('Total das despesas', brl(extraordinaryAmount()));
   }
 
   /* ---------------- status global ---------------- */
@@ -2671,6 +2855,42 @@
   navItems.forEach((item) => {
     const sectionEl = el(item.dataset.section);
     if (sectionEl) observer.observe(sectionEl);
+  });
+
+  /* ---------------- demonstração: pedido de exemplo ---------------- */
+  el('btnFillExample').addEventListener('click', () => {
+    document.getElementById('proponentTypePJ').checked = true;
+    el('proponentId').value = 'lp-1';
+    refresh();
+    while (eventsData().length < 2) addEvent();
+    const plan = [
+      { artist: 'ar-1', aet: 'aet-1', title: 'Espetáculo "Corpo Urbano" — Teatro Municipal', date: '2026-11-14', time: '19:00' },
+      { artist: 'ar-3', aet: 'aet-4', title: 'Show "Raiz e Verso" — Teatro Municipal', date: '2026-11-21', time: '20:00' },
+    ];
+    document.querySelectorAll('#eventsList .ep').forEach((card, index) => {
+      const item = plan[index];
+      if (!item) return;
+      card.querySelector('select[data-role="artist"]').value = item.artist;
+      refreshDynamicOptions();
+      card.querySelector('select[data-role="aet"]').value = item.aet;
+      suggestFromEventType(card);
+      card.querySelector(`#epTitle-${card.dataset.epId}`).value = item.title;
+      const row = card.querySelector('.schedule-row');
+      row.querySelector('select[data-role="place"]').value = AMENDMENT_CONTEXT.placeId;
+      row.querySelector('input[data-role="start-date"]').value = item.date;
+      row.querySelector('input[data-role="start-time"]').value = item.time;
+    });
+    refresh();
+    const firstCard = document.querySelector('#expensesList .xp');
+    if (firstCard && !firstCard.querySelector('tr[data-xp-row]')) {
+      addExpenseRow(firstCard, { description: 'Transporte de cenário e equipamentos', value: '1200', observation: 'Ida e volta, caminhão 3/4' });
+      addExpenseRow(firstCard, { description: 'Intérprete de Libras', value: '650', observation: '' });
+      firstCard.querySelector('[data-role="xp-just"]').value = 'O espetáculo usa cenário de grande porte, levado da sede da companhia até o teatro, e a sessão terá intérprete de Libras para o público surdo.';
+    }
+    el('contractValue').value = requiredContractValue().toFixed(2);
+    refresh();
+    el('sec-despesas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast('Exemplo preenchido. Salve os blocos para ver o status de cada um.');
   });
 
   /* ---------------- bootstrap ---------------- */

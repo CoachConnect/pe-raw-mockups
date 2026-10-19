@@ -12,7 +12,7 @@
 <header class="appbar">
   <span class="appbar__title">Gestão de Eventos</span>
   <span class="appbar__spacer"></span>
-  <span class="appbar__updated">Atualizado em 21/09/2026 10:12</span>
+  <span class="appbar__updated">Atualizado em 18/10/2026 21:53</span>
   <span class="pill pill--neutral">5 eventos</span>
 </header>
 
@@ -32,16 +32,18 @@
     </div>
     <div class="field" style="flex:1;margin-bottom:0">
       <label class="field__label" for="filtroStatus">Status do pedido</label>
-      <select id="filtroStatus">
+      <select id="filtroStatus" aria-describedby="filtroStatusHelp">
         <option value="">Todos</option>
         <option value="rascunho">Rascunho</option>
         <option value="enviado">Pedido Enviado</option>
+        <option value="reaberto">Pedido reaberto</option>
         <option value="empenhado">Empenhado</option>
         <option value="contabilidade">Enviado para contabilidade</option>
         <option value="cancelado">Cancelado</option>
       </select>
     </div>
   </div>
+  <p class="field__help" id="filtroStatusHelp" style="margin:-8px 0 16px">Pedidos cancelados não aparecem em “Todos” nem entram nas contagens; filtre por “Cancelado” para vê-los.</p>
 
   <div class="tbl-wrap">
     <table class="tbl tbl--expandable">
@@ -54,115 +56,7 @@
           <th class="num" style="width:90px">Pedidos</th>
         </tr>
       </thead>
-      <tbody>
-
-        <tr class="tbl__row" data-event="ev1">
-          <td><button class="tbl__toggle" type="button" data-toggle="ev1" aria-expanded="false" aria-controls="detail-ev1">+</button></td>
-          <td><a class="evt__name" href="../detalhe-evento/index.html">Virada Cultural — Palco Anhangabaú</a></td>
-          <td>Ricardo Nunes</td>
-          <td>15/04/2026</td>
-          <td class="num">3</td>
-        </tr>
-        <tr class="tbl__detail-row" id="detail-ev1" hidden>
-          <td colspan="5">
-            <div class="tbl__sub-wrap">
-              <table class="tbl tbl__sub">
-                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
-                <tbody>
-                  <tr><td class="mono">#11159</td><td>Suspiros e Burbujas (Circo)</td><td class="num money">R$ 5.500,00</td><td><span class="pill pill--warn">Pedido Enviado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                  <tr><td class="mono">#11160</td><td>Banda Fanfarra Popular</td><td class="num money">R$ 3.200,00</td><td><span class="pill pill--ok">Empenhado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                  <tr><td class="mono">#11161</td><td>Estrutura de Som e Palco</td><td class="num money">R$ 8.900,00</td><td><span class="pill pill--neutral">Rascunho</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </td>
-        </tr>
-
-        <tr class="tbl__row" data-event="ev2">
-          <td><button class="tbl__toggle" type="button" data-toggle="ev2" aria-expanded="false" aria-controls="detail-ev2">+</button></td>
-          <td><a class="evt__name" href="../detalhe-evento/index.html">Festival de Inverno — Centro Cultural Grajaú</a></td>
-          <td>Camila Souza</td>
-          <td>22/05/2026</td>
-          <td class="num">2</td>
-        </tr>
-        <tr class="tbl__detail-row" id="detail-ev2" hidden>
-          <td colspan="5">
-            <div class="tbl__sub-wrap">
-              <table class="tbl tbl__sub">
-                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
-                <tbody>
-                  <tr><td class="mono">#11205</td><td>Cia de Dança Raízes</td><td class="num money">R$ 4.100,00</td><td><span class="pill pill--danger">Cancelado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                  <tr><td class="mono">#11206</td><td>Iluminação Cênica LTDA</td><td class="num money">R$ 2.750,00</td><td><span class="pill pill--warn">Pedido Enviado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </td>
-        </tr>
-
-        <tr class="tbl__row" data-event="ev3">
-          <td><button class="tbl__toggle" type="button" data-toggle="ev3" aria-expanded="false" aria-controls="detail-ev3">+</button></td>
-          <td><a class="evt__name" href="../detalhe-evento/index.html">Aniversário do Bairro — Praça Central</a></td>
-          <td>Fábio Penna</td>
-          <td>03/06/2026</td>
-          <td class="num">1</td>
-        </tr>
-        <tr class="tbl__detail-row" id="detail-ev3" hidden>
-          <td colspan="5">
-            <div class="tbl__sub-wrap">
-              <table class="tbl tbl__sub">
-                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
-                <tbody>
-                  <tr><td class="mono">#11240</td><td>DJ Set Marcos Lima</td><td class="num money">R$ 1.800,00</td><td><span class="pill pill--ok">Empenhado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </td>
-        </tr>
-
-        <tr class="tbl__row" data-event="ev4">
-          <td><button class="tbl__toggle" type="button" data-toggle="ev4" aria-expanded="false" aria-controls="detail-ev4">+</button></td>
-          <td><a class="evt__name" href="../detalhe-evento/index.html">Encontro de Corais — Teatro Municipal</a></td>
-          <td>Marta Lima</td>
-          <td>18/07/2026</td>
-          <td class="num">2</td>
-        </tr>
-        <tr class="tbl__detail-row" id="detail-ev4" hidden>
-          <td colspan="5">
-            <div class="tbl__sub-wrap">
-              <table class="tbl tbl__sub">
-                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
-                <tbody>
-                  <tr><td class="mono">#11288</td><td>Coral Vozes da Cidade</td><td class="num money">R$ 2.300,00</td><td><span class="pill pill--neutral">Rascunho</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                  <tr><td class="mono">#11289</td><td>Sonorização Titulada Eventos</td><td class="num money">R$ 3.600,00</td><td><span class="pill pill--ok">Enviado para contabilidade</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </td>
-        </tr>
-
-        <tr class="tbl__row" data-event="ev5">
-          <td><button class="tbl__toggle" type="button" data-toggle="ev5" aria-expanded="false" aria-controls="detail-ev5">+</button></td>
-          <td><a class="evt__name" href="../detalhe-evento/index.html">Circuito de Rua — Vila Madalena</a></td>
-          <td>Diego Alves</td>
-          <td>09/08/2026</td>
-          <td class="num">3</td>
-        </tr>
-        <tr class="tbl__detail-row" id="detail-ev5" hidden>
-          <td colspan="5">
-            <div class="tbl__sub-wrap">
-              <table class="tbl tbl__sub">
-                <thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:120px">Ação</th></tr></thead>
-                <tbody>
-                  <tr><td class="mono">#11310</td><td>Palhaço Tico Trupe</td><td class="num money">R$ 1.950,00</td><td><span class="pill pill--ok">Enviado para contabilidade</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                  <tr><td class="mono">#11311</td><td>Segurança Eventos SP</td><td class="num money">R$ 6.400,00</td><td><span class="pill pill--danger">Cancelado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                  <tr><td class="mono">#11312</td><td>Estrutura Elétrica Móvel</td><td class="num money">R$ 4.750,00</td><td><span class="pill pill--warn">Pedido Enviado</span></td><td><a class="btn btn--sm" href="../acompanhamento/index.html">Visualizar pedido</a></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </td>
-        </tr>
-
-      </tbody>
+      <tbody id="eventsBody"></tbody>
     </table>
   </div>
 </main>
@@ -229,25 +123,273 @@
   </div>
 </div>
 
+<!-- MODAL: cancelar pedido (PBI 57330, CANC-17) — motivo obrigatório de 10 a 1000 caracteres -->
+<div class="modal" id="cancelModal" hidden>
+  <div class="modal__backdrop" data-cancel-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="cancelTitle" aria-describedby="cancelDesc" style="width:min(560px,100%)">
+    <div class="modal__head"><h3 class="modal__title" id="cancelTitle">Cancelar pedido</h3></div>
+    <div class="modal__body">
+      <p id="cancelDesc" style="margin:0 0 12px;font-size:13px;color:var(--c-text-2)"></p>
+      <div class="field" id="cancelField" style="margin:0">
+        <label class="field__label" for="cancelReason">Motivo do cancelamento<span class="req" aria-hidden="true">*</span></label>
+        <textarea id="cancelReason" rows="5" maxlength="1000" aria-describedby="cancelCount cancelError" placeholder="Por que o pedido não vai acontecer?"></textarea>
+        <div class="field__count" id="cancelCount">0 / 1000</div>
+        <p class="field__error" id="cancelError"></p>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <span class="modal__foot-msg">O cancelamento não pode ser desfeito.</span>
+      <div class="modal__foot-actions">
+        <button type="button" class="btn btn--sm" data-cancel-close>Voltar</button>
+        <button type="button" class="btn btn--sm btn--danger-solid" id="cancelConfirm">Cancelar pedido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rowmenu__list" id="rowMenu" role="menu" hidden></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
 <script>
-document.querySelectorAll('[data-toggle]').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    var id = btn.dataset.toggle;
-    var detailRow = document.getElementById('detail-' + id);
-    var expanded = btn.getAttribute('aria-expanded') === 'true';
-    btn.setAttribute('aria-expanded', String(!expanded));
-    detailRow.hidden = expanded;
-    btn.textContent = expanded ? '+' : '−';
-    btn.closest('tr').classList.toggle('is-expanded', !expanded);
+(function () {
+'use strict';
+
+var $ = function (id) { return document.getElementById(id); };
+var money = function (v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); };
+var esc = function (v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
   });
+};
+var EYE = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8s-2.4 4.5-6.5 4.5S1.5 8 1.5 8z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg>';
+var STOP = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M3.8 12.2l8.4-8.4" stroke="currentColor" stroke-width="1.3"/></svg>';
+
+var STATUS = {
+  rascunho: { label: 'Rascunho', cls: 'pill--neutral' },
+  enviado: { label: 'Pedido Enviado', cls: 'pill--warn' },
+  reaberto: { label: 'Pedido reaberto', cls: 'pill--orange' },
+  empenhado: { label: 'Empenhado', cls: 'pill--ok' },
+  contabilidade: { label: 'Enviado para contabilidade', cls: 'pill--ok' },
+  cancelado: { label: 'Cancelado', cls: 'pill--danger' }
+};
+
+var EVENTS = [
+  { id: 'ev1', name: 'Virada Cultural — Palco Anhangabaú', councilor: 'Ricardo Nunes', date: '15/04/2026', requests: [
+    { code: '11159', hired: 'Suspiros e Burbujas (Circo)', value: 5500, status: 'enviado' },
+    { code: '11160', hired: 'Banda Fanfarra Popular', value: 3200, status: 'empenhado' },
+    { code: '11161', hired: 'Estrutura de Som e Palco', value: 8900, status: 'rascunho' },
+    { code: '11162', hired: 'Coletivo Batuque de Rua', value: 4800, status: 'reaberto' },
+    { code: '11158', hired: 'Trupe Pernas de Pau', value: 2600, status: 'cancelado' }
+  ] },
+  { id: 'ev2', name: 'Festival de Inverno — Centro Cultural Grajaú', councilor: 'Camila Souza', date: '22/05/2026', requests: [
+    { code: '11205', hired: 'Cia de Dança Raízes', value: 4100, status: 'cancelado' },
+    { code: '11206', hired: 'Iluminação Cênica LTDA', value: 2750, status: 'enviado' }
+  ] },
+  { id: 'ev3', name: 'Aniversário do Bairro — Praça Central', councilor: 'Fábio Penna', date: '03/06/2026', requests: [
+    { code: '11240', hired: 'DJ Set Marcos Lima', value: 1800, status: 'empenhado' }
+  ] },
+  { id: 'ev4', name: 'Encontro de Corais — Teatro Municipal', councilor: 'Marta Lima', date: '18/07/2026', requests: [
+    { code: '11288', hired: 'Coral Vozes da Cidade', value: 2300, status: 'rascunho' },
+    { code: '11289', hired: 'Sonorização Titulada Eventos', value: 3600, status: 'contabilidade' }
+  ] },
+  { id: 'ev5', name: 'Circuito de Rua — Vila Madalena', councilor: 'Diego Alves', date: '09/08/2026', requests: [
+    { code: '11310', hired: 'Palhaço Tico Trupe', value: 1950, status: 'contabilidade' },
+    { code: '11311', hired: 'Segurança Eventos SP', value: 6400, status: 'cancelado' },
+    { code: '11312', hired: 'Estrutura Elétrica Móvel', value: 4750, status: 'enviado' }
+  ] }
+];
+
+var expanded = {};
+
+function findRequest(key) {
+  var parts = key.split(':');
+  var event = EVENTS.filter(function (e) { return e.id === parts[0]; })[0];
+  return { event: event, request: event.requests.filter(function (r) { return r.code === parts[1]; })[0] };
+}
+
+// CANC-15: sem filtro, cancelados ficam de fora; com "Cancelado", só os cancelados
+function visibleRequests(event) {
+  var filter = $('filtroStatus').value;
+  return event.requests.filter(function (r) {
+    if (!filter) return r.status !== 'cancelado';
+    return r.status === filter;
+  });
+}
+
+function trackingLink(request) {
+  if (request.status === 'reaberto') return '../acompanhamento/index.html?estado=reaberto';
+  if (request.status === 'cancelado') return '../acompanhamento/index.html?estado=cancelado';
+  return '../acompanhamento/index.html';
+}
+
+function requestRow(event, r) {
+  var st = STATUS[r.status];
+  return '<tr><td class="mono">#' + r.code + '</td><td>' + esc(r.hired) + '</td><td class="num money">' + money(r.value) + '</td>' +
+    '<td><span class="pill ' + st.cls + '">' + st.label + '</span></td>' +
+    '<td style="text-align:right"><button class="rowmenu__btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Ações do pedido #' + r.code + '" data-menu="' + event.id + ':' + r.code + '">⋯</button></td></tr>';
+}
+
+function render() {
+  var filter = $('filtroStatus').value;
+  var html = EVENTS.map(function (event) {
+    var requests = visibleRequests(event);
+    if (filter && !requests.length) return '';
+    var open = !!expanded[event.id];
+    var nested = requests.length
+      ? requests.map(function (r) { return requestRow(event, r); }).join('')
+      : '<tr><td colspan="5" class="file__meta">Nenhum pedido de contratação ativo neste evento.</td></tr>';
+    return '<tr class="tbl__row' + (open ? ' is-expanded' : '') + '" data-event="' + event.id + '">' +
+        '<td><button class="tbl__toggle" type="button" data-toggle="' + event.id + '" aria-expanded="' + open + '" aria-controls="detail-' + event.id + '" aria-label="Pedidos de ' + esc(event.name) + '">' + (open ? '−' : '+') + '</button></td>' +
+        '<td><a class="evt__name" href="../detalhe-evento/index.html">' + esc(event.name) + '</a></td>' +
+        '<td>' + esc(event.councilor) + '</td><td>' + event.date + '</td><td class="num">' + requests.length + '</td>' +
+      '</tr>' +
+      '<tr class="tbl__detail-row" id="detail-' + event.id + '"' + (open ? '' : ' hidden') + '>' +
+        '<td colspan="5"><div class="tbl__sub-wrap"><table class="tbl tbl__sub">' +
+          '<thead><tr><th>Nº pedido</th><th>Contratado</th><th class="num">Valor</th><th>Status</th><th style="width:72px;text-align:right">Ações</th></tr></thead>' +
+          '<tbody>' + nested + '</tbody></table></div></td>' +
+      '</tr>';
+  }).join('');
+  $('eventsBody').innerHTML = html || '<tr><td colspan="5"><p class="empty" style="margin:8px 0">Nenhum evento com pedidos neste status.</p></td></tr>';
+}
+
+/* ---------- toast ---------- */
+var toastTimer = null;
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { $('toast').hidden = true; }, 4500);
+}
+
+/* ---------- menu de ações da linha ---------- */
+var menu = $('rowMenu');
+var menuTrigger = null;
+
+function openRowMenu(button) {
+  closeRowMenu(false);
+  var found = findRequest(button.dataset.menu);
+  var r = found.request;
+  menu.innerHTML = '<a class="rowmenu__item" role="menuitem" href="' + trackingLink(r) + '">' + EYE + 'Visualizar pedido</a>' +
+    (r.status !== 'cancelado'
+      ? '<div class="rowmenu__sep" role="separator"></div><button class="rowmenu__item rowmenu__item--danger" role="menuitem" type="button" data-cancel="' + button.dataset.menu + '">' + STOP + 'Cancelar pedido</button>'
+      : '');
+  menu.hidden = false;
+  var rect = button.getBoundingClientRect();
+  var top = rect.bottom + 4;
+  if (top + menu.offsetHeight > window.innerHeight - 8) top = rect.top - menu.offsetHeight - 4;
+  menu.style.top = top + 'px';
+  menu.style.left = Math.max(8, rect.right - menu.offsetWidth) + 'px';
+  button.setAttribute('aria-expanded', 'true');
+  menuTrigger = button;
+  menu.querySelector('.rowmenu__item').focus();
+}
+
+function closeRowMenu(returnFocus) {
+  if (menu.hidden) return;
+  menu.hidden = true;
+  menuTrigger.setAttribute('aria-expanded', 'false');
+  if (returnFocus) menuTrigger.focus();
+}
+
+menu.addEventListener('keydown', function (event) {
+  var items = Array.prototype.slice.call(menu.querySelectorAll('.rowmenu__item'));
+  var index = items.indexOf(document.activeElement);
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault();
+    var step = event.key === 'ArrowDown' ? 1 : items.length - 1;
+    items[(index + step) % items.length].focus();
+  }
+  if (event.key === 'Tab') closeRowMenu(false);
 });
+window.addEventListener('resize', function () { closeRowMenu(false); });
+window.addEventListener('scroll', function () { closeRowMenu(false); }, true);
+
+/* ---------- cancelar pedido (CANC-17) ---------- */
+var pendingCancel = null;
+
+function openCancelModal(key) {
+  var found = findRequest(key);
+  var r = found.request;
+  pendingCancel = { key: key, eventId: found.event.id };
+  $('cancelTitle').textContent = 'Cancelar o pedido #' + r.code + '?';
+  $('cancelDesc').textContent = r.hired + ' · ' + money(r.value) + '. O pedido passa para “Cancelado” e sai das listas. Os eventos do pedido são cancelados e o valor reservado volta para a dotação. ' +
+    (r.status === 'rascunho' ? 'Como é rascunho, o produtor não é avisado.' : 'O produtor recebe aviso por e-mail e no sistema.');
+  $('cancelReason').value = '';
+  $('cancelCount').textContent = '0 / 1000';
+  $('cancelField').classList.remove('has-error');
+  $('cancelError').textContent = '';
+  $('cancelReason').removeAttribute('aria-invalid');
+  $('cancelModal').hidden = false;
+  $('cancelReason').focus();
+}
+
+function closeCancelModal() {
+  $('cancelModal').hidden = true;
+  if (menuTrigger && document.contains(menuTrigger)) menuTrigger.focus();
+}
+
+$('cancelReason').addEventListener('input', function () {
+  $('cancelCount').textContent = this.value.length + ' / 1000';
+});
+
+$('cancelConfirm').addEventListener('click', function () {
+  var reason = $('cancelReason').value.trim();
+  var error = '';
+  if (!reason) error = 'Informe o motivo do cancelamento.';
+  if (reason && (reason.length < 10 || reason.length > 1000)) error = 'O motivo precisa ter de 10 a 1000 caracteres.';
+  if (error) {
+    $('cancelField').classList.add('has-error');
+    $('cancelError').textContent = error;
+    $('cancelReason').setAttribute('aria-invalid', 'true');
+    $('cancelReason').focus();
+    return;
+  }
+  var found = findRequest(pendingCancel.key);
+  found.request.status = 'cancelado';
+  $('cancelModal').hidden = true;
+  render();
+  var toggle = document.querySelector('[data-toggle="' + pendingCancel.eventId + '"]');
+  if (toggle) toggle.focus();
+  toast('Pedido #' + found.request.code + ' cancelado. O valor reservado voltou para a dotação.');
+});
+
+document.querySelectorAll('[data-cancel-close]').forEach(function (node) {
+  node.addEventListener('click', closeCancelModal);
+});
+
+/* ---------- tabela: expandir, menu da linha e filtro ---------- */
+document.addEventListener('click', function (event) {
+  var target = event.target;
+  var toggle = target.closest('[data-toggle]');
+  if (toggle) {
+    expanded[toggle.dataset.toggle] = toggle.getAttribute('aria-expanded') !== 'true';
+    render();
+    document.querySelector('[data-toggle="' + toggle.dataset.toggle + '"]').focus();
+    return;
+  }
+  var menuButton = target.closest('[data-menu]');
+  if (menuButton) {
+    if (menuTrigger === menuButton && !menu.hidden) { closeRowMenu(true); return; }
+    openRowMenu(menuButton);
+    return;
+  }
+  var cancel = target.closest('[data-cancel]');
+  if (cancel) {
+    closeRowMenu(false);
+    openCancelModal(cancel.dataset.cancel);
+    return;
+  }
+  if (!target.closest('#rowMenu')) closeRowMenu(false);
+});
+
+$('filtroStatus').addEventListener('change', render);
 
 // modal de nova emenda
 function openNewEventModal() {
-  document.getElementById('newEventModal').hidden = false;
+  $('newEventModal').hidden = false;
 }
 function closeNewEventModal() {
-  document.getElementById('newEventModal').hidden = true;
+  $('newEventModal').hidden = true;
 }
 document.querySelectorAll('[data-open-new-event]').forEach(function (trigger) {
   trigger.addEventListener('click', function (event) {
@@ -259,11 +401,17 @@ document.querySelectorAll('#newEventModal [data-modal-close]').forEach(function 
   node.addEventListener('click', closeNewEventModal);
 });
 document.addEventListener('keydown', function (event) {
-  if (event.key === 'Escape' && !document.getElementById('newEventModal').hidden) closeNewEventModal();
+  if (event.key !== 'Escape') return;
+  if (!menu.hidden) { closeRowMenu(true); return; }
+  if (!$('cancelModal').hidden) { closeCancelModal(); return; }
+  if (!$('newEventModal').hidden) closeNewEventModal();
 });
-document.getElementById('newEventSubmit').addEventListener('click', function () {
+$('newEventSubmit').addEventListener('click', function () {
   window.location.href = '../criacao-emenda/index.html';
 });
+
+render();
+})();
 </script>
 </body>
 </html>
