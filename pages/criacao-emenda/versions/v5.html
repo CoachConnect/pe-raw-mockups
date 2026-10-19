@@ -1,0 +1,2716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criação de Emenda — v5</title>
+<link rel="stylesheet" href="../../../styles/global.css">
+<style>
+  .modal__panel--narrow{width:min(640px, 100%)}
+  .psearch{display:flex;gap:8px}
+  .psearch input{flex:1}
+  .psearch__btn{width:36px;padding:0;font-size:16px}
+  .pcard-list{display:grid;gap:12px}
+  .pcard{display:grid;grid-template-columns:1fr 1fr auto;gap:16px;align-items:start;width:100%;padding:14px 16px;border:1px solid var(--c-border);border-radius:12px;background:#fff;text-align:left;font:inherit;color:inherit}
+  button.pcard{cursor:pointer}
+  button.pcard:hover,button.pcard:focus-visible{border-color:var(--c-primary);box-shadow:0 0 0 2px var(--c-primary-bg)}
+  .pcard__label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+  .pcard__value{display:block;font-size:13px;color:var(--c-text-2)}
+  .pcard__value--mono{font-family:var(--mono)}
+  .pcard__tag{justify-self:end;padding:2px 8px;border-radius:6px;font-size:12px;white-space:nowrap;background:var(--c-danger-bg);color:var(--c-danger-text);border:1px solid var(--c-danger-border)}
+  .pcard__tag--pf{background:var(--c-primary-bg);color:#0958d9;border-color:var(--c-primary-border)}
+  details.ep > summary{list-style:none;cursor:pointer}
+  details.ep > summary::-webkit-details-marker{display:none}
+  details.ep > summary .ep__title::before{content:"▸";display:inline-block;width:1.1em;color:var(--c-text-secondary)}
+  details.ep[open] > summary .ep__title::before{content:"▾"}
+  details.ep:not([open]) > summary{margin-bottom:0}
+  .pdetail{display:grid;gap:16px}
+  .pdetail__section h4{font-size:13px;font-weight:600;margin:0 0 8px}
+  .pdetail__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;padding:12px 14px;border:1px solid var(--c-border);border-radius:var(--radius);background:#fafafa;font-size:13px}
+  body[data-page="criacao-emenda"] .pdetail__grid .kv{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:2px}
+  body[data-page="criacao-emenda"] .pdetail__grid .kv__v{text-align:left;font-weight:500}
+  @media (max-width:560px){.pcard{grid-template-columns:1fr}.pcard__tag{justify-self:start}}
+</style>
+</head>
+<body data-page="criacao-emenda">
+  <div class="layout">
+    <nav id="sidenav" class="sidenav" aria-label="Blocos da criação da emenda">
+      <div class="sidenav__title">Criação de Emenda</div>
+      <span class="sidenav__updated">Atualizado em 23/09/2026 15:18</span>
+      <div class="sidenav__order">
+        <div class="order__head">
+          <span class="order__label">Emenda</span>
+          <span class="order__number" id="requestNumber">—</span>
+        </div>
+        <span class="order__councilor" id="requestCouncilor">Vereador: —</span>
+        <span class="chip order__status" id="requestStatus" data-status="draft">✎ Emenda em rascunho</span>
+      </div>
+      <div class="sidenav__progress">
+        <span class="progress__text" id="progressText" role="status">0 de 5 blocos corretos</span>
+        <div class="progress__track"><div class="progress__bar" id="progressBar"></div></div>
+      </div>
+
+      <div class="sidenav__nav" id="sidenavNav">
+        <a href="#sec-evento" class="nav__item" data-section="sec-evento" data-status="readonly">
+          <span class="nav__icon" aria-hidden="true">◎</span>
+          <span class="nav__text">
+            <span class="nav__label">Evento da Emenda</span>
+            <span class="nav__status">Somente leitura</span>
+          </span>
+        </a>
+        <a href="#sec-proponente" class="nav__item" data-section="sec-proponente" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Proponente</span>
+            <span class="nav__status">Salvo</span>
+          </span>
+        </a>
+        <a href="#sec-eventos" class="nav__item" data-section="sec-eventos" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Artistas e eventos planejados</span>
+            <span class="nav__status">Salvo</span>
+          </span>
+        </a>
+        <a href="#sec-contrato" class="nav__item" data-section="sec-contrato" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Contrato</span>
+            <span class="nav__status">Salvo</span>
+          </span>
+        </a>
+        <a href="#sec-valor" class="nav__item" data-section="sec-valor" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Valor do contrato</span>
+            <span class="nav__status">Salvo</span>
+          </span>
+        </a>
+        <a href="#sec-parcelamento" class="nav__item" data-section="sec-parcelamento" data-status="empty">
+          <span class="nav__icon" aria-hidden="true">○</span>
+          <span class="nav__text">
+            <span class="nav__label">Parcelamento</span>
+            <span class="nav__status">Salvo</span>
+          </span>
+        </a>
+        <a href="#sec-resumo" class="nav__item nav__item--summary" data-section="sec-resumo">
+          <span class="nav__text">
+            <span class="nav__label">Resumo</span>
+          </span>
+        </a>
+      </div>
+
+      <div class="sidenav__contracts" id="sidenavContracts">
+        <div class="contracts__head">Contratos relacionados</div>
+        <div class="contracts__list" id="contractsList"></div>
+      </div>
+
+      <div class="sidenav__legend">
+        <button type="button" class="legend__trigger" aria-describedby="legendPanel">
+          Legenda<span class="legend__caret" aria-hidden="true">▸</span>
+        </button>
+        <div class="legend__panel" id="legendPanel" role="tooltip">
+          <div class="legend__card">
+            <span class="legend__item"><span class="legend__dot legend__dot--valid">✓</span> Salvo — todas as alterações foram salvas corretamente</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--draft">✎</span> Alterações não salvas — o formulário foi alterado mas não foi salvo</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--invalid">!</span> Incorreto — o formulário está com algum erro</span>
+            <span class="legend__item"><span class="legend__dot legend__dot--readonly">◎</span> Somente leitura — bloco de consulta, sem campos para preencher</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="content">
+      <!-- ============ BLOCO 1 — EventManagement (somente leitura) ============ -->
+      <section id="sec-evento" class="card" data-status="readonly" aria-label="Evento da Emenda — somente leitura">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Evento da Emenda</h2>
+            <p class="card__hint">Vereador autor, evento unificado (EventManagement) e local habilitado já chegam vinculados à emenda. Bloco de consulta: não há campo para preencher nem alteração a salvar.</p>
+            <span class="card__entity">EventManagement</span>
+          </div>
+          <span class="chip" data-status="readonly">◎ Somente leitura</span>
+        </div>
+
+        <div id="eventoReadonly"></div>
+      </section>
+
+      <!-- ============ BLOCO 2 — Proponente (LegalPerson ou PhysicalPerson) ============ -->
+      <section id="sec-proponente" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Proponente</h2>
+            <p class="card__hint">Proponente contratado. Pessoa Jurídica agencia artistas; Pessoa Física é o próprio artista. A escolha define quais artistas ficam disponíveis para os eventos planejados.</p>
+            <span class="card__entity">LegalPerson · PhysicalPerson</span>
+          </div>
+          <span class="chip" data-chip-for="sec-proponente" data-status="empty">○ Salvo</span>
+        </div>
+
+        <form id="form-proponente" class="js-form" data-section="sec-proponente" novalidate>
+          <input type="hidden" id="proponentId" name="proponentId" value="">
+
+          <div class="field">
+            <label class="field__label" for="proponentTypePJ">Tipo de proponente<span class="req">*</span></label>
+            <div class="radio-inline" role="radiogroup" aria-label="Tipo de proponente">
+              <label><input type="radio" id="proponentTypePJ" name="proponentType" value="PJ" checked> Pessoa Jurídica</label>
+              <label><input type="radio" id="proponentTypePF" name="proponentType" value="PF"> Pessoa Física</label>
+            </div>
+            <p class="field__help">Pessoa Jurídica: a empresa agencia um ou mais artistas. Pessoa Física: o proponente é o próprio artista. Trocar o tipo limpa o proponente já selecionado.</p>
+          </div>
+
+          <div id="proponentPanel"></div>
+          <p class="block-error" data-error-for="proponentBlock"></p>
+          <div class="stack-actions">
+            <button type="button" id="btnOpenProponentModal" class="btn btn--secondary btn--sm">Selecionar proponente</button>
+            <button type="button" id="btnProponentDetails" class="btn btn--secondary btn--sm" hidden>Ver dados do proponente</button>
+            <button type="button" id="btnClearProponent" class="btn btn--danger-link" hidden>Remover proponente</button>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-proponente" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-proponente" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 3 — Artistas agenciados + EventPlanneds ============ -->
+      <section id="sec-eventos" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Artistas e eventos planejados</h2>
+            <p class="card__hint">Cada evento planejado é criado escolhendo um artista do proponente (1 evento : 1 artista) e definindo o cronograma das apresentações.</p>
+            <span class="card__entity">EventPlanned · type = AMENDMENT_EVENT · Artist · EventPlannedSchedule</span>
+          </div>
+          <span class="chip" data-chip-for="sec-eventos" data-status="empty">○ Salvo</span>
+        </div>
+
+        <form id="form-eventos" class="js-form" data-section="sec-eventos" novalidate>
+          <!-- Catálogo de agenciados: só existe para proponente PJ. Em PF o artista é o próprio proponente. -->
+          <div class="sub" id="artistsSub" style="margin-top:0;padding-top:0;border-top:none">
+            <div class="sub__head"><span class="sub__title">Artistas agenciados pelo proponente</span></div>
+            <div id="artistsPanel"></div>
+          </div>
+
+          <div class="sub">
+            <div class="sub__head">
+              <span class="sub__title">Eventos planejados (mínimo 1)</span>
+              <button type="button" id="btnAddEvent" class="btn btn--secondary btn--sm">+ Adicionar evento planejado</button>
+            </div>
+            <div id="eventsList"></div>
+            <p class="block-error" data-error-for="eventsBlock"></p>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-eventos" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-eventos" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 4 — ContractingRequest ============ -->
+      <section id="sec-contrato" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Contrato</h2>
+            <p class="card__hint">Dados gerais da contratação. Os eventos planejados definidos no bloco anterior são anexados a este contrato (N eventos planejados : 1 contrato).</p>
+            <span class="card__entity">ContractingRequest</span>
+          </div>
+          <span class="chip" data-chip-for="sec-contrato" data-status="empty">○ Salvo</span>
+        </div>
+
+        <form id="form-contrato" class="js-form" data-section="sec-contrato" novalidate>
+          <div class="sub" style="margin-top:0;padding-top:0;border-top:none">
+            <div class="sub__head"><span class="sub__title">Dados gerais</span></div>
+
+            <div class="field">
+              <label class="field__label" for="inspectorModeYes">Múltiplos fiscais por local<span class="req">*</span></label>
+              <div class="radio-inline" role="radiogroup" aria-label="Múltiplos fiscais por local">
+                <label><input type="radio" id="inspectorModeYes" name="inspectorMode" value="multiple" checked> Sim</label>
+                <label><input type="radio" id="inspectorModeNo" name="inspectorMode" value="single"> Não</label>
+              </div>
+              <p class="field__help">Sim: um fiscal (e suplente) para cada local habilitado. Não: um único fiscal para todo o contrato.</p>
+            </div>
+
+            <div data-mode-panel="inspectorMode:multiple">
+              <label class="field__label">Fiscais por local<span class="req">*</span></label>
+              <div id="fiscalRows"></div>
+              <p class="block-error" data-error-for="fiscalRows"></p>
+              <button type="button" id="btnAddFiscalRow" class="btn btn--secondary btn--sm" style="margin-bottom:16px">+ Adicionar fiscal</button>
+            </div>
+
+            <div class="row" data-mode-panel="inspectorMode:single" hidden>
+              <div class="field">
+                <label class="field__label" for="fiscalSingleId">Fiscal<span class="req">*</span></label>
+                <select id="fiscalSingleId" name="fiscalSingleId"></select>
+                <p class="field__error" data-error-for="fiscalSingleId"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="substituteSingleId">Suplente</label>
+                <select id="substituteSingleId" name="substituteSingleId"></select>
+                <p class="field__error" data-error-for="substituteSingleId"></p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="registrationResponsible">Responsável pelo cadastro<span class="req">*</span></label>
+                <input type="text" id="registrationResponsible" name="registrationResponsible" value="Salete de Campos Dias">
+                <p class="field__help">Usuário autenticado que está cadastrando a solicitação.</p>
+                <p class="field__error" data-error-for="registrationResponsible"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="requestingUnitId">Unidade Requisitante<span class="req">*</span></label>
+                <select id="requestingUnitId" name="requestingUnitId"></select>
+                <p class="field__error" data-error-for="requestingUnitId"></p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="initialResponsibleId">Responsável pela solicitação inicial<span class="req">*</span></label>
+                <select id="initialResponsibleId" name="initialResponsibleId"></select>
+                <p class="field__error" data-error-for="initialResponsibleId"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="legalFoundation">Fundamento Legal da Contratação<span class="req">*</span></label>
+                <select id="legalFoundation" name="legalFoundation"></select>
+                <p class="field__error" data-error-for="legalFoundation"></p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="contractObject">Objeto do contrato<span class="req">*</span></label>
+              <input type="text" id="contractObject" name="contractObject" placeholder="Ex: Concerto - Divina's Tro - Espetáculo">
+              <p class="field__error" data-error-for="contractObject"></p>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="parentProccessSEI">Processo SEI Mãe<span class="req">*</span></label>
+                <input type="text" id="parentProccessSEI" name="parentProccessSEI" placeholder="Ex: 00000.000000/0000-00">
+                <p class="field__error" data-error-for="parentProccessSEI"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="contractObservation">Observação</label>
+                <input type="text" id="contractObservation" name="contractObservation" placeholder="Observação interna do contrato">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="reserveRequestStandard">Pedido de Reserva<span class="req">*</span></label>
+              <div class="radio-inline" role="radiogroup" aria-label="Pedido de Reserva">
+                <label><input type="radio" id="reserveRequestStandard" name="reserveRequest" value="standard"> Padrão</label>
+                <label><input type="radio" id="reserveRequestGlobal" name="reserveRequest" value="global" checked> Global</label>
+              </div>
+              <p class="field__help">Global: uma única reserva cobre todos os eventos planejados do contrato.</p>
+            </div>
+          </div>
+
+          <div class="sub">
+            <div class="sub__head"><span class="sub__title">Justificativas</span></div>
+
+            <div class="field">
+              <span class="field__label" id="lbl-justContracting">Justificativa da contratação<span class="req">*</span></span>
+              <div class="rte" data-rte-for="justContracting" data-placeholder="Motivo da contratação: demanda cultural atendida, público e território, alinhamento com a emenda parlamentar…"></div>
+              <textarea id="justContracting" name="justContracting" hidden></textarea>
+              <p class="field__error" data-error-for="justContracting"></p>
+            </div>
+
+            <div class="field">
+              <span class="field__label" id="lbl-justContractorChoice">Justificativa da Escolha do Contratado<span class="req">*</span></span>
+              <div class="rte" data-rte-for="justContractorChoice" data-placeholder="Por que este proponente/artista: exclusividade, notória especialização, aderência ao objeto…"></div>
+              <textarea id="justContractorChoice" name="justContractorChoice" hidden></textarea>
+              <p class="field__error" data-error-for="justContractorChoice"></p>
+            </div>
+
+            <div class="field">
+              <span class="field__label" id="lbl-justContractingValue">Justificativa do Valor da Contratação</span>
+              <div class="rte" data-rte-for="justContractingValue" data-placeholder="Pesquisa de preços, contratos anteriores, cachês praticados em eventos equivalentes…"></div>
+              <textarea id="justContractingValue" name="justContractingValue" hidden></textarea>
+              <p class="field__help">Opcional aqui: a memória de cálculo do valor global fica no bloco “Valor do contrato”.</p>
+              <p class="field__error" data-error-for="justContractingValue"></p>
+            </div>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-contrato" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-contrato" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 5 — Valor do contrato ============ -->
+      <section id="sec-valor" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Valor do contrato</h2>
+            <p class="card__hint">Valor global a ser empenhado no contrato. Não pode ser menor que a soma dos cachês dos eventos planejados.</p>
+            <span class="card__entity">ContractingRequest.amount</span>
+          </div>
+          <span class="chip" data-chip-for="sec-valor" data-status="empty">○ Salvo</span>
+        </div>
+
+        <form id="form-valor" class="js-form" data-section="sec-valor" novalidate>
+          <div class="readonly-box" id="contractValueInfo" style="margin-bottom:16px"></div>
+
+          <div class="row">
+            <div class="field">
+              <label class="field__label" for="contractValue">Valor do contrato (R$)<span class="req">*</span></label>
+              <input type="number" id="contractValue" name="contractValue" min="0" step="0.01" placeholder="0,00">
+              <p class="field__help" id="contractValueHelp">Sugestão: soma dos cachês + despesas extraordinárias. Pode ser editado.</p>
+              <p class="field__error" data-error-for="contractValue"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="extraordinaryValue">Despesas extraordinárias (R$)</label>
+              <input type="number" id="extraordinaryValue" name="extraordinaryValue" min="0" step="0.01" placeholder="0,00">
+              <p class="field__help">Custos fora do cachê (transporte, cenografia, acessibilidade).</p>
+              <p class="field__error" data-error-for="extraordinaryValue"></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="budgetAllocationId">Dotação<span class="req">*</span></label>
+            <select id="budgetAllocationId" name="budgetAllocationId"></select>
+            <p class="field__help">Dotação orçamentária que suportará o empenho do contrato.</p>
+            <p class="field__error" data-error-for="budgetAllocationId"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="contractValueJustification">Observação</label>
+            <textarea id="contractValueJustification" name="contractValueJustification" placeholder="Base de cálculo, referências de preço, memória de cálculo das despesas extraordinárias…"></textarea>
+            <p class="field__error" data-error-for="contractValueJustification"></p>
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-valor" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-valor" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ BLOCO 6 — Parcelamento do pagamento ============ -->
+      <section id="sec-parcelamento" class="card" data-status="empty">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Parcelamento</h2>
+            <p class="card__hint">Como o valor do contrato será pago e, em cada parcela, quanto cabe a cada subprefeitura. A soma das parcelas tem de fechar com o valor do contrato.</p>
+            <span class="card__entity">ContractingRequest.paymentForm · ContractInstallment · InstallmentSubprefecture</span>
+          </div>
+          <span class="chip" data-chip-for="sec-parcelamento" data-status="empty">○ Salvo</span>
+        </div>
+
+        <form id="form-parcelamento" class="js-form" data-section="sec-parcelamento" novalidate>
+          <div class="readonly-box" id="paymentInfo" style="margin-bottom:16px"></div>
+
+          <div class="pay-grid">
+            <div class="field">
+              <span class="field__label" id="lbl-paymentMethod">Forma de pagamento<span class="req">*</span></span>
+              <p class="field__help" style="margin:0 0 10px">O pagamento se dará no 30º (trigésimo) dia após a data de entrega de toda documentação correta relativa ao pagamento.</p>
+              <div class="radio-stack" role="radiogroup" aria-labelledby="lbl-paymentMethod">
+                <label><input type="radio" name="paymentMethod" value="unica"> Parcela Única</label>
+                <label><input type="radio" name="paymentMethod" value="parcelado"> Parcelado</label>
+                <label><input type="radio" name="paymentMethod" value="bilheteria"> Reversão de Bilheteria</label>
+                <label><input type="radio" name="paymentMethod" value="outros"> Outros</label>
+                <label><input type="radio" name="paymentMethod" value="sem-cache"> Sem Cachê</label>
+              </div>
+              <p class="block-error" data-error-for="paymentMethodBlock"></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="kitDate">Data prevista para entrega (Kit)<span class="info-dot" title="Data prevista de entrega do kit de documentação do pagamento. O pagamento ocorre 30 dias depois."><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 7.2v4.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="4.9" r=".9" fill="currentColor"/></svg><span class="sr-only">Data prevista de entrega do kit de documentação do pagamento. O pagamento ocorre 30 dias depois.</span></span></label>
+              <input type="date" id="kitDate" name="kitDate">
+              <span class="date-chip" id="kitDateChip" hidden></span>
+              <p class="field__error" data-error-for="kitDate"></p>
+            </div>
+          </div>
+
+          <div id="parcelasPanel" hidden>
+            <div class="sub">
+              <div class="sub__head">
+                <span class="sub__title">Valores por subprefeitura</span>
+                <button type="button" id="btnAddParcela" class="btn btn--secondary btn--sm" hidden>+ Adicionar parcela</button>
+              </div>
+              <div id="parcelasList"></div>
+              <p class="block-error" data-error-for="parcelasBlock"></p>
+            </div>
+          </div>
+
+          <div class="subform" data-mode-panel="paymentMethod:bilheteria" hidden>
+            <div class="row">
+              <div class="field">
+                <label class="field__label" for="boxOfficeShare">Percentual de reversão de bilheteria (%)<span class="req">*</span></label>
+                <input type="number" id="boxOfficeShare" name="boxOfficeShare" min="0" max="100" step="0.01" placeholder="Ex: 70">
+                <p class="field__help">Parte da bilheteria repassada ao contratado.</p>
+                <p class="field__error" data-error-for="boxOfficeShare"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="boxOfficeMinimum">Valor mínimo garantido (R$)</label>
+                <input type="number" id="boxOfficeMinimum" name="boxOfficeMinimum" min="0" step="0.01" placeholder="0,00">
+                <p class="field__help">Deixe vazio quando não houver garantia de valor mínimo.</p>
+                <p class="field__error" data-error-for="boxOfficeMinimum"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="subform" data-mode-panel="paymentMethod:outros" hidden>
+            <div class="field">
+              <label class="field__label" for="paymentOtherDescription">Descrição da forma de pagamento<span class="req">*</span></label>
+              <textarea id="paymentOtherDescription" name="paymentOtherDescription" placeholder="Descreva o arranjo de pagamento acordado com o contratado…"></textarea>
+              <p class="field__error" data-error-for="paymentOtherDescription"></p>
+            </div>
+          </div>
+
+          <div class="subform" data-mode-panel="paymentMethod:sem-cache" hidden>
+            <p style="margin:0;font-size:13px;color:var(--c-text-secondary)">Sem cachê: não há valor a pagar ao contratado. Despesas extraordinárias, se houver, continuam no valor do contrato.</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="paymentObservation">Observação do pagamento</label>
+            <input type="text" id="paymentObservation" name="paymentObservation" placeholder="Condições, retenções, documentos exigidos para liberação…">
+          </div>
+
+          <div class="card__foot">
+            <span class="card__foot-msg" data-foot-for="sec-parcelamento" data-status="empty">Nenhum campo preenchido.</span>
+            <button type="submit" class="btn btn--primary btn--sm js-save" data-save-for="sec-parcelamento" disabled>Salvar alterações</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ RESUMO ============ -->
+      <section id="sec-resumo" class="card">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Resumo</h2>
+            <p class="card__hint">Consolidação dos 6 blocos. Revise antes de criar a emenda.</p>
+          </div>
+        </div>
+        <div id="summaryContent"></div>
+        <div class="card__foot">
+          <span class="card__foot-msg" data-foot-for="sec-resumo">Preencha os blocos anteriores.</span>
+          <button type="button" id="btnValidateAll" class="btn btn--secondary btn--sm">Validar todos os blocos</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="actionbar">
+    <div class="actionbar__status">
+      <span id="savedLabel"></span>
+      <span id="globalStatusLabel"></span>
+    </div>
+    <div class="actionbar__buttons">
+      <button type="button" id="btnCreate" class="btn btn--primary">Criar emenda</button>
+    </div>
+  </div>
+
+  <!-- ============ MODAL DE BUSCA DO PROPONENTE (card por resultado, igual ao cadastro de filmes) ============ -->
+  <div class="modal" id="proponentModal" hidden>
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel modal__panel--narrow" role="dialog" aria-modal="true" aria-labelledby="proponentModalTitle">
+      <div class="modal__head">
+        <h3 class="modal__title" id="proponentModalTitle">Procure por uma empresa registrada</h3>
+        <p class="modal__hint" id="proponentModalHint">Busque por nome fantasia, razão social, CNPJ ou nome do representante legal.</p>
+        <form class="psearch" id="proponentSearchForm" role="search">
+          <input type="search" id="proponentSearch" placeholder="Nome fantasia, razão social, CNPJ ou representante legal" aria-label="Buscar proponente">
+          <button type="submit" class="btn btn--primary psearch__btn" aria-label="Buscar">⌕</button>
+        </form>
+      </div>
+      <div class="modal__body">
+        <div class="pcard-list" id="proponentResults"></div>
+        <p class="hint-empty" id="proponentEmpty" hidden></p>
+      </div>
+      <div class="modal__foot">
+        <span class="modal__foot-msg" id="proponentModalMsg">Clique no card para selecionar o proponente.</span>
+        <div class="modal__foot-actions">
+          <button type="button" class="btn btn--secondary" data-modal-close>Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL DE DADOS DO PROPONENTE (mesmos campos da aba Proponente do fluxo legado) ============ -->
+  <div class="modal" id="proponentDetailModal" hidden>
+    <div class="modal__backdrop" data-detail-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="proponentDetailTitle">
+      <div class="modal__head">
+        <h3 class="modal__title" id="proponentDetailTitle">Dados do proponente</h3>
+        <p class="modal__hint" id="proponentDetailHint"></p>
+      </div>
+      <div class="modal__body" id="proponentDetailBody"></div>
+      <div class="modal__foot">
+        <span class="modal__foot-msg">Somente leitura — os dados vêm do cadastro do proponente.</span>
+        <div class="modal__foot-actions">
+          <button type="button" class="btn btn--secondary" data-detail-close>Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+<script>
+  /* ==========================================================================
+     Protótipo — Criação de Emenda (v2)
+     Sem integração: todos os dados abaixo são mocks equivalentes aos endpoints
+     de EventManagement, Place, ContractingRequest, LegalPerson,
+     Artist/ArtistEventType e EventPlanned/EventPlannedSchedule.
+
+     Diferenças em relação à v1:
+       · o vereador autor da emenda é informado ao criar o evento (EventManagement);
+       · o bloco "Coordenadoria de Emendas" saiu (a unidade requisitante é campo do contrato);
+       · "Artistas agenciados" e "Eventos planejados" viraram um único bloco:
+         cada evento planejado é criado escolhendo o artista e definindo o cronograma;
+       · novo bloco "Valor do contrato";
+       · o contrato recebe os dados gerais da contratação (fiscais, unidade, SEI mãe…).
+     ========================================================================== */
+
+  const AMENDMENT_NUMBER = '2026';
+  const CONTRACT_CODE = 'CT-2026-004312';
+
+  /* Vereador autor, evento unificado (EventManagement) e local habilitado já
+     chegam definidos na abertura da emenda. O bloco "Evento da Emenda" apenas
+     exibe esses dados — não é um dos blocos de preenchimento. */
+  const AMENDMENT_CONTEXT = {
+    councilorId: 'vr-1',
+    eventManagementId: 'em-2026-vr1',
+    placeId: 'pl-1',
+  };
+
+  const COUNCILORS = [
+    { id: 'vr-1', name: 'Ana Beatriz Lima', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 420000 },
+    { id: 'vr-2', name: 'Carlos Eduardo Ramos', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 1150000 },
+    { id: 'vr-3', name: 'Marina Tavares', mandate: '2025–2028', amendmentCeiling: 1600000, usedAmount: 90000 },
+  ];
+
+  const EVENT_MANAGEMENTS = [
+    {
+      id: 'em-2026-vr1',
+      councilorId: 'vr-1',
+      eventName: 'Emendas Ana Beatriz Lima — 2026',
+      projectType: 'Emenda Parlamentar',
+      period: '01/01/2026 a 31/12/2026',
+      linkedEventPlanneds: 12,
+    },
+    {
+      id: 'em-2026-vr2',
+      councilorId: 'vr-2',
+      eventName: 'Emendas Carlos Eduardo Ramos — 2026',
+      projectType: 'Emenda Parlamentar',
+      period: '01/01/2026 a 31/12/2026',
+      linkedEventPlanneds: 27,
+    },
+    {
+      id: 'em-2026-vr3',
+      councilorId: 'vr-3',
+      eventName: 'Emendas Marina Tavares — 2026',
+      projectType: 'Emenda Parlamentar',
+      period: '01/01/2026 a 31/12/2026',
+      linkedEventPlanneds: 4,
+    },
+  ];
+
+  /* Contratos (ContractingRequest) já vinculados a cada evento unificado — contexto para o usuário ao escolher o evento. */
+  const EVENT_MANAGEMENT_CONTRACTS = {
+    'em-2026-vr1': [
+      { code: 'CT-2026-004102', object: 'Show de abertura — Virada Cultural', status: 'Em execução' },
+      { code: 'CT-2026-004180', object: 'Oficinas de dança comunitária', status: 'Concluído' },
+    ],
+    'em-2026-vr2': [
+      { code: 'CT-2026-003950', object: 'Festival de Inverno da Zona Leste', status: 'Em execução' },
+      { code: 'CT-2026-004050', object: 'Circuito de música instrumental', status: 'Em execução' },
+      { code: 'CT-2026-004210', object: 'Temporada de teatro de rua', status: 'Rascunho' },
+    ],
+    'em-2026-vr3': [
+      { code: 'CT-2026-004260', object: 'Mostra de artes visuais', status: 'Rascunho' },
+    ],
+  };
+
+  const PLACES = [
+    { id: 'pl-1', name: 'Teatro Municipal', district: 'Sé', capacity: 1500 },
+    { id: 'pl-2', name: 'Centro Cultural São Paulo', district: 'Liberdade', capacity: 800 },
+    { id: 'pl-3', name: 'Casa de Cultura Itaquera', district: 'Itaquera', capacity: 220 },
+    { id: 'pl-4', name: 'Praça das Artes', district: 'República', capacity: 400 },
+    { id: 'pl-5', name: 'Biblioteca Mário de Andrade', district: 'República', capacity: 180 },
+  ];
+
+  /* Fiscais e suplentes disponíveis (Dados gerais do contrato). */
+  const INSPECTORS = [
+    { id: 'fi-1', name: 'Julio Cesar Doria Alves', unit: 'SMC/CCULT' },
+    { id: 'fi-2', name: 'Morizi Salles Martins', unit: 'smc/ccult' },
+    { id: 'fi-3', name: 'Renata Aparecida Souza', unit: 'SMC/CCULT/AHM' },
+    { id: 'fi-4', name: 'Paulo Henrique Barros', unit: 'SMC/CCULT/TAA' },
+  ];
+
+  const CONTRACT_UNITS = [
+    { id: 'cu-1', name: 'Teatro Arthur Azevedo' },
+    { id: 'cu-2', name: 'AHM-Arquivo Histórico Municipal - SMC/PMSP' },
+    { id: 'cu-3', name: 'Centro Cultural São Paulo' },
+    { id: 'cu-4', name: 'Coordenadoria de Emendas Parlamentares' },
+  ];
+
+  const INITIAL_RESPONSIBLES = [
+    { id: 'ir-1', name: 'Vanessa Mariliz Gomes', unit: 'smc/ccult/ccj' },
+    { id: 'ir-2', name: 'Salete de Campos Dias', unit: 'smc/ccult' },
+    { id: 'ir-3', name: 'Fábio Nogueira Prado', unit: 'smc/ccult/emendas' },
+  ];
+
+  const LEGAL_FOUNDATIONS = [
+    ['editais', 'Editais'],
+    ['inexigibilidade', 'Inexigibilidade — art. 74, II'],
+    ['dispensa', 'Dispensa de licitação'],
+    ['emenda', 'Emenda parlamentar'],
+  ];
+
+  /* Dotações orçamentárias disponíveis para o empenho do contrato. */
+  const BUDGET_ALLOCATIONS = [
+    ['do-1', '02.10.00 · Manutenção de Serviços Administrativos'],
+    ['do-2', '13.395.0002 · Fomento à Cultura'],
+    ['do-3', '13.392.0003 · Ações Culturais'],
+  ];
+
+  /* Subprefeituras que podem receber valor dentro de cada parcela. */
+  const SUBPREFEITURAS = [
+    ['sub-se', 'Sé'],
+    ['sub-vila-mariana', 'Vila Mariana'],
+    ['sub-pinheiros', 'Pinheiros'],
+    ['sub-butanta', 'Butantã'],
+    ['sub-lapa', 'Lapa'],
+    ['sub-mooca', 'Mooca'],
+    ['sub-ipiranga', 'Ipiranga'],
+    ['sub-penha', 'Penha'],
+    ['sub-itaquera', 'Itaquera'],
+    ['sub-santo-amaro', 'Santo Amaro'],
+    ['sub-sao-miguel', 'São Miguel Paulista'],
+    ['sub-freguesia', 'Freguesia/Brasilândia'],
+  ];
+
+  /* Formas de pagamento. Só "Parcela Única" e "Parcelado" abrem parcelas. */
+  const PAYMENT_METHODS = [
+    ['unica', 'Parcela Única'],
+    ['parcelado', 'Parcelado'],
+    ['bilheteria', 'Reversão de Bilheteria'],
+    ['outros', 'Outros'],
+    ['sem-cache', 'Sem Cachê'],
+  ];
+  const PAYMENT_WITH_INSTALLMENTS = ['unica', 'parcelado'];
+
+  /**
+   * Proponentes: PJ (LegalPerson) agencia artistas; PF (PhysicalPerson) é o próprio
+   * artista — por isso todo proponente PF tem exatamente um registro em ARTISTS
+   * apontando para ele, e o bloco de eventos planejados não exibe catálogo de agenciados.
+   */
+  const PROPONENT_TYPES = [
+    ['PJ', 'Pessoa Jurídica'],
+    ['PF', 'Pessoa Física'],
+  ];
+  const DEFAULT_PROPONENT_TYPE = 'PJ';
+
+  /*
+   * Os campos de detalhe espelham a aba "Proponente" do fluxo legado do pedido de contratação
+   * (ProponentDataLegalPerson / ProponentDataNaturalPerson): empresa, representantes legais e
+   * dados bancários na PJ; dados pessoais, contatos, endereço e dados bancários na PF.
+   */
+  const PROPONENTS = [
+    {
+      id: 'lp-1', type: 'PJ', companyName: 'Produções Culturais Horizonte Ltda', tradingName: 'Horizonte Produções', cnpj: '12.345.678/0001-90',
+      ccm: '4.567.890-1', address: 'Rua Augusta, 1500 — Consolação, São Paulo/SP — 01304-001',
+      representatives: [
+        { principal: true, name: 'Carlos Eduardo Menezes', socialName: '—', cpf: '321.654.987-00', rg: '32.165.498-7', email: 'carlos@horizonte.art.br', emailSecondary: '—', phone: '(11) 98888-1111', phoneSecondary: '(11) 3333-1111' },
+        { principal: false, name: 'Beatriz Lima Souza', socialName: 'Bia Lima', cpf: '741.852.963-00', rg: '74.185.296-3', email: 'bia@horizonte.art.br', emailSecondary: '—', phone: '(11) 97777-2222', phoneSecondary: '—', address: 'Rua Frei Caneca, 320 — São Paulo/SP' },
+      ],
+      bankAccounts: [{ bank: '001 — Banco do Brasil', agency: '1234-5', account: '98765-4' }],
+    },
+    {
+      id: 'lp-2', type: 'PJ', companyName: 'Agência Palco Aberto Eireli', tradingName: 'Palco Aberto', cnpj: '98.765.432/0001-11',
+      ccm: '1.234.567-8', address: 'Av. São João, 473 — República, São Paulo/SP — 01035-000',
+      representatives: [
+        { principal: true, name: 'Representante Teste', socialName: '—', cpf: '689.404.230-62', rg: '12.345.678-9', email: 'contato@palcoaberto.com.br', emailSecondary: 'financeiro@palcoaberto.com.br', phone: '(11) 96666-3333', phoneSecondary: '—' },
+      ],
+      bankAccounts: [],
+    },
+    {
+      id: 'lp-3', type: 'PJ', companyName: 'Coletivo Sonora Gestão Artística Ltda', tradingName: 'Sonora Gestão', cnpj: '45.678.901/0001-23',
+      ccm: '7.890.123-4', address: 'Rua Treze de Maio, 88 — Bela Vista, São Paulo/SP — 01327-000',
+      representatives: [
+        { principal: true, name: 'Marta Regina Alves', socialName: '—', cpf: '159.357.456-00', rg: '15.935.745-6', email: 'marta@sonora.art.br', emailSecondary: '—', phone: '(11) 95555-4444', phoneSecondary: '—' },
+      ],
+      bankAccounts: [{ bank: '341 — Itaú Unibanco', agency: '0987', account: '12345-6' }, { bank: '104 — Caixa Econômica Federal', agency: '4321', account: '00012345-7' }],
+    },
+    {
+      id: 'pf-1', type: 'PF', personName: 'Joana Prado', socialName: 'Joana Prado', cpf: '123.456.789-09',
+      artisticName: 'Joana Prado', birthDate: '14/03/1988', rg: '23.456.789-0', pcd: 'Não', ccm: '—', inss: '123.45678.90-1', visa: '—', pisPasep: '123.45678.90-1', rne: '—', passport: '—',
+      nationality: 'Brasileira', maritalStatus: 'Solteira', race: 'Parda', gender: 'Mulher cisgênero', education: 'Superior completo',
+      email: 'joana.prado@email.com', emailSecondary: '—', phone: '(11) 99999-0001', phoneSecondary: '—',
+      address: 'Rua Cardeal Arcoverde, 900 — Pinheiros, São Paulo/SP — 05407-001',
+      bankAccounts: [{ bank: '260 — Nu Pagamentos', agency: '0001', account: '1234567-8' }],
+    },
+    {
+      id: 'pf-2', type: 'PF', personName: 'Marcos Tavares de Oliveira', socialName: 'Marcos Tavares', cpf: '987.654.321-00',
+      artisticName: 'Marcos Tavares', birthDate: '02/11/1979', rg: '98.765.432-1', pcd: 'Não', ccm: '2.345.678-9', inss: '—', visa: '—', pisPasep: '—', rne: '—', passport: '—',
+      nationality: 'Brasileira', maritalStatus: 'Casado', race: 'Preta', gender: 'Homem cisgênero', education: 'Médio completo',
+      email: 'marcos.tavares@email.com', emailSecondary: '—', phone: '(11) 98888-0002', phoneSecondary: '—',
+      address: 'Av. Celso Garcia, 2100 — Belém, São Paulo/SP — 03015-000',
+      bankAccounts: [],
+    },
+    {
+      id: 'pf-3', type: 'PF', personName: 'Rita Nogueira Campos', socialName: 'Rita Campos', cpf: '456.789.012-34',
+      artisticName: 'Rita Campos', birthDate: '27/07/1992', rg: '45.678.901-2', pcd: 'Sim', ccm: '—', inss: '—', visa: '—', pisPasep: '—', rne: '—', passport: '—',
+      nationality: 'Brasileira', maritalStatus: 'Solteira', race: 'Branca', gender: 'Mulher cisgênero', education: 'Pós-graduação',
+      email: 'rita.campos@email.com', emailSecondary: '—', phone: '(11) 97777-0003', phoneSecondary: '—',
+      address: 'Rua Voluntários da Pátria, 45 — Santana, São Paulo/SP — 02011-000',
+      bankAccounts: [{ bank: '237 — Bradesco', agency: '2468', account: '13579-0' }],
+    },
+  ];
+
+  const ARTISTS = [
+    {
+      id: 'ar-1', proponentId: 'lp-1', nameGroup: 'Cia. de Dança Movimento', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-1', nameEvent: 'Espetáculo "Corpo Urbano"', durationInMinutes: 70, valueSuggestion: 18000 },
+        { id: 'aet-2', nameEvent: 'Oficina de dança contemporânea', durationInMinutes: 120, valueSuggestion: 6500 },
+      ],
+    },
+    {
+      id: 'ar-2', proponentId: 'lp-1', nameGroup: 'Quarteto Mário de Andrade', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-3', nameEvent: 'Concerto de câmara', durationInMinutes: 90, valueSuggestion: 22000 },
+      ],
+    },
+    {
+      id: 'ar-3', proponentId: 'lp-1', nameGroup: 'Joana Prado', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-4', nameEvent: 'Show "Raiz e Verso"', durationInMinutes: 80, valueSuggestion: 14000 },
+        { id: 'aet-5', nameEvent: 'Bate-papo com público escolar', durationInMinutes: 60, valueSuggestion: 3800 },
+      ],
+    },
+    {
+      id: 'ar-4', proponentId: 'lp-2', nameGroup: 'Trupe Circo do Beco', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-6', nameEvent: 'Espetáculo circense "Beco Alto"', durationInMinutes: 60, valueSuggestion: 16500 },
+      ],
+    },
+    {
+      id: 'ar-5', proponentId: 'lp-2', nameGroup: 'Bloco Afro Ilú Obá', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-7', nameEvent: 'Cortejo percussivo', durationInMinutes: 100, valueSuggestion: 25000 },
+        { id: 'aet-8', nameEvent: 'Vivência de percussão', durationInMinutes: 90, valueSuggestion: 7200 },
+      ],
+    },
+    {
+      id: 'ar-6', proponentId: 'lp-3', nameGroup: 'Sonora Big Band', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-9', nameEvent: 'Show "Sopros da Cidade"', durationInMinutes: 95, valueSuggestion: 31000 },
+      ],
+    },
+    {
+      id: 'ar-7', proponentId: 'lp-3', nameGroup: 'Duo Cordas do Centro', artistType: 'Grupo/Coletivo',
+      eventTypes: [
+        { id: 'aet-10', nameEvent: 'Recital de cordas', durationInMinutes: 60, valueSuggestion: 9500 },
+        { id: 'aet-11', nameEvent: 'Apresentação didática', durationInMinutes: 50, valueSuggestion: 4200 },
+      ],
+    },
+
+    /* Artistas dos proponentes PF — o proponente é o próprio artista (1 : 1). */
+    {
+      id: 'ar-8', proponentId: 'pf-1', nameGroup: 'Joana Prado', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-12', nameEvent: 'Show "Raiz e Verso"', durationInMinutes: 80, valueSuggestion: 14000 },
+        { id: 'aet-13', nameEvent: 'Bate-papo com público escolar', durationInMinutes: 60, valueSuggestion: 3800 },
+      ],
+    },
+    {
+      id: 'ar-9', proponentId: 'pf-2', nameGroup: 'Marcos Tavares', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-14', nameEvent: 'Sarau "Versos da Quebrada"', durationInMinutes: 70, valueSuggestion: 8200 },
+      ],
+    },
+    {
+      id: 'ar-10', proponentId: 'pf-3', nameGroup: 'Rita Campos', artistType: 'Pessoa física',
+      eventTypes: [
+        { id: 'aet-15', nameEvent: 'Recital de piano solo', durationInMinutes: 65, valueSuggestion: 11000 },
+        { id: 'aet-16', nameEvent: 'Oficina de musicalização', durationInMinutes: 90, valueSuggestion: 4600 },
+      ],
+    },
+  ];
+
+  const STATUS_META = {
+    empty:   { icon: '○', label: 'Salvo' },
+    partial: { icon: '◐', label: 'Salvo' },
+    draft:   { icon: '✎', label: 'Alterações não salvas' },
+    invalid: { icon: '!', label: 'Incorreto' },
+    valid:   { icon: '✓', label: 'Salvo' },
+  };
+
+  /* Status da emenda (ciclo de vida). Sem aprovação: rascunho → criada. */
+  const REQUEST_STATUS_META = {
+    draft:   { status: 'draft', label: 'Emenda em rascunho' },
+    created: { status: 'valid', label: 'Emenda criada' },
+  };
+  let requestStatus = 'draft';
+
+  /* ---------------- helpers ---------------- */
+  const el = (id) => document.getElementById(id);
+  const val = (id) => { const node = el(id); return node ? String(node.value).trim() : ''; };
+  const currentMode = (name) => {
+    const node = document.querySelector(`input[name="${name}"]:checked`);
+    return node ? node.value : '';
+  };
+  const brl = (value) => (value == null || Number.isNaN(value))
+    ? '—'
+    : value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const escapeHtml = (str) => {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  };
+  const pending = (count) => `${count} ${count === 1 ? 'pendência' : 'pendências'}`;
+  const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
+
+  const findPlace = (id) => PLACES.find((place) => place.id === id);
+  const findProponent = (id) => PROPONENTS.find((proponent) => proponent.id === id);
+  const findArtist = (id) => ARTISTS.find((artist) => artist.id === id);
+  const findCouncilor = (id) => COUNCILORS.find((councilor) => councilor.id === id);
+  const findEventManagement = (id) => EVENT_MANAGEMENTS.find((item) => item.id === id);
+  const findInspector = (id) => INSPECTORS.find((inspector) => inspector.id === id);
+  const findContractUnit = (id) => CONTRACT_UNITS.find((unit) => unit.id === id);
+  const findInitialResponsible = (id) => INITIAL_RESPONSIBLES.find((person) => person.id === id);
+  const findLegalFoundation = (id) => LEGAL_FOUNDATIONS.find(([value]) => value === id);
+  const findSubprefeitura = (id) => SUBPREFEITURAS.find(([value]) => value === id);
+  const findPaymentMethod = (id) => PAYMENT_METHODS.find(([value]) => value === id);
+  const findBudgetAllocation = (id) => BUDGET_ALLOCATIONS.find(([value]) => value === id);
+  const formatDateBR = (iso) => {
+    if (!iso) return '—';
+    const [year, month, day] = iso.split('-');
+    return `${day}/${month}/${year}`;
+  };
+  /* Texto de um campo de texto rico, sem marcação, para resumo e validação. */
+  const rteText = (id) => {
+    const area = document.querySelector(`[data-rte-input="${id}"]`);
+    return area ? area.textContent.replace(/\s+/g, ' ').trim() : '';
+  };
+  const excerpt = (text, max = 140) => {
+    const clean = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!clean) return '—';
+    return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
+  };
+  const findEventType = (artistId, aetId) => {
+    const artist = findArtist(artistId);
+    return artist ? artist.eventTypes.find((eventType) => eventType.id === aetId) : undefined;
+  };
+  const proponentArtists = (proponentId) => ARTISTS.filter((artist) => artist.proponentId === proponentId);
+
+  /**
+   * Tipos de erro, por momento em que ficam visíveis:
+   *  required → obrigatório não informado; aparece depois que o bloco é salvo.
+   *  soft     → regra sobre valor em digitação; aparece depois que o bloco é salvo.
+   *  live     → contradição inequívoca entre dados já informados; aparece na hora.
+   */
+  const missing = (field, message) => ({ field, message, kind: 'required' });
+  const soft = (field, message) => ({ field, message, kind: 'soft' });
+  const wrong = (field, message) => ({ field, message, kind: 'live' });
+
+  /* ---------------- leitura do DOM (fonte da verdade) ---------------- */
+  const selectedPlaceIds = () => [AMENDMENT_CONTEXT.placeId];
+
+  function fiscalRowsData() {
+    return Array.from(document.querySelectorAll('#fiscalRows .fiscal-row')).map((row) => ({
+      rowId: row.dataset.rowId,
+      fiscalId: row.querySelector('select[data-role="fiscal"]').value,
+      substituteId: row.querySelector('select[data-role="substitute"]').value,
+      placeId: row.querySelector('select[data-role="fiscal-place"]').value,
+    }));
+  }
+
+  const selectedProponent = () => findProponent(val('proponentId'));
+
+  /* ---------------- proponente: PF x PJ ---------------- */
+  /**
+   * O tipo do proponente é a chave do bloco: PJ agencia artistas (catálogo + escolha
+   * por evento), PF é o próprio artista (um único artista, já vinculado ao proponente
+   * nos dados — por isso o restante do fluxo não precisa de caminho separado).
+   */
+  const proponentType = () => currentMode('proponentType') || DEFAULT_PROPONENT_TYPE;
+  const isIndividualProponent = () => proponentType() === 'PF';
+  const proponentsByType = (type) => PROPONENTS.filter((proponent) => proponent.type === type);
+  const proponentName = (proponent) => (proponent.type === 'PF' ? proponent.personName : proponent.companyName);
+  const proponentShortName = (proponent) => (proponent.type === 'PF' ? proponent.socialName : proponent.tradingName);
+  const proponentDocument = (proponent) => (proponent.type === 'PF' ? proponent.cpf : proponent.cnpj);
+  const proponentDocumentLabel = (proponent) => (proponent.type === 'PF' ? 'CPF' : 'CNPJ');
+  const proponentTypeLabel = (type) => (PROPONENT_TYPES.find((item) => item[0] === type) || [, '—'])[1];
+  /** Artista do proponente PF — ele mesmo. Null enquanto nenhum PF estiver selecionado. */
+  const individualArtist = () => (isIndividualProponent() ? proponentArtists(val('proponentId'))[0] || null : null);
+
+  function parcelasData() {
+    return Array.from(document.querySelectorAll('#parcelasList .parcela')).map((node, index) => ({
+      parcelaId: node.dataset.parcelaId,
+      index,
+      subs: Array.from(node.querySelectorAll('tr[data-sub-id]')).map((row) => ({
+        subId: row.dataset.subId,
+        subprefeituraId: row.querySelector('select[data-role="subprefeitura"]').value,
+        amount: row.querySelector('input[data-role="sub-amount"]').value.trim(),
+      })),
+    }));
+  }
+
+  const subAmount = (sub) => (sub.amount === '' ? 0 : Number(sub.amount));
+  const parcelaTotal = (parcela) => parcela.subs.reduce((total, sub) => total + subAmount(sub), 0);
+  const parcelasTotal = () => parcelasData().reduce((total, parcela) => total + parcelaTotal(parcela), 0);
+  const parcelaLabel = (index) => `${index + 1}ª parcela`;
+  const usesParcelas = () => PAYMENT_WITH_INSTALLMENTS.includes(currentMode('paymentMethod'));
+
+  function eventsData() {
+    return Array.from(document.querySelectorAll('#eventsList .ep')).map((card, index) => {
+      const epId = card.dataset.epId;
+      return {
+        epId,
+        index,
+        artistId: card.querySelector('select[data-role="artist"]').value,
+        aetId: card.querySelector('select[data-role="aet"]').value,
+        title: card.querySelector(`#epTitle-${epId}`).value.trim(),
+        description: card.querySelector(`#epDescription-${epId}`).value.trim(),
+        schedules: Array.from(card.querySelectorAll('.schedule-row')).map((row) => ({
+          rowId: row.dataset.rowId,
+          startDate: row.querySelector('input[data-role="start-date"]').value,
+          endDate: row.querySelector('input[data-role="end-date"]').value,
+          allDay: row.querySelector('input[data-role="all-day"]').checked,
+          startTime: row.querySelector('input[data-role="start-time"]').value,
+          durationInMinutes: row.querySelector('input[data-role="duration"]').value.trim(),
+          placeId: row.querySelector('select[data-role="place"]').value,
+          amount: row.querySelector('input[data-role="amount"]').value.trim(),
+        })),
+      };
+    });
+  }
+
+  const scheduleAmount = (schedule) => (schedule.amount === '' ? 0 : Number(schedule.amount));
+  const eventTotal = (event) => event.schedules.reduce((total, schedule) => total + scheduleAmount(schedule), 0);
+  const schedulesTotal = () => eventsData().reduce((total, event) => total + eventTotal(event), 0);
+  const extraordinaryAmount = () => (val('extraordinaryValue') === '' ? 0 : Number(val('extraordinaryValue')));
+  const requiredContractValue = () => schedulesTotal() + extraordinaryAmount();
+  const contractValueAmount = () => (val('contractValue') === '' ? null : Number(val('contractValue')));
+
+  /* ---------------- definição dos blocos ---------------- */
+  const SECTIONS = [
+    {
+      id: 'sec-proponente',
+      formId: 'form-proponente',
+      label: 'Proponente',
+      filled: () => Boolean(val('proponentId')),
+      validate() {
+        if (!val('proponentId')) {
+          return [missing('proponentBlock', isIndividualProponent()
+            ? 'Selecione o proponente pessoa física.'
+            : 'Selecione o proponente pessoa jurídica.')];
+        }
+        /* Guarda contra estado inconsistente: proponente salvo com tipo diferente do escolhido. */
+        const proponent = selectedProponent();
+        if (proponent && proponent.type !== proponentType()) {
+          return [wrong('proponentBlock', `O proponente selecionado é ${proponentTypeLabel(proponent.type)} e não corresponde ao tipo escolhido.`)];
+        }
+        return [];
+      },
+    },
+    {
+      id: 'sec-eventos',
+      formId: 'form-eventos',
+      label: 'Artistas e eventos planejados',
+      filled: () => eventsData().length > 0,
+      validate() {
+        const errors = [];
+        const proponentId = val('proponentId');
+        const placeIds = selectedPlaceIds();
+
+        if (!proponentId) {
+          errors.push(missing('eventsBlock', 'Selecione o proponente no bloco anterior para liberar os artistas.'));
+          return errors;
+        }
+
+        const allowedArtistIds = proponentArtists(proponentId).map((artist) => artist.id);
+        const events = eventsData();
+        if (events.length === 0) {
+          errors.push(missing('eventsBlock', 'Adicione ao menos um evento planejado — escolha o artista e defina o cronograma.'));
+          return errors;
+        }
+
+        events.forEach((event) => {
+          const position = event.index + 1;
+
+          if (!event.artistId) {
+            errors.push(missing(`epArtist-${event.epId}`, 'Selecione o artista deste evento planejado.'));
+          } else if (!allowedArtistIds.includes(event.artistId)) {
+            errors.push(wrong(`epArtist-${event.epId}`, isIndividualProponent()
+              ? 'Artista não corresponde ao proponente pessoa física selecionado.'
+              : 'Artista não é agenciado pelo proponente selecionado.'));
+          }
+
+          if (!event.aetId) errors.push(missing(`epAet-${event.epId}`, 'Selecione a atração do artista.'));
+
+          if (!event.title) errors.push(missing(`epTitle-${event.epId}`, `Informe o título do evento planejado ${position}.`));
+          else if (event.title.length < 5) errors.push(soft(`epTitle-${event.epId}`, 'O título deve ter ao menos 5 caracteres.'));
+
+          if (event.schedules.length === 0) {
+            errors.push(missing(`epSchedules-${event.epId}`, `Evento ${position}: defina ao menos uma data no cronograma.`));
+          }
+
+          const seenSlots = new Set();
+          event.schedules.forEach((schedule) => {
+            const rowId = schedule.rowId;
+
+            if (!schedule.startDate) errors.push(missing(`epStartDate-${rowId}`, 'Informe a data de início.'));
+            if (schedule.endDate && schedule.startDate && schedule.endDate < schedule.startDate) {
+              errors.push(wrong(`epEndDate-${rowId}`, 'A data de término não pode ser anterior à de início.'));
+            }
+
+            if (!schedule.allDay) {
+              if (!schedule.startTime) errors.push(missing(`epStartTime-${rowId}`, 'Informe o horário de início.'));
+              if (schedule.durationInMinutes === '') errors.push(missing(`epDuration-${rowId}`, 'Informe a duração.'));
+              else if (!(Number(schedule.durationInMinutes) > 0)) errors.push(wrong(`epDuration-${rowId}`, 'A duração deve ser maior que zero.'));
+            }
+
+            if (!schedule.placeId) errors.push(missing(`epPlace-${rowId}`, 'Selecione o local.'));
+            else if (!placeIds.includes(schedule.placeId)) errors.push(wrong(`epPlace-${rowId}`, 'Local não está mais habilitado no evento da emenda.'));
+
+            if (schedule.amount === '') errors.push(missing(`epAmount-${rowId}`, 'Informe o valor do cachê.'));
+            else if (!(Number(schedule.amount) > 0)) errors.push(wrong(`epAmount-${rowId}`, 'O valor deve ser maior que zero.'));
+
+            if (schedule.startDate && schedule.placeId) {
+              const slot = `${schedule.startDate}|${schedule.startTime}|${schedule.placeId}`;
+              if (seenSlots.has(slot)) {
+                errors.push(wrong(`epStartDate-${rowId}`, 'Já existe uma data igual neste local para este evento.'));
+              }
+              seenSlots.add(slot);
+            }
+          });
+        });
+
+        return errors;
+      },
+    },
+    {
+      id: 'sec-contrato',
+      formId: 'form-contrato',
+      label: 'Contrato',
+      filled: () => Boolean(
+        val('parentProccessSEI') || val('contractObservation') ||
+        val('contractObject') || val('requestingUnitId') || val('initialResponsibleId') ||
+        val('legalFoundation') || val('fiscalSingleId') ||
+        val('justContracting') || val('justContractorChoice') || val('justContractingValue') ||
+        fiscalRowsData().some((row) => row.fiscalId || row.substituteId || row.placeId)
+      ),
+      validate() {
+        const errors = [];
+        const placeIds = selectedPlaceIds();
+
+        if (currentMode('inspectorMode') === 'multiple') {
+          const rows = fiscalRowsData();
+          const touched = rows.filter((row) => row.fiscalId || row.substituteId || row.placeId);
+          if (touched.length === 0) {
+            errors.push(missing('fiscalRows', 'Informe ao menos um fiscal por local.'));
+          }
+
+          const seenPlaces = new Set();
+          rows.forEach((row) => {
+            if (!row.fiscalId) errors.push(missing(`fiscalId-${row.rowId}`, 'Selecione o fiscal.'));
+            if (!row.placeId) {
+              errors.push(missing(`fiscalPlace-${row.rowId}`, 'Selecione o local.'));
+            } else {
+              if (!placeIds.includes(row.placeId)) {
+                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Local não está habilitado no evento da emenda.'));
+              }
+              if (seenPlaces.has(row.placeId)) {
+                errors.push(wrong(`fiscalPlace-${row.rowId}`, 'Este local já tem fiscal designado.'));
+              }
+              seenPlaces.add(row.placeId);
+            }
+            if (row.substituteId && row.substituteId === row.fiscalId) {
+              errors.push(wrong(`fiscalSubstitute-${row.rowId}`, 'O suplente deve ser diferente do fiscal.'));
+            }
+          });
+        } else {
+          if (!val('fiscalSingleId')) errors.push(missing('fiscalSingleId', 'Selecione o fiscal do contrato.'));
+          if (val('substituteSingleId') && val('substituteSingleId') === val('fiscalSingleId')) {
+            errors.push(wrong('substituteSingleId', 'O suplente deve ser diferente do fiscal.'));
+          }
+        }
+
+        if (!val('registrationResponsible')) errors.push(missing('registrationResponsible', 'Informe o responsável pelo cadastro.'));
+        if (!val('requestingUnitId')) errors.push(missing('requestingUnitId', 'Selecione a unidade requisitante.'));
+        if (!val('initialResponsibleId')) errors.push(missing('initialResponsibleId', 'Selecione o responsável pela solicitação inicial.'));
+        if (!val('legalFoundation')) errors.push(missing('legalFoundation', 'Selecione o fundamento legal da contratação.'));
+
+        const object = val('contractObject');
+        if (!object) errors.push(missing('contractObject', 'Informe o objeto do contrato.'));
+        else if (object.length < 5) errors.push(soft('contractObject', 'O objeto deve ter ao menos 5 caracteres.'));
+
+        const sei = val('parentProccessSEI');
+        if (!sei) errors.push(missing('parentProccessSEI', 'Informe o processo SEI mãe.'));
+        else if (!/^\d{5}\.\d{6}\/\d{4}-\d{2}$/.test(sei)) {
+          errors.push(wrong('parentProccessSEI', 'Formato esperado: 00000.000000/0000-00.'));
+        }
+
+        /* Justificativas: obrigatórias no processo, exceto a do valor da contratação. */
+        if (!val('justContracting')) {
+          errors.push(missing('justContracting', 'Escreva a justificativa da contratação.'));
+        } else if (rteText('justContracting').length < 20) {
+          errors.push(soft('justContracting', 'A justificativa da contratação está curta demais (mínimo 20 caracteres).'));
+        }
+
+        if (!val('justContractorChoice')) {
+          errors.push(missing('justContractorChoice', 'Escreva a justificativa da escolha do contratado.'));
+        } else if (rteText('justContractorChoice').length < 20) {
+          errors.push(soft('justContractorChoice', 'A justificativa da escolha do contratado está curta demais (mínimo 20 caracteres).'));
+        }
+
+        if (val('justContractingValue') && rteText('justContractingValue').length < 20) {
+          errors.push(soft('justContractingValue', 'A justificativa do valor da contratação está curta demais (mínimo 20 caracteres).'));
+        }
+        return errors;
+      },
+    },
+    {
+      id: 'sec-valor',
+      formId: 'form-valor',
+      label: 'Valor do contrato',
+      filled: () => Boolean(val('contractValue') || val('extraordinaryValue') || val('contractValueJustification') || val('budgetAllocationId')),
+      validate() {
+        const errors = [];
+        const value = contractValueAmount();
+        const extraordinary = extraordinaryAmount();
+        const minimum = requiredContractValue();
+
+        if (!val('budgetAllocationId')) errors.push(missing('budgetAllocationId', 'Selecione a dotação.'));
+
+        if (val('extraordinaryValue') !== '' && !(extraordinary >= 0)) {
+          errors.push(wrong('extraordinaryValue', 'O valor das despesas extraordinárias não pode ser negativo.'));
+        }
+        if (extraordinary > 0 && !val('contractValueJustification')) {
+          errors.push(missing('contractValueJustification', 'Justifique as despesas extraordinárias.'));
+        }
+
+        if (value === null) {
+          errors.push(missing('contractValue', 'Informe o valor do contrato.'));
+          return errors;
+        }
+        if (!(value > 0)) {
+          errors.push(wrong('contractValue', 'O valor do contrato deve ser maior que zero.'));
+          return errors;
+        }
+        if (minimum > 0 && value < minimum) {
+          errors.push(wrong('contractValue', `O valor do contrato não pode ser menor que ${brl(minimum)} (cachês + despesas extraordinárias).`));
+        }
+        return errors;
+      },
+    },
+    {
+      id: 'sec-parcelamento',
+      formId: 'form-parcelamento',
+      label: 'Parcelamento',
+      filled: () => Boolean(
+        currentMode('paymentMethod') || val('kitDate') || val('paymentObservation') ||
+        val('paymentOtherDescription') || val('boxOfficeShare') || val('boxOfficeMinimum') ||
+        parcelasData().some((parcela) => parcela.subs.some((sub) => sub.subprefeituraId || sub.amount))
+      ),
+      validate() {
+        const errors = [];
+        const method = currentMode('paymentMethod');
+
+        if (!method) {
+          errors.push(missing('paymentMethodBlock', 'Selecione a forma de pagamento.'));
+          return errors;
+        }
+
+        if (method === 'bilheteria') {
+          const share = val('boxOfficeShare');
+          if (share === '') errors.push(missing('boxOfficeShare', 'Informe o percentual de reversão de bilheteria.'));
+          else if (!(Number(share) > 0) || Number(share) > 100) {
+            errors.push(wrong('boxOfficeShare', 'O percentual deve ser maior que zero e no máximo 100.'));
+          }
+          if (val('boxOfficeMinimum') !== '' && Number(val('boxOfficeMinimum')) < 0) {
+            errors.push(wrong('boxOfficeMinimum', 'O valor mínimo garantido não pode ser negativo.'));
+          }
+          return errors;
+        }
+
+        if (method === 'outros') {
+          const description = val('paymentOtherDescription');
+          if (!description) errors.push(missing('paymentOtherDescription', 'Descreva a forma de pagamento.'));
+          else if (description.length < 15) errors.push(soft('paymentOtherDescription', 'A descrição deve ter ao menos 15 caracteres.'));
+          return errors;
+        }
+
+        if (method === 'sem-cache') return errors;
+
+        /* Parcela única / parcelado: cada parcela distribui valor por subprefeitura. */
+        const parcelas = parcelasData();
+        if (parcelas.length === 0) {
+          errors.push(missing('parcelasBlock', 'Informe ao menos uma parcela com valor por subprefeitura.'));
+          return errors;
+        }
+        if (method === 'parcelado' && parcelas.length < 2) {
+          errors.push(wrong('parcelasBlock', 'Pagamento parcelado exige ao menos duas parcelas — ou volte para "Parcela Única".'));
+        }
+
+        parcelas.forEach((parcela) => {
+          if (parcela.subs.length === 0) {
+            errors.push(missing(`parcelaSubs-${parcela.parcelaId}`, `${parcelaLabel(parcela.index)}: adicione ao menos um valor por subprefeitura.`));
+            return;
+          }
+          const seen = new Set();
+          parcela.subs.forEach((sub) => {
+            if (!sub.subprefeituraId) {
+              errors.push(missing(`subPref-${sub.subId}`, 'Selecione a subprefeitura.'));
+            } else if (seen.has(sub.subprefeituraId)) {
+              errors.push(wrong(`subPref-${sub.subId}`, 'Esta subprefeitura já tem valor nesta parcela.'));
+            } else {
+              seen.add(sub.subprefeituraId);
+            }
+
+            if (sub.amount === '') errors.push(missing(`subAmount-${sub.subId}`, 'Informe o valor.'));
+            else if (!(Number(sub.amount) > 0)) errors.push(wrong(`subAmount-${sub.subId}`, 'O valor deve ser maior que zero.'));
+          });
+        });
+
+        const total = parcelasTotal();
+        const contractValue = contractValueAmount();
+        if (contractValue !== null && total > 0 && Math.abs(total - contractValue) > 0.005) {
+          errors.push(wrong('parcelasBlock', `A soma das parcelas (${brl(total)}) tem de ser igual ao valor do contrato (${brl(contractValue)}). Diferença de ${brl(contractValue - total)}.`));
+        }
+        return errors;
+      },
+    },
+  ];
+
+  /* Blocos já salvos: a partir daí todos os erros ficam visíveis. */
+  const attempted = new Set();
+
+  /* ---------------- rascunho por bloco ---------------- */
+  /**
+   * snapshots guarda a última versão salva de cada bloco. Comparar a serialização
+   * atual com o snapshot dá o estado "rascunho": há alterações não salvas.
+   * A chave de cada campo é sua posição no formulário, então incluir ou remover
+   * linhas (locais, fiscais, programações) também conta como alteração.
+   */
+  const snapshots = new Map();
+
+  function serializeSection(section) {
+    const formEl = el(section.formId);
+    return Array.from(formEl.querySelectorAll('input, select, textarea'))
+      .map((node, index) => `${index}:${node.type === 'checkbox' || node.type === 'radio' ? node.checked : node.value}`)
+      .join('|');
+  }
+
+  const isDirty = (section) => snapshots.get(section.id) !== serializeSection(section);
+  const takeSnapshot = (section) => snapshots.set(section.id, serializeSection(section));
+  const snapshotAll = () => SECTIONS.forEach(takeSnapshot);
+
+  /* ---------------- selects dinâmicos ---------------- */
+  /** Reescreve as opções só quando elas mudam, preservando o valor atual. */
+  function fillSelect(selectEl, options, placeholder) {
+    const signature = JSON.stringify([placeholder, options]);
+    if (selectEl.dataset.signature === signature) return;
+    const current = selectEl.value;
+    selectEl.dataset.signature = signature;
+    selectEl.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` +
+      options.map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join('');
+    selectEl.value = options.some(([value]) => value === current) ? current : '';
+  }
+
+  /**
+   * Mantém no select um valor que saiu da lista de origem (local removido do
+   * evento, artista de outro proponente). Sem isso a seleção sumiria em silêncio e
+   * o erro cruzado viraria um genérico "campo obrigatório".
+   */
+  function withStale(options, currentValue, labelFor) {
+    if (!currentValue || options.some(([value]) => value === currentValue)) return options;
+    return [...options, [currentValue, labelFor(currentValue)]];
+  }
+
+  const inspectorOptions = () => INSPECTORS.map((inspector) => [inspector.id, `${inspector.name} (${inspector.unit})`]);
+  const enabledPlaceOptions = () => selectedPlaceIds().map((id) => {
+    const place = findPlace(id);
+    return [id, `${place.name} — ${place.district}`];
+  });
+  const artistOptions = () => proponentArtists(val('proponentId')).map((artist) => [artist.id, `${artist.nameGroup} (${artist.artistType})`]);
+
+  function refreshDynamicOptions() {
+    /* Fiscais do contrato */
+    const inspectors = inspectorOptions();
+    const enabledPlaces = enabledPlaceOptions();
+    fillSelect(el('fiscalSingleId'), inspectors, 'Selecione o fiscal…');
+    fillSelect(el('substituteSingleId'), inspectors, 'Selecione o suplente…');
+    document.querySelectorAll('#fiscalRows .fiscal-row').forEach((row) => {
+      fillSelect(row.querySelector('select[data-role="fiscal"]'), inspectors, 'Selecione o fiscal…');
+      fillSelect(row.querySelector('select[data-role="substitute"]'), inspectors, 'Selecione o suplente…');
+      const placeSelect = row.querySelector('select[data-role="fiscal-place"]');
+      fillSelect(
+        placeSelect,
+        withStale(enabledPlaces, placeSelect.value, (id) => {
+          const place = findPlace(id);
+          return `${place ? place.name : id} — fora dos locais habilitados`;
+        }),
+        enabledPlaces.length ? 'Selecione o local…' : 'Nenhum local habilitado no evento da emenda'
+      );
+    });
+
+    fillSelect(el('requestingUnitId'), CONTRACT_UNITS.map((unit) => [unit.id, unit.name]), 'Selecione a unidade…');
+    fillSelect(el('initialResponsibleId'), INITIAL_RESPONSIBLES.map((person) => [person.id, `${person.name} (${person.unit})`]), 'Selecione o responsável…');
+    fillSelect(el('legalFoundation'), LEGAL_FOUNDATIONS, 'Selecione o fundamento…');
+    fillSelect(el('budgetAllocationId'), BUDGET_ALLOCATIONS, 'Selecione a dotação…');
+
+    /* Eventos planejados: artista (1:1), atração e cronograma */
+    const artists = artistOptions();
+    document.querySelectorAll('#eventsList .ep').forEach((card) => {
+      const artistSelect = card.querySelector('select[data-role="artist"]');
+      const aetSelect = card.querySelector('select[data-role="aet"]');
+      fillSelect(
+        artistSelect,
+        withStale(artists, artistSelect.value, (id) => {
+          const artist = findArtist(id);
+          return `${artist ? artist.nameGroup : id} — fora dos artistas do proponente`;
+        }),
+        artists.length
+          ? 'Selecione o artista…'
+          : (isIndividualProponent() ? 'Selecione o proponente pessoa física primeiro' : 'Nenhum artista agenciado disponível')
+      );
+
+      /* Proponente PF: o artista é ele mesmo — o campo vem preenchido e travado. */
+      const lockedArtist = individualArtist();
+      if (lockedArtist && artistSelect.value !== lockedArtist.id) artistSelect.value = lockedArtist.id;
+      artistSelect.disabled = Boolean(lockedArtist);
+      const artistHelp = artistSelect.parentElement.querySelector('.field__help');
+      if (artistHelp) {
+        artistHelp.textContent = lockedArtist
+          ? 'Proponente pessoa física: o artista é o próprio proponente.'
+          : 'Um evento planejado tem exatamente um artista.';
+      }
+
+      const artist = findArtist(artistSelect.value);
+      const eventTypes = artist ? artist.eventTypes.map((item) => [item.id, item.nameEvent]) : [];
+      fillSelect(aetSelect, eventTypes, artist ? 'Selecione a atração…' : 'Selecione o artista primeiro');
+
+      const eventType = findEventType(artistSelect.value, aetSelect.value);
+      card.querySelector('.aet-info').textContent = eventType
+        ? `Duração cadastrada: ${eventType.durationInMinutes} min · Valor sugerido: ${brl(eventType.valueSuggestion)}`
+        : '';
+
+      card.querySelectorAll('.schedule-row').forEach((row) => {
+        const placeSelect = row.querySelector('select[data-role="place"]');
+        fillSelect(
+          placeSelect,
+          withStale(enabledPlaces, placeSelect.value, (id) => {
+            const place = findPlace(id);
+            return `${place ? place.name : id} — fora dos locais habilitados`;
+          }),
+          enabledPlaces.length ? 'Selecione o local…' : 'Nenhum local habilitado no evento da emenda'
+        );
+
+        const allDay = row.querySelector('input[data-role="all-day"]').checked;
+        row.querySelector('input[data-role="start-time"]').disabled = allDay;
+        row.querySelector('input[data-role="duration"]').disabled = allDay;
+      });
+    });
+
+    /* Parcelamento: subprefeituras que recebem valor em cada parcela. */
+    document.querySelectorAll('#parcelasList select[data-role="subprefeitura"]').forEach((select) => {
+      fillSelect(select, SUBPREFEITURAS, 'Selecione a subprefeitura…');
+    });
+  }
+
+  /* ---------------- painéis de leitura ---------------- */
+  /**
+   * Bloco 1 — somente leitura. Vereador, evento unificado e local habilitado
+   * vêm de AMENDMENT_CONTEXT e não mudam durante o preenchimento, então este
+   * painel é montado uma única vez na carga.
+   */
+  function renderEventoReadonly() {
+    const councilor = findCouncilor(AMENDMENT_CONTEXT.councilorId);
+    const eventManagement = findEventManagement(AMENDMENT_CONTEXT.eventManagementId);
+    const place = findPlace(AMENDMENT_CONTEXT.placeId);
+
+    el('eventoReadonly').innerHTML = `
+      <div class="sub__head"><span class="sub__title">Vereador responsável pela emenda</span></div>
+      <div class="readonly-box">
+        <div class="kv"><span class="kv__k">Vereador</span><span class="kv__v">${escapeHtml(councilor.name)}</span></div>
+        <div class="kv"><span class="kv__k">Mandato</span><span class="kv__v">${escapeHtml(councilor.mandate)}</span></div>
+        <div class="kv"><span class="kv__k">Teto de emendas do exercício</span><span class="kv__v money">${brl(councilor.amendmentCeiling)}</span></div>
+        <div class="kv"><span class="kv__k">Já comprometido</span><span class="kv__v money">${brl(councilor.usedAmount)}</span></div>
+        <div class="kv"><span class="kv__k">Saldo disponível</span><span class="kv__v money">${brl(councilor.amendmentCeiling - councilor.usedAmount)}</span></div>
+      </div>
+
+      <div class="sub">
+        <div class="sub__head"><span class="sub__title">Evento unificado (EventManagement)</span></div>
+        <div class="readonly-box">
+          <div class="kv"><span class="kv__k">Evento</span><span class="kv__v">${escapeHtml(eventManagement.eventName)}</span></div>
+          <div class="kv"><span class="kv__k">Tipo de projeto</span><span class="kv__v">${escapeHtml(eventManagement.projectType)}</span></div>
+          <div class="kv"><span class="kv__k">Vigência</span><span class="kv__v">${escapeHtml(eventManagement.period)}</span></div>
+          <div class="kv"><span class="kv__k">Eventos planejados já vinculados</span><span class="kv__v">${eventManagement.linkedEventPlanneds}</span></div>
+        </div>
+      </div>
+
+      <div class="sub">
+        <div class="sub__head"><span class="sub__title">Local habilitado</span></div>
+        <div class="readonly-box">
+          <div class="kv"><span class="kv__k">Local</span><span class="kv__v">${escapeHtml(place.name)}</span></div>
+          <div class="kv"><span class="kv__k">Distrito</span><span class="kv__v">${escapeHtml(place.district)}</span></div>
+          <div class="kv"><span class="kv__k">Capacidade</span><span class="kv__v">${plural(place.capacity, 'lugar', 'lugares')}</span></div>
+        </div>
+        <p class="field__help">Único local habilitado para esta emenda. A programação de cada evento planejado e os fiscais do contrato só podem usar este local.</p>
+      </div>`;
+  }
+
+  /* Lista, abaixo do menu de navegação, os contratos já vinculados ao evento unificado da emenda. */
+  function renderRelatedContracts() {
+    const contracts = EVENT_MANAGEMENT_CONTRACTS[AMENDMENT_CONTEXT.eventManagementId] || [];
+    const list = el('contractsList');
+
+    if (contracts.length === 0) {
+      list.innerHTML = '<p class="contracts__empty">Nenhum outro contrato vinculado a este evento ainda.</p>';
+      return;
+    }
+    list.innerHTML = contracts.map((contract) => `
+      <div class="contract-item">
+        <span class="contract-item__code">${escapeHtml(contract.code)}</span>
+        <span class="contract-item__status">${escapeHtml(contract.status)}</span>
+      </div>`).join('');
+  }
+
+  /**
+   * Painel do proponente. PJ mostra os dados da empresa e quantos artistas ela agencia;
+   * PF mostra os dados da pessoa e quantas atrações ela tem cadastradas — nesse caso o
+   * proponente é o próprio artista, então não há "agenciados" a contar.
+   */
+  function renderProponentPanel() {
+    const proponent = selectedProponent();
+    const individual = proponent && proponent.type === 'PF';
+
+    if (!proponent) {
+      el('proponentPanel').innerHTML = `<p class="hint-empty" style="margin-bottom:12px">${
+        isIndividualProponent()
+          ? 'Nenhuma pessoa física selecionada. Abra a lista de proponentes para escolher o artista contratado desta emenda.'
+          : 'Nenhuma pessoa jurídica selecionada. Abra a lista de proponentes para escolher a empresa agenciadora desta emenda.'
+      }</p>`;
+    } else {
+      const artistsInfo = individual
+        ? plural((proponentArtists(proponent.id)[0] || { eventTypes: [] }).eventTypes.length, 'atração cadastrada', 'atrações cadastradas')
+        : plural(proponentArtists(proponent.id).length, 'artista agenciado', 'artistas agenciados');
+      el('proponentPanel').innerHTML = `
+        <div style="margin-bottom:12px">
+          ${proponentCard(proponent, 'div')}
+          <p class="field__help">${escapeHtml(artistsInfo)}${individual ? ' — o proponente é o próprio artista.' : '.'}</p>
+        </div>`;
+    }
+
+    el('btnOpenProponentModal').textContent = proponent ? 'Trocar proponente' : 'Selecionar proponente';
+    el('btnProponentDetails').hidden = !proponent;
+    el('btnClearProponent').hidden = !proponent;
+  }
+
+  /*
+   * Card do proponente, o mesmo `LegalPersonCard` / `NaturalPersonCard` do cadastro de filmes:
+   * nome + documento mascarado + tag do tipo. Na PJ o card também traz o representante legal
+   * principal. No modal é um botão (clicar seleciona); no bloco é só leitura.
+   */
+  const maskCnpj = (cnpj) => `${cnpj.replace(/\D/g, '').slice(0, 5)}*/****-**`;
+  const maskCpf = (cpf) => `***.${cpf.slice(4, 11)}-**`;
+  const principalRepresentative = (proponent) => (proponent.representatives || []).find((rep) => rep.principal);
+
+  function proponentCard(proponent, tag) {
+    const individual = proponent.type === 'PF';
+    const representative = principalRepresentative(proponent);
+    const clickable = tag === 'button';
+    const nameCell = individual
+      ? `<span class="pcard__label">Nome social</span>
+         <span class="pcard__value">${escapeHtml(proponent.socialName)}</span>`
+      : `<span class="pcard__label">Razão Social</span>
+         <span class="pcard__value">${escapeHtml(proponent.companyName)}</span>
+         <span class="pcard__value">${escapeHtml(proponent.tradingName)}</span>
+         ${representative ? `<span class="pcard__value">Rep.: ${escapeHtml(representative.name)}</span>` : ''}`;
+    const docCell = individual
+      ? `<span class="pcard__label">CPF/CIN</span><span class="pcard__value pcard__value--mono">${escapeHtml(maskCpf(proponent.cpf))}</span>`
+      : `<span class="pcard__label">CNPJ</span><span class="pcard__value pcard__value--mono">${escapeHtml(maskCnpj(proponent.cnpj))}</span>`;
+
+    return `<${tag} class="pcard" ${clickable ? `type="button" data-proponent-id="${escapeHtml(proponent.id)}" aria-label="Selecionar ${escapeHtml(proponentName(proponent))}"` : ''}>
+      <span>${nameCell}</span>
+      <span>${docCell}</span>
+      <span class="pcard__tag ${individual ? 'pcard__tag--pf' : ''}">${individual ? '👤 Pessoa Física' : '🏢 Pessoa Jurídica'}</span>
+    </${tag}>`;
+  }
+
+  const kv = (label, value) => `<div class="kv"><span class="kv__k">${escapeHtml(label)}</span><span class="kv__v">${escapeHtml(value || '—')}</span></div>`;
+  const detailSection = (title, items) => `<section class="pdetail__section"><h4>${escapeHtml(title)}</h4><div class="pdetail__grid">${items.join('')}</div></section>`;
+
+  function bankSection(accounts) {
+    if (!accounts.length) return `<section class="pdetail__section"><h4>Dados Bancários</h4><p class="hint-empty">Nenhum dado bancário cadastrado</p></section>`;
+    return accounts.map((account, index) => detailSection(accounts.length > 1 ? `Dados Bancários ${index + 1}` : 'Dados Bancários', [
+      kv('Banco', account.bank), kv('Nº da Agência', account.agency), kv('Nº da Conta Corrente', account.account),
+    ])).join('');
+  }
+
+  function representativeItems(rep, companyAddress) {
+    return [
+      kv('Nome do representante', rep.name), kv('Nome social', rep.socialName), kv('CPF/CIN', rep.cpf), kv('RG', rep.rg),
+      kv('E-mail principal', rep.email), kv('E-mail secundário', rep.emailSecondary),
+      kv('Tel/Cel principal', rep.phone), kv('Tel/Cel secundário', rep.phoneSecondary),
+      kv('Endereço', rep.address || companyAddress),
+    ];
+  }
+
+  function renderProponentDetail(proponent) {
+    if (proponent.type === 'PF') {
+      return [
+        detailSection('Informações do artista ou líder do grupo', [
+          kv('Nome completo', proponent.personName), kv('Nome social', proponent.socialName), kv('Data Nascimento', proponent.birthDate),
+          kv('Nome Artístico', proponent.artisticName), kv('CPF/CIN', proponent.cpf), kv('RG', proponent.rg),
+          kv('Pessoa com deficiência?', proponent.pcd), kv('CCM', proponent.ccm), kv('Registro INSS', proponent.inss),
+          kv('Visto', proponent.visa), kv('Pis/Pasep', proponent.pisPasep), kv('RNE ou RNM', proponent.rne),
+          kv('Passaporte', proponent.passport), kv('Nacionalidade', proponent.nationality), kv('Estado civil', proponent.maritalStatus),
+          kv('Raça/Cor', proponent.race), kv('Gênero', proponent.gender), kv('Grau de instrução', proponent.education),
+        ]),
+        detailSection('Contato(s)', [
+          kv('E-mail principal', proponent.email), kv('E-mail secundário', proponent.emailSecondary),
+          kv('Tel/Cel principal', proponent.phone), kv('Tel/Cel secundário', proponent.phoneSecondary),
+        ]),
+        detailSection('Endereço', [kv('Endereço de Referência', proponent.address)]),
+        bankSection(proponent.bankAccounts),
+      ].join('');
+    }
+
+    const representative = principalRepresentative(proponent);
+    const others = proponent.representatives.filter((rep) => !rep.principal);
+    return [
+      detailSection('Informações da empresa', [
+        kv('Razão social', proponent.companyName), kv('CNPJ', proponent.cnpj), kv('Nome fantasia', proponent.tradingName),
+        kv('CCM', proponent.ccm), kv('Endereço', proponent.address),
+      ]),
+      representative ? detailSection('Informações do representante legal', representativeItems(representative, proponent.address)) : '',
+      others.map((rep) => detailSection('Outros Representantes legais', representativeItems(rep, proponent.address))).join(''),
+      bankSection(proponent.bankAccounts),
+    ].join('');
+  }
+
+  function openProponentDetail() {
+    const proponent = selectedProponent();
+    if (!proponent) return;
+    el('proponentDetailTitle').textContent = 'Dados do proponente';
+    el('proponentDetailHint').textContent = `${proponentName(proponent)} — ${proponentTypeLabel(proponent.type)}`;
+    el('proponentDetailBody').innerHTML = `<div class="pdetail">${renderProponentDetail(proponent)}</div>`;
+    el('proponentDetailModal').hidden = false;
+  }
+
+  function closeProponentDetail() {
+    el('proponentDetailModal').hidden = true;
+    el('btnProponentDetails').focus();
+  }
+
+  /**
+   * Catálogo dos artistas agenciados, dentro do bloco de eventos: serve de referência
+   * ao montar cada evento planejado e mostra quantos eventos já usam cada artista.
+   * Somente leitura — a seleção acontece no próprio evento. Só existe para proponente
+   * PJ: em PF o artista é o próprio proponente e o catálogo inteiro fica oculto.
+   */
+  function renderArtistsPanel() {
+    const proponentId = val('proponentId');
+    const panel = el('artistsPanel');
+
+    el('artistsSub').hidden = isIndividualProponent();
+    if (isIndividualProponent()) {
+      panel.innerHTML = '';
+      return;
+    }
+
+    if (!proponentId) {
+      panel.innerHTML = '<p class="hint-empty">Selecione o proponente no bloco Proponente para listar os artistas agenciados.</p>';
+      return;
+    }
+
+    const artists = proponentArtists(proponentId);
+    if (artists.length === 0) {
+      panel.innerHTML = '<p class="hint-empty">Este proponente não possui artistas agenciados.</p>';
+      return;
+    }
+
+    const usage = eventsData().reduce((map, event) => {
+      if (event.artistId) map[event.artistId] = (map[event.artistId] || 0) + 1;
+      return map;
+    }, {});
+
+    panel.innerHTML = `
+      <div class="table__scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Artista / grupo</th>
+              <th>Tipo</th>
+              <th>Atrações cadastradas (ArtistEventType)</th>
+              <th style="width:120px">Eventos nesta emenda</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${artists.map((artist) => `
+              <tr>
+                <td style="font-weight:500">${escapeHtml(artist.nameGroup)}</td>
+                <td>${escapeHtml(artist.artistType)}</td>
+                <td>${artist.eventTypes.map((eventType) => `<span class="tag">${escapeHtml(eventType.nameEvent)} · ${eventType.durationInMinutes} min · ${brl(eventType.valueSuggestion)}</span>`).join('')}</td>
+                <td>${usage[artist.id]
+                  ? `<span class="tag tag--used">${plural(usage[artist.id], 'evento', 'eventos')}</span>`
+                  : '<span class="ep__meta">—</span>'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  /*
+   * O valor do contrato nasce da soma dos cachês + despesas (uma vez só: se o operador apagar o
+   * campo, ele fica vazio). Depois disso é editável; se divergir da soma atual, o bloco avisa —
+   * na tela real, mudar um cachê depois de salvar o valor deixa o bloco Pendente com este aviso.
+   */
+  let contractValueSuggested = false;
+
+  function renderContractValueInfo() {
+    const schedules = schedulesTotal();
+    const extraordinary = extraordinaryAmount();
+    const minimum = requiredContractValue();
+    if (!contractValueSuggested && val('contractValue') === '' && minimum > 0) {
+      el('contractValue').value = minimum.toFixed(2);
+      contractValueSuggested = true;
+    }
+    const value = contractValueAmount();
+    el('contractValueHelp').textContent = `Sugestão: soma dos cachês + despesas extraordinárias (${brl(minimum)}). Pode ser editado.`;
+    const events = eventsData();
+    const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
+    const balance = value === null ? null : value - minimum;
+
+    el('contractValueInfo').innerHTML = `
+      <div class="kv"><span class="kv__k">Eventos planejados</span><span class="kv__v">${events.length} · ${plural(schedulesCount, 'data', 'datas')}</span></div>
+      <div class="kv"><span class="kv__k">Soma dos cachês</span><span class="kv__v money">${brl(schedules)}</span></div>
+      <div class="kv"><span class="kv__k">Despesas extraordinárias</span><span class="kv__v money">${brl(extraordinary)}</span></div>
+      <div class="kv"><span class="kv__k">Mínimo do contrato</span><span class="kv__v money">${brl(minimum)}</span></div>
+      <div class="kv"><span class="kv__k">Margem sobre o mínimo</span><span class="kv__v money ${balance === null ? '' : (balance < 0 ? 'kv__v--warn' : 'kv__v--ok')}">${balance === null ? '—' : brl(balance)}</span></div>
+      ${value !== null && Math.abs(value - minimum) > 0.005
+        ? `<div class="alert alert--warn"><span>O valor do contrato (${brl(value)}) difere da soma atual dos cachês + despesas (${brl(minimum)}). Se um cachê mudar depois de o valor ser salvo, o bloco volta a <strong>Pendente</strong> com este aviso — revise e salve.</span></div>`
+        : ''}`;
+  }
+
+  /* ---------------- justificativas: editor de texto rico ---------------- */
+  /**
+   * Editor mínimo, sem dependência externa: a área editável é um contenteditable
+   * e o conteúdo é espelhado num <textarea> oculto do próprio formulário. Assim o
+   * campo entra na serialização do bloco (rascunho / "salvar alterações") e no
+   * fluxo de erros como qualquer outro input.
+   */
+  const RTE_ICONS = {
+    orderedList: '<svg viewBox="0 0 16 16" aria-hidden="true"><text x="0" y="5.4" font-size="5" fill="currentColor">1</text><text x="0" y="9.9" font-size="5" fill="currentColor">2</text><text x="0" y="14.4" font-size="5" fill="currentColor">3</text><path d="M6.5 3.8h7.5M6.5 8.3h7.5M6.5 12.8h7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    bulletList: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="2.6" cy="3.8" r="1.3" fill="currentColor"/><circle cx="2.6" cy="8.3" r="1.3" fill="currentColor"/><circle cx="2.6" cy="12.8" r="1.3" fill="currentColor"/><path d="M6.5 3.8h7.5M6.5 8.3h7.5M6.5 12.8h7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    alignLeft: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h8M2 12h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    alignCenter: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M4 8h8M3 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    link: '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M6.8 9.9a2.9 2.9 0 0 1 0-4.1l1.3-1.3a2.9 2.9 0 0 1 4.1 4.1l-.8.8M9.2 6.1a2.9 2.9 0 0 1 0 4.1l-1.3 1.3a2.9 2.9 0 0 1-4.1-4.1l.8-.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  };
+
+  const RTE_TOOLS = [
+    { cmd: 'bold', html: '<b>B</b>', title: 'Negrito' },
+    { cmd: 'italic', html: '<i>I</i>', title: 'Itálico' },
+    { cmd: 'underline', html: '<u>U</u>', title: 'Sublinhado' },
+    'sep',
+    { cmd: 'insertOrderedList', html: RTE_ICONS.orderedList, title: 'Lista numerada' },
+    { cmd: 'insertUnorderedList', html: RTE_ICONS.bulletList, title: 'Lista com marcadores' },
+    'sep',
+    { cmd: 'justifyLeft', html: RTE_ICONS.alignLeft, title: 'Alinhar à esquerda' },
+    { cmd: 'justifyCenter', html: RTE_ICONS.alignCenter, title: 'Centralizar' },
+    { cmd: 'createLink', html: RTE_ICONS.link, title: 'Inserir link' },
+    { cmd: 'removeFormat', html: 'T<sub>x</sub>', title: 'Limpar formatação' },
+  ];
+
+  /** Espelha o conteúdo editável no textarea; vazio de verdade quando só há marcação. */
+  function syncRichText(area) {
+    const target = el(area.dataset.rteInput);
+    const text = area.textContent.replace(/\u200b/g, '').trim();
+    target.value = text ? area.innerHTML : '';
+    area.classList.toggle('is-empty', !text);
+  }
+
+  function initRichTexts() {
+    const toolbarHtml = RTE_TOOLS.map((tool) => tool === 'sep'
+      ? '<span class="rte__sep" aria-hidden="true"></span>'
+      : `<button type="button" class="rte__btn" data-cmd="${tool.cmd}" title="${escapeHtml(tool.title)}" aria-label="${escapeHtml(tool.title)}">${tool.html}</button>`).join('');
+
+    document.querySelectorAll('.rte[data-rte-for]').forEach((rte) => {
+      const targetId = rte.dataset.rteFor;
+      rte.innerHTML = `
+        <div class="rte__toolbar" role="toolbar" aria-label="Formatação do texto">
+          <select class="rte__block" data-role="rte-block" aria-label="Estilo do parágrafo">
+            <option value="p">Normal</option>
+            <option value="h3">Título</option>
+            <option value="h4">Subtítulo</option>
+          </select>
+          <span class="rte__sep" aria-hidden="true"></span>
+          ${toolbarHtml}
+        </div>
+        <div class="rte__area is-empty" contenteditable="true" role="textbox" aria-multiline="true"
+             aria-labelledby="lbl-${targetId}" data-rte-input="${targetId}"
+             data-placeholder="${escapeHtml(rte.dataset.placeholder || '')}"></div>`;
+
+      const area = rte.querySelector('.rte__area');
+      const runCommand = (command, argument) => {
+        area.focus();
+        document.execCommand(command, false, argument === undefined ? null : argument);
+        syncRichText(area);
+        /* O bloco recalcula status/rascunho pelo mesmo caminho dos outros campos. */
+        area.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+
+      area.addEventListener('input', () => syncRichText(area));
+      area.addEventListener('blur', () => syncRichText(area));
+
+      rte.querySelector('.rte__toolbar').addEventListener('click', (event) => {
+        const button = event.target.closest('.rte__btn');
+        if (!button) return;
+        if (button.dataset.cmd === 'createLink') {
+          const url = window.prompt('Endereço do link (URL):', 'https://');
+          if (!url) return;
+          runCommand('createLink', url);
+          return;
+        }
+        runCommand(button.dataset.cmd);
+      });
+
+      rte.querySelector('[data-role="rte-block"]').addEventListener('change', (event) => {
+        runCommand('formatBlock', `<${event.target.value}>`);
+      });
+
+      syncRichText(area);
+    });
+  }
+
+  /* ---------------- linhas de fiscal (dados gerais do contrato) ---------------- */
+  let fiscalRowCount = 0;
+
+  function addFiscalRow() {
+    fiscalRowCount += 1;
+    const rowId = String(fiscalRowCount);
+    const wrapper = document.createElement('div');
+    wrapper.className = 'fiscal-row';
+    wrapper.dataset.rowId = rowId;
+    wrapper.innerHTML = `
+      <div class="row">
+        <div class="field">
+          <label class="field__label" for="fiscalId-${rowId}">Fiscal<span class="req">*</span></label>
+          <select id="fiscalId-${rowId}" data-role="fiscal"></select>
+          <p class="field__error" data-error-for="fiscalId-${rowId}"></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="fiscalSubstitute-${rowId}">Suplente</label>
+          <select id="fiscalSubstitute-${rowId}" data-role="substitute"></select>
+          <p class="field__error" data-error-for="fiscalSubstitute-${rowId}"></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="fiscalPlace-${rowId}">Local<span class="req">*</span></label>
+          <select id="fiscalPlace-${rowId}" data-role="fiscal-place"></select>
+          <p class="field__error" data-error-for="fiscalPlace-${rowId}"></p>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button type="button" class="btn btn--danger-link js-remove-fiscal">Remover fiscal</button>
+      </div>`;
+    el('fiscalRows').appendChild(wrapper);
+    wrapper.querySelector('.js-remove-fiscal').addEventListener('click', () => { wrapper.remove(); refresh(); });
+    refreshDynamicOptions();
+    return wrapper;
+  }
+
+  el('btnAddFiscalRow').addEventListener('click', () => { addFiscalRow(); refresh(); });
+
+  /* ---------------- eventos planejados (artista + cronograma) ---------------- */
+  let eventCount = 0;
+  let rowCount = 0;
+
+  function scheduleRowHtml(rowId) {
+    return `
+      <div class="schedule-row" data-row-id="${rowId}">
+        <div class="row">
+          <div class="field">
+            <label class="field__label" for="epPlace-${rowId}">Local<span class="req">*</span></label>
+            <select id="epPlace-${rowId}" data-role="place"></select>
+            <p class="field__error" data-error-for="epPlace-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epStartDate-${rowId}">Data de início<span class="req">*</span></label>
+            <input type="date" id="epStartDate-${rowId}" data-role="start-date">
+            <p class="field__error" data-error-for="epStartDate-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epEndDate-${rowId}">Data de término</label>
+            <input type="date" id="epEndDate-${rowId}" data-role="end-date">
+            <p class="field__help">Preencha só em temporadas/recorrências.</p>
+            <p class="field__error" data-error-for="epEndDate-${rowId}"></p>
+          </div>
+        </div>
+        <div class="field toggle-field">
+          <label class="switch">
+            <input type="checkbox" id="epAllDay-${rowId}" data-role="all-day">
+            <span class="switch__track"></span>
+          </label>
+          <label for="epAllDay-${rowId}" class="field__label" style="margin-bottom:0">Dia inteiro</label>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label class="field__label" for="epStartTime-${rowId}">Horário de início<span class="req">*</span></label>
+            <input type="time" id="epStartTime-${rowId}" data-role="start-time">
+            <p class="field__error" data-error-for="epStartTime-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epDuration-${rowId}">Duração (min)<span class="req">*</span></label>
+            <input type="number" id="epDuration-${rowId}" data-role="duration" min="1" placeholder="Ex: 70">
+            <p class="field__error" data-error-for="epDuration-${rowId}"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="epAmount-${rowId}">Valor do cachê (R$)<span class="req">*</span></label>
+            <input type="number" id="epAmount-${rowId}" data-role="amount" min="0" step="0.01" placeholder="0,00">
+            <p class="field__error" data-error-for="epAmount-${rowId}"></p>
+          </div>
+        </div>
+        <div class="row-actions">
+          <button type="button" class="btn btn--danger-link js-remove-schedule">Remover data</button>
+        </div>
+      </div>`;
+  }
+
+  /** Preenche duração e cachê vazios com o que está cadastrado no ArtistEventType. */
+  function suggestFromEventType(card, scheduleRow) {
+    const eventType = findEventType(
+      card.querySelector('select[data-role="artist"]').value,
+      card.querySelector('select[data-role="aet"]').value
+    );
+    if (!eventType) return;
+    const rows = scheduleRow ? [scheduleRow] : Array.from(card.querySelectorAll('.schedule-row'));
+    rows.forEach((row) => {
+      const amountInput = row.querySelector('input[data-role="amount"]');
+      const durationInput = row.querySelector('input[data-role="duration"]');
+      if (amountInput.value.trim() === '') amountInput.value = String(eventType.valueSuggestion);
+      if (durationInput.value.trim() === '') durationInput.value = String(eventType.durationInMinutes);
+    });
+  }
+
+  function addScheduleRow(card) {
+    rowCount += 1;
+    const rowId = `${card.dataset.epId}-${rowCount}`;
+    card.querySelector('[data-schedules]').insertAdjacentHTML('beforeend', scheduleRowHtml(rowId));
+    const row = card.querySelector(`.schedule-row[data-row-id="${rowId}"]`);
+    suggestFromEventType(card, row);
+    return rowId;
+  }
+
+  function addEvent() {
+    eventCount += 1;
+    const epId = String(eventCount);
+    /* Cada evento planejado é um collapse (<details>): o cabeçalho resume artista, datas e valor. */
+    const card = document.createElement('details');
+    card.className = 'ep';
+    card.open = true;
+    card.dataset.epId = epId;
+    card.innerHTML = `
+      <summary class="ep__head">
+        <div>
+          <div class="ep__title" data-ep-title>Evento planejado</div>
+          <div class="ep__meta" data-ep-meta></div>
+        </div>
+        <button type="button" class="btn btn--danger-link js-remove-event">Remover evento</button>
+      </summary>
+      <div class="row">
+        <div class="field">
+          <label class="field__label" for="epArtist-${epId}">Artista<span class="req">*</span></label>
+          <select id="epArtist-${epId}" data-role="artist"></select>
+          <p class="field__help">Um evento planejado tem exatamente um artista.</p>
+          <p class="field__error" data-error-for="epArtist-${epId}"></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="epAet-${epId}">Atração do artista<span class="req">*</span></label>
+          <select id="epAet-${epId}" data-role="aet"></select>
+          <p class="field__error" data-error-for="epAet-${epId}"></p>
+        </div>
+      </div>
+      <p class="aet-info"></p>
+      <div class="field">
+        <label class="field__label" for="epTitle-${epId}">Título do evento planejado<span class="req">*</span></label>
+        <input type="text" id="epTitle-${epId}" placeholder="Ex: Show de abertura — Praça das Artes">
+        <p class="field__error" data-error-for="epTitle-${epId}"></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="epDescription-${epId}">Descrição</label>
+        <textarea id="epDescription-${epId}" placeholder="Detalhes da atração, público-alvo, acessibilidade…"></textarea>
+      </div>
+      <div class="sub">
+        <div class="sub__head">
+          <span class="sub__title">Cronograma — datas do evento (mínimo 1)</span>
+          <button type="button" class="btn btn--secondary btn--sm js-add-schedule">+ Data</button>
+        </div>
+        <div data-schedules></div>
+        <p class="block-error" data-error-for="epSchedules-${epId}"></p>
+      </div>`;
+    el('eventsList').appendChild(card);
+    refreshDynamicOptions();
+    addScheduleRow(card);
+    return card;
+  }
+
+  el('btnAddEvent').addEventListener('click', () => { addEvent(); refresh(); });
+
+  /* Ações dentro da lista de eventos (delegação: as linhas são dinâmicas). */
+  el('eventsList').addEventListener('click', (event) => {
+    const card = event.target.closest('.ep');
+    if (!card) return;
+
+    if (event.target.closest('.js-add-schedule')) { addScheduleRow(card); refresh(); return; }
+    if (event.target.closest('.js-remove-schedule')) { event.target.closest('.schedule-row').remove(); refresh(); return; }
+    if (event.target.closest('.js-remove-event')) { card.remove(); refresh(); }
+  });
+
+  /* Ao escolher a atração, sugere duração e cachê cadastrados no ArtistEventType. */
+  el('eventsList').addEventListener('change', (event) => {
+    const select = event.target.closest('select[data-role="aet"]');
+    if (!select || !select.value) return;
+    suggestFromEventType(select.closest('.ep'));
+  });
+
+  function renumberEvents() {
+    eventsData().forEach((event) => {
+      const card = document.querySelector(`.ep[data-ep-id="${event.epId}"]`);
+      card.querySelector('[data-ep-title]').textContent = `Evento planejado ${event.index + 1}`;
+      const artist = findArtist(event.artistId);
+      const eventType = findEventType(event.artistId, event.aetId);
+      const who = artist
+        ? `${artist.nameGroup}${eventType ? ` — ${eventType.nameEvent}` : ''}`
+        : 'Artista não definido';
+      card.querySelector('[data-ep-meta]').textContent =
+        `${who} · ${plural(event.schedules.length, 'data', 'datas')} · ${brl(eventTotal(event))}`;
+    });
+  }
+
+  /* ---------------- parcelamento (parcelas x subprefeituras) ---------------- */
+  const TRASH_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="M2.8 4.6h10.4M6.4 4.6V3.2h3.2v1.4M4.6 4.6l.6 8.2h5.6l.6-8.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  let parcelaCount = 0;
+  let subCount = 0;
+
+  function subRowHtml(subId) {
+    return `
+      <tr data-sub-id="${subId}">
+        <td>
+          <div class="field field--cell">
+            <select id="subPref-${subId}" data-role="subprefeitura" aria-label="Subprefeitura"></select>
+            <p class="field__error" data-error-for="subPref-${subId}"></p>
+          </div>
+        </td>
+        <td>
+          <div class="field field--cell">
+            <input type="number" id="subAmount-${subId}" data-role="sub-amount" min="0" step="0.01" placeholder="0,00" aria-label="Valor da subprefeitura (R$)">
+            <p class="field__error" data-error-for="subAmount-${subId}"></p>
+          </div>
+        </td>
+        <td class="table__actions">
+          <button type="button" class="icon-btn js-remove-sub" title="Remover valor" aria-label="Remover valor por subprefeitura">${TRASH_ICON}</button>
+        </td>
+      </tr>`;
+  }
+
+  function parcelaHtml(parcelaId) {
+    return `
+      <article class="parcela" data-parcela-id="${parcelaId}">
+        <div class="parcela__head">
+          <div>
+            <div class="parcela__title" data-parcela-title>1ª parcela</div>
+            <div class="parcela__meta" data-parcela-meta></div>
+          </div>
+          <button type="button" class="btn btn--danger-link js-remove-parcela" hidden>Remover parcela</button>
+        </div>
+        <div class="table__scroll">
+          <table class="table table--parcela">
+            <thead>
+              <tr>
+                <th>Subprefeitura</th>
+                <th>Valor</th>
+                <th style="width:72px">Ações</th>
+              </tr>
+            </thead>
+            <tbody data-subs></tbody>
+          </table>
+        </div>
+        <p class="block-error" data-error-for="parcelaSubs-${parcelaId}"></p>
+        <div class="parcela__foot">
+          <span class="parcela__total" data-parcela-total></span>
+          <button type="button" class="btn btn--primary btn--sm js-add-sub" data-add-label></button>
+        </div>
+      </article>`;
+  }
+
+  function addSubParcela(parcela) {
+    subCount += 1;
+    const subId = `${parcela.dataset.parcelaId}-${subCount}`;
+    parcela.querySelector('[data-subs]').insertAdjacentHTML('beforeend', subRowHtml(subId));
+    refreshDynamicOptions();
+    return subId;
+  }
+
+  function addParcela() {
+    parcelaCount += 1;
+    const parcelaId = String(parcelaCount);
+    el('parcelasList').insertAdjacentHTML('beforeend', parcelaHtml(parcelaId));
+    const parcela = document.querySelector(`.parcela[data-parcela-id="${parcelaId}"]`);
+    addSubParcela(parcela);
+    return parcela;
+  }
+
+  /**
+   * A forma de pagamento define a estrutura: "Parcela Única" mantém exatamente
+   * uma parcela; "Parcelado" libera várias. A troca acontece aqui (e não em
+   * refresh) para que a re-renderização nunca mexa no DOM que ela mesma lê.
+   */
+  el('form-parcelamento').addEventListener('change', (event) => {
+    if (!event.target.closest('input[name="paymentMethod"]')) return;
+    if (!usesParcelas()) return;
+    if (parcelasData().length === 0) addParcela();
+    if (currentMode('paymentMethod') === 'unica') {
+      Array.from(document.querySelectorAll('#parcelasList .parcela')).slice(1).forEach((node) => node.remove());
+    }
+  });
+
+  el('btnAddParcela').addEventListener('click', () => { addParcela(); refresh(); });
+
+  el('parcelasList').addEventListener('click', (event) => {
+    const parcela = event.target.closest('.parcela');
+    if (!parcela) return;
+
+    if (event.target.closest('.js-add-sub')) { addSubParcela(parcela); refresh(); return; }
+    if (event.target.closest('.js-remove-sub')) { event.target.closest('tr[data-sub-id]').remove(); refresh(); return; }
+    if (event.target.closest('.js-remove-parcela')) { parcela.remove(); refresh(); }
+  });
+
+  function syncPaymentPanels() {
+    const method = currentMode('paymentMethod');
+    const parcelado = method === 'parcelado';
+    el('parcelasPanel').hidden = !usesParcelas();
+    el('btnAddParcela').hidden = !parcelado;
+    const total = document.querySelectorAll('#parcelasList .parcela').length;
+    document.querySelectorAll('#parcelasList .js-remove-parcela').forEach((button) => {
+      button.hidden = !parcelado || total < 2;
+    });
+  }
+
+  function renumberParcelas() {
+    parcelasData().forEach((parcela) => {
+      const node = document.querySelector(`.parcela[data-parcela-id="${parcela.parcelaId}"]`);
+      const label = parcelaLabel(parcela.index);
+      node.querySelector('[data-parcela-title]').textContent = label;
+      node.querySelector('[data-parcela-meta]').textContent =
+        `${plural(parcela.subs.length, 'subprefeitura', 'subprefeituras')} · ${brl(parcelaTotal(parcela))}`;
+      node.querySelector('[data-parcela-total]').textContent =
+        `Valor total das subparcelas ${brl(parcelaTotal(parcela))}`;
+      node.querySelector('[data-add-label]').textContent =
+        `+ Adicionar novo valor por subprefeitura para ${label}`;
+    });
+  }
+
+  function renderKitDateChip() {
+    const chip = el('kitDateChip');
+    const date = val('kitDate');
+    chip.hidden = !date;
+    chip.textContent = date ? formatDateBR(date) : '';
+  }
+
+  function renderPaymentInfo() {
+    const method = findPaymentMethod(currentMode('paymentMethod'));
+    const contractValue = contractValueAmount();
+    const parcelas = parcelasData();
+    const subsCount = parcelas.reduce((count, parcela) => count + parcela.subs.length, 0);
+    const total = parcelasTotal();
+    const balance = contractValue === null ? null : contractValue - total;
+
+    const structureRow = usesParcelas()
+      ? `
+        <div class="kv"><span class="kv__k">Parcelas / subparcelas</span><span class="kv__v">${plural(parcelas.length, 'parcela', 'parcelas')} · ${plural(subsCount, 'subparcela', 'subparcelas')}</span></div>
+        <div class="kv"><span class="kv__k">Total das parcelas</span><span class="kv__v money">${brl(total)}</span></div>
+        <div class="kv"><span class="kv__k">A distribuir</span><span class="kv__v money ${balance === null ? '' : (Math.abs(balance) > 0.005 ? 'kv__v--warn' : 'kv__v--ok')}">${balance === null ? '—' : brl(balance)}</span></div>`
+      : '';
+
+    el('paymentInfo').innerHTML = `
+      <div class="kv"><span class="kv__k">Forma de pagamento</span><span class="kv__v">${method ? escapeHtml(method[1]) : '—'}</span></div>
+      <div class="kv"><span class="kv__k">Valor do contrato</span><span class="kv__v money">${contractValue === null ? '—' : brl(contractValue)}</span></div>
+      <div class="kv"><span class="kv__k">Entrega do kit / pagamento previsto</span><span class="kv__v">${val('kitDate') ? `${formatDateBR(val('kitDate'))} · pagamento em 30 dias` : '—'}</span></div>${structureRow}`;
+  }
+
+  /* ---------------- modal de proponentes ---------------- */
+  /*
+   * Busca no estilo do cadastro de filmes: o termo é aplicado ao clicar na lupa (ou Enter) e cada
+   * resultado vira um card; clicar no card seleciona. Sem "Iniciar novo cadastro" — a emenda só
+   * contrata proponente já cadastrado. PJ busca por nome fantasia, razão social, CNPJ e nome do
+   * representante legal; PF por nome, nome social e CPF. Mínimo de 3 caracteres, como o servidor.
+   */
+  const MIN_SEARCH_LENGTH = 3;
+  const digits = (text) => text.replace(/\D/g, '');
+
+  function proponentSearchText(proponent) {
+    if (proponent.type === 'PF') return [proponent.personName, proponent.socialName, proponent.cpf, digits(proponent.cpf)].join(' ');
+    return [
+      proponent.tradingName, proponent.companyName, proponent.cnpj, digits(proponent.cnpj),
+      ...proponent.representatives.map((rep) => rep.name),
+    ].join(' ');
+  }
+
+  function renderProponentResults() {
+    const term = el('proponentSearch').value.trim().toLowerCase();
+    const empty = el('proponentEmpty');
+
+    if (term.length < MIN_SEARCH_LENGTH) {
+      el('proponentResults').innerHTML = '';
+      empty.textContent = `Digite ao menos ${MIN_SEARCH_LENGTH} caracteres e clique na lupa para buscar.`;
+      empty.hidden = false;
+      return;
+    }
+
+    const rows = proponentsByType(proponentType())
+      .filter((proponent) => proponentSearchText(proponent).toLowerCase().includes(term));
+
+    el('proponentResults').innerHTML = rows.map((proponent) => proponentCard(proponent, 'button')).join('');
+    empty.textContent = isIndividualProponent()
+      ? 'Nenhuma pessoa física encontrada para a busca.'
+      : 'Nenhuma empresa encontrada para a busca.';
+    empty.hidden = rows.length > 0;
+  }
+
+  function syncProponentModalChrome() {
+    const individual = isIndividualProponent();
+    el('proponentModalTitle').textContent = individual
+      ? 'Procure por uma pessoa física registrada'
+      : 'Procure por uma empresa registrada';
+    el('proponentModalHint').textContent = individual
+      ? 'Busque por nome, nome social ou CPF. A pessoa escolhida é o artista dos eventos planejados.'
+      : 'Busque por nome fantasia, razão social, CNPJ ou nome do representante legal.';
+    el('proponentSearch').placeholder = individual
+      ? 'Nome, nome social ou CPF'
+      : 'Nome fantasia, razão social, CNPJ ou representante legal';
+  }
+
+  function openProponentModal() {
+    el('proponentSearch').value = '';
+    syncProponentModalChrome();
+    renderProponentResults();
+    el('proponentModal').hidden = false;
+    el('proponentSearch').focus();
+  }
+
+  function closeProponentModal() {
+    el('proponentModal').hidden = true;
+    el('btnOpenProponentModal').focus();
+  }
+
+  el('btnOpenProponentModal').addEventListener('click', openProponentModal);
+  el('btnProponentDetails').addEventListener('click', openProponentDetail);
+  el('proponentSearchForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    renderProponentResults();
+  });
+
+  el('proponentResults').addEventListener('click', (event) => {
+    const card = event.target.closest('[data-proponent-id]');
+    if (!card) return;
+    const pickedId = card.dataset.proponentId;
+    const changed = pickedId !== val('proponentId');
+    el('proponentId').value = pickedId;
+    closeProponentModal();
+    refresh();
+    const proponent = findProponent(pickedId);
+    const shortName = proponentShortName(proponent);
+    if (!changed) {
+      showToast(`Proponente "${shortName}" mantido.`);
+    } else if (proponent.type === 'PF') {
+      const artist = proponentArtists(proponent.id)[0];
+      showToast(`Proponente "${shortName}" selecionado — é o próprio artista, com ${plural(artist ? artist.eventTypes.length : 0, 'atração cadastrada', 'atrações cadastradas')}.`);
+    } else {
+      showToast(`Proponente "${shortName}" selecionado — ${plural(proponentArtists(proponent.id).length, 'artista agenciado', 'artistas agenciados')} disponíveis.`);
+    }
+  });
+
+  el('btnClearProponent').addEventListener('click', () => {
+    el('proponentId').value = '';
+    refresh();
+    showToast('Proponente removido — os artistas dos eventos planejados ficam pendentes.');
+  });
+
+  /* Trocar PF/PJ invalida o proponente escolhido: as listas não se cruzam. */
+  document.querySelectorAll('input[name="proponentType"]').forEach((node) => {
+    node.addEventListener('change', () => {
+      const hadProponent = Boolean(val('proponentId'));
+      el('proponentId').value = '';
+      /* Em PF o artista é travado no proponente; em PJ volta a ser escolha por evento. */
+      document.querySelectorAll('#eventsList select[data-role="artist"]').forEach((select) => { select.value = ''; });
+      if (!el('proponentModal').hidden) {
+        syncProponentModalChrome();
+        el('proponentSearch').value = '';
+        renderProponentResults();
+      }
+      refresh();
+      if (hadProponent) {
+        showToast(`Tipo alterado para ${proponentTypeLabel(proponentType())} — selecione o proponente novamente.`);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-modal-close]').forEach((node) => node.addEventListener('click', closeProponentModal));
+  document.querySelectorAll('[data-detail-close]').forEach((node) => node.addEventListener('click', closeProponentDetail));
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (!el('proponentDetailModal').hidden) closeProponentDetail();
+    if (!el('proponentModal').hidden) closeProponentModal();
+  });
+
+  /* ---------------- modos (radio) ---------------- */
+  function syncModePanels() {
+    document.querySelectorAll('[data-mode-panel]').forEach((panel) => {
+      const [name, value] = panel.dataset.modePanel.split(':');
+      panel.hidden = currentMode(name) !== value;
+    });
+    document.querySelectorAll('.choice').forEach((choice) => {
+      choice.classList.toggle('is-selected', currentMode(choice.dataset.choiceFor) === choice.dataset.choiceValue);
+    });
+  }
+
+  /* ---------------- avaliação de status ---------------- */
+  /**
+   * Regras de status por bloco, em ordem de precedência:
+   *  invalid → há erro visível (contradição entre dados, ou bloco já salvo com pendências)
+   *  draft   → há alterações ainda não salvas e nenhum erro visível
+   *  valid   → nenhum erro e nada pendente de salvar
+   *  empty   → nada preenchido e o usuário não começou
+   *  partial → começou a preencher, faltam obrigatórios, nada errado ainda visível
+   */
+  function evaluate(section) {
+    const errors = section.validate();
+    const wasAttempted = attempted.has(section.id);
+    const visible = errors.filter((error) => wasAttempted || error.kind === 'live');
+    const filled = section.filled();
+    const dirty = isDirty(section);
+
+    let status;
+    if (visible.length > 0) status = 'invalid';
+    else if (dirty) status = 'draft';
+    else if (errors.length === 0) status = 'valid';
+    else if (!filled && !wasAttempted) status = 'empty';
+    else status = 'partial';
+
+    return { section, status, errors, visible, filled, dirty };
+  }
+
+  function renderFieldErrors(result) {
+    const formEl = el(result.section.formId);
+    formEl.querySelectorAll('.field.has-error').forEach((field) => field.classList.remove('has-error'));
+    formEl.querySelectorAll('.field__error').forEach((node) => { node.textContent = ''; });
+    formEl.querySelectorAll('[aria-invalid]').forEach((node) => node.removeAttribute('aria-invalid'));
+    formEl.querySelectorAll('.block-error').forEach((node) => {
+      node.classList.remove('is-visible');
+      node.textContent = '';
+    });
+
+    result.visible.forEach((error) => {
+      const target = formEl.querySelector(`[data-error-for="${error.field}"]`);
+      if (!target) return;
+      target.textContent = error.message;
+      if (target.classList.contains('block-error')) {
+        target.classList.add('is-visible');
+        return;
+      }
+      const fieldEl = target.closest('.field');
+      if (fieldEl) fieldEl.classList.add('has-error');
+      const inputEl = el(error.field);
+      if (inputEl) inputEl.setAttribute('aria-invalid', 'true');
+    });
+  }
+
+  function footMessage(result) {
+    const { status, errors, visible, dirty } = result;
+    if (status === 'valid') return 'Bloco salvo e correto.';
+    if (status === 'draft') {
+      return errors.length === 0
+        ? 'Alterações não salvas.'
+        : `Alterações não salvas e ${pending(errors.length)} a concluir.`;
+    }
+    if (status === 'empty') return 'Nenhum campo preenchido.';
+    if (status === 'invalid') {
+      return dirty
+        ? `${pending(visible.length)} neste bloco — alterações não salvas.`
+        : `${pending(visible.length)} neste bloco.`;
+    }
+    return `${pending(errors.length)} a concluir.`;
+  }
+
+  function paintStatus(sectionId, status) {
+    const meta = STATUS_META[status];
+    const navEl = document.querySelector(`.nav__item[data-section="${sectionId}"]`);
+    if (navEl) {
+      navEl.dataset.status = status;
+      navEl.querySelector('.nav__icon').textContent = meta.icon;
+      navEl.querySelector('.nav__status').textContent = meta.label;
+      navEl.setAttribute('aria-label', `${navEl.querySelector('.nav__label').textContent}: ${meta.label}`);
+    }
+    const cardEl = el(sectionId);
+    if (cardEl) cardEl.dataset.status = status;
+    const chipEl = document.querySelector(`[data-chip-for="${sectionId}"]`);
+    if (chipEl) {
+      chipEl.dataset.status = status;
+      chipEl.textContent = `${meta.icon} ${meta.label}`;
+    }
+  }
+
+  function refresh() {
+    syncModePanels();
+    refreshDynamicOptions();
+    renderProponentPanel();
+    renderArtistsPanel();
+    renumberEvents();
+    renderContractValueInfo();
+    syncPaymentPanels();
+    renumberParcelas();
+    renderKitDateChip();
+    renderPaymentInfo();
+    el('eventsEmpty').hidden = eventsData().length > 0;
+    el('btnAddEvent').disabled = !val('proponentId');
+
+    const results = SECTIONS.map(evaluate);
+
+    results.forEach((result) => {
+      renderFieldErrors(result);
+      paintStatus(result.section.id, result.status);
+      const footEl = document.querySelector(`[data-foot-for="${result.section.id}"]`);
+      if (footEl) {
+        footEl.dataset.status = result.status;
+        footEl.textContent = footMessage(result);
+      }
+      /* "Salvar alterações" só fica ativo enquanto houver alteração não salva no bloco. */
+      const saveEl = document.querySelector(`[data-save-for="${result.section.id}"]`);
+      if (saveEl) saveEl.disabled = !result.dirty;
+    });
+
+    renderSummary(results);
+    renderOverall(results);
+    return results;
+  }
+
+  /* ---------------- resumo ---------------- */
+  const summaryRow = (label, value) =>
+    `<div class="summary-row"><span class="summary-row__label">${escapeHtml(label)}</span><span class="summary-row__value">${escapeHtml(value)}</span></div>`;
+
+  function summaryGroup(title, status, rowsHtml) {
+    const chipHtml = status
+      ? `<span class="chip" data-status="${status}">${STATUS_META[status].icon} ${STATUS_META[status].label}</span>`
+      : '';
+    return `<div class="summary-group"><h3 class="summary-group__title">${escapeHtml(title)}${chipHtml}</h3>${rowsHtml}</div>`;
+  }
+
+  function renderSummary(results) {
+    const statusById = Object.fromEntries(results.map((result) => [result.section.id, result.status]));
+
+    const councilor = findCouncilor(AMENDMENT_CONTEXT.councilorId);
+    const eventManagement = findEventManagement(AMENDMENT_CONTEXT.eventManagementId);
+    const place = findPlace(AMENDMENT_CONTEXT.placeId);
+    const eventoRows =
+      summaryRow('Vereador responsável', councilor.name) +
+      summaryRow('Evento', eventManagement.eventName) +
+      summaryRow('Vigência', eventManagement.period);
+
+    const inspectorsHtml = currentMode('inspectorMode') === 'multiple'
+      ? (fiscalRowsData().filter((row) => row.fiscalId || row.placeId).map((row) => {
+          const fiscal = findInspector(row.fiscalId);
+          const substitute = findInspector(row.substituteId);
+          const place = findPlace(row.placeId);
+          return summaryRow(
+            place ? place.name : 'Local —',
+            `${fiscal ? fiscal.name : '—'}${substitute ? ` · suplente: ${substitute.name}` : ''}`
+          );
+        }).join('') || summaryRow('Fiscais por local', '—'))
+      : (() => {
+          const fiscal = findInspector(val('fiscalSingleId'));
+          const substitute = findInspector(val('substituteSingleId'));
+          return summaryRow('Fiscal único', `${fiscal ? fiscal.name : '—'}${substitute ? ` · suplente: ${substitute.name}` : ''}`);
+        })();
+
+    const unit = findContractUnit(val('requestingUnitId'));
+    const initialResponsible = findInitialResponsible(val('initialResponsibleId'));
+    const foundation = findLegalFoundation(val('legalFoundation'));
+    const contratoRows =
+      summaryRow('Código', CONTRACT_CODE) +
+      summaryRow('Objeto do contrato', val('contractObject') || '—') +
+      summaryRow('Múltiplos fiscais por local', currentMode('inspectorMode') === 'multiple' ? 'Sim' : 'Não') +
+      inspectorsHtml +
+      summaryRow('Responsável pelo cadastro', val('registrationResponsible') || '—') +
+      summaryRow('Unidade requisitante', unit ? unit.name : '—') +
+      summaryRow('Responsável pela solicitação inicial', initialResponsible ? `${initialResponsible.name} (${initialResponsible.unit})` : '—') +
+      summaryRow('Fundamento legal', foundation ? foundation[1] : '—') +
+      summaryRow('Processo SEI mãe', val('parentProccessSEI') || '—') +
+      summaryRow('Pedido de reserva', currentMode('reserveRequest') === 'global' ? 'Global' : 'Padrão') +
+      summaryRow('Justificativa da contratação', excerpt(rteText('justContracting'))) +
+      summaryRow('Justificativa da escolha do contratado', excerpt(rteText('justContractorChoice'))) +
+      summaryRow('Justificativa do valor da contratação', excerpt(rteText('justContractingValue')));
+
+    const events = eventsData();
+    const schedules = schedulesTotal();
+    const extraordinary = extraordinaryAmount();
+    const contractValue = contractValueAmount();
+    const budgetAllocation = findBudgetAllocation(val('budgetAllocationId'));
+    const schedulesCount = events.reduce((count, event) => count + event.schedules.length, 0);
+
+    const proponent = selectedProponent();
+
+    const eventsHtml = events.length === 0
+      ? summaryRow('Eventos planejados', '—')
+      : events.map((event) => {
+          const artist = findArtist(event.artistId);
+          const eventType = findEventType(event.artistId, event.aetId);
+
+          const schedulesHtml = event.schedules.map((schedule) => {
+            const place = findPlace(schedule.placeId);
+            const when = [
+              schedule.startDate || '—',
+              schedule.allDay ? 'dia inteiro' : (schedule.startTime || '—'),
+              place ? place.name : 'local —',
+            ].join(' · ');
+            return summaryRow('Data', `${when} · ${schedule.amount === '' ? '—' : brl(Number(schedule.amount))}`);
+          }).join('') || summaryRow('Data', '—');
+
+          return `
+            <div class="summary-group">
+              <h3 class="summary-group__title">Evento planejado ${event.index + 1}${event.title ? ` — ${escapeHtml(event.title)}` : ''}</h3>
+              ${summaryRow('Artista', artist ? `${artist.nameGroup} (${artist.artistType})` : '—')}
+              ${summaryRow('Atração', eventType ? eventType.nameEvent : '—')}
+              ${schedulesHtml}
+              ${summaryRow('Subtotal do evento', brl(eventTotal(event)))}
+            </div>`;
+        }).join('');
+
+    const paymentMethod = findPaymentMethod(currentMode('paymentMethod'));
+    const parcelas = parcelasData();
+    const parcelamentoRows =
+      summaryRow('Forma de pagamento', paymentMethod ? paymentMethod[1] : '—') +
+      summaryRow('Data prevista para entrega (Kit)', val('kitDate') ? formatDateBR(val('kitDate')) : '—') +
+      (currentMode('paymentMethod') === 'bilheteria'
+        ? summaryRow('Reversão de bilheteria', val('boxOfficeShare') ? `${val('boxOfficeShare')}%` : '—') +
+          summaryRow('Mínimo garantido', val('boxOfficeMinimum') === '' ? '—' : brl(Number(val('boxOfficeMinimum'))))
+        : '') +
+      (currentMode('paymentMethod') === 'outros'
+        ? summaryRow('Descrição do pagamento', excerpt(val('paymentOtherDescription')))
+        : '') +
+      (usesParcelas()
+        ? parcelas.map((parcela) => parcela.subs.map((sub) => {
+            const subprefeitura = findSubprefeitura(sub.subprefeituraId);
+            return summaryRow(
+              `${parcelaLabel(parcela.index)} · ${subprefeitura ? subprefeitura[1] : 'subprefeitura —'}`,
+              sub.amount === '' ? '—' : brl(Number(sub.amount))
+            );
+          }).join('') || summaryRow(parcelaLabel(parcela.index), '—')).join('') +
+          summaryRow('Total das parcelas', brl(parcelasTotal()))
+        : '') +
+      summaryRow('Observação do pagamento', val('paymentObservation') || '—');
+
+    el('summaryContent').innerHTML = `
+      ${summaryGroup('Evento da Emenda', undefined, eventoRows + summaryRow('Local habilitado', place.name))}
+      ${summaryGroup('Proponente', statusById['sec-proponente'],
+        summaryRow('Tipo', proponentTypeLabel(proponentType())) +
+        summaryRow(proponent && proponent.type === 'PF' ? 'Nome civil' : 'Razão social', proponent ? proponentName(proponent) : '—') +
+        summaryRow(proponent ? proponentDocumentLabel(proponent) : 'Documento', proponent ? proponentDocument(proponent) : '—') +
+        (proponent && proponent.type === 'PF'
+          ? summaryRow('Atrações cadastradas', String((proponentArtists(proponent.id)[0] || { eventTypes: [] }).eventTypes.length))
+          : summaryRow('Artistas agenciados', proponent ? String(proponentArtists(proponent.id).length) : '—')))}
+      ${summaryGroup('Artistas e eventos planejados', statusById['sec-eventos'], '')}
+      ${eventsHtml}
+      ${summaryGroup('Contrato', statusById['sec-contrato'], contratoRows)}
+      ${summaryGroup('Valor do contrato', statusById['sec-valor'],
+        summaryRow('Soma dos cachês', brl(schedules)) +
+        summaryRow('Despesas extraordinárias', brl(extraordinary)) +
+        summaryRow('Valor do contrato', contractValue === null ? '—' : brl(contractValue)) +
+        summaryRow('Dotação', budgetAllocation ? budgetAllocation[1] : '—') +
+        summaryRow('Observação', val('contractValueJustification') || '—'))}
+      ${summaryGroup('Parcelamento', statusById['sec-parcelamento'], parcelamentoRows)}
+      <div class="summary-total">
+        ${summaryRow('Eventos planejados', String(events.length))}
+        ${summaryRow('Datas programadas', String(schedulesCount))}
+        <div class="summary-row"><span class="summary-row__label">Valor do contrato</span><span class="summary-row__value money">${contractValue === null ? '—' : brl(contractValue)}</span></div>
+      </div>`;
+  }
+
+  /* ---------------- status global ---------------- */
+  function aggregateStatus(results) {
+    if (results.every((result) => result.status === 'valid')) return 'valid';
+    if (results.some((result) => result.status === 'invalid')) return 'invalid';
+    if (results.some((result) => result.status === 'draft')) return 'draft';
+    const started = results.some((result) => result.filled || attempted.has(result.section.id));
+    return started ? 'partial' : 'empty';
+  }
+
+  function renderOverall(results) {
+    const validCount = results.filter((result) => result.status === 'valid').length;
+    const invalidCount = results.filter((result) => result.status === 'invalid').length;
+    const draftCount = results.filter((result) => result.dirty).length;
+    const overall = aggregateStatus(results);
+
+    /* O Resumo não tem estado próprio: só descreve o andamento dos blocos. */
+    const resumoFoot = document.querySelector('[data-foot-for="sec-resumo"]');
+    resumoFoot.removeAttribute('data-status');
+    resumoFoot.textContent = overall === 'valid'
+      ? 'Todos os blocos estão salvos e corretos. A emenda pode ser criada.'
+      : (invalidCount > 0
+        ? `${invalidCount} ${invalidCount === 1 ? 'bloco incorreto' : 'blocos incorretos'}.`
+        : (draftCount > 0
+          ? `${draftCount} ${draftCount === 1 ? 'bloco com alterações não salvas' : 'blocos com alterações não salvas'}.`
+          : `${validCount} de ${results.length} blocos corretos.`));
+
+    el('progressText').textContent = `${validCount} de ${results.length} blocos corretos`;
+    el('progressBar').style.width = `${(validCount / results.length) * 100}%`;
+    el('globalStatusLabel').textContent = overall === 'valid'
+      ? '✓ Pronto para criar'
+      : (draftCount > 0
+        ? `${validCount}/${results.length} blocos corretos · ${draftCount} não ${draftCount === 1 ? 'salvo' : 'salvos'}`
+        : `${validCount}/${results.length} blocos corretos`);
+  }
+
+  /* ---------------- salvar bloco / criar emenda ---------------- */
+  function focusFirstError(result) {
+    const first = result.visible[0];
+    if (!first) return;
+    /* Justificativas guardam o valor num textarea oculto: o foco vai para a área editável. */
+    const node = document.querySelector(`[data-rte-input="${first.field}"]`) || el(first.field) || el(result.section.id);
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (typeof node.focus === 'function') node.focus({ preventScroll: true });
+  }
+
+  const formatSavedAt = (date) => date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  document.querySelectorAll('.js-form').forEach((formEl) => {
+    formEl.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const sectionId = formEl.dataset.section;
+      const section = SECTIONS.find((item) => item.id === sectionId);
+      if (!section || !isDirty(section)) return;
+
+      /* Salvar grava o bloco (mock) e libera todos os erros para exibição. */
+      takeSnapshot(section);
+      attempted.add(sectionId);
+      el('savedLabel').textContent = `Salvo às ${formatSavedAt(new Date())}`;
+      const results = refresh();
+      const result = results.find((item) => item.section.id === sectionId);
+      if (result.status === 'valid') {
+        showToast(`Bloco "${result.section.label}" salvo.`);
+        return;
+      }
+      focusFirstError(result);
+      showToast(`Bloco "${result.section.label}" salvo com ${pending(result.visible.length)}.`);
+    });
+    formEl.addEventListener('input', refresh);
+    formEl.addEventListener('change', refresh);
+  });
+
+  function validateAll() {
+    SECTIONS.forEach((section) => attempted.add(section.id));
+    const results = refresh();
+    const firstInvalid = results.find((result) => result.status !== 'valid');
+    return { results, firstInvalid };
+  }
+
+  el('btnValidateAll').addEventListener('click', () => {
+    const { firstInvalid } = validateAll();
+    if (!firstInvalid) { showToast('Todos os blocos estão corretos.'); return; }
+    focusFirstError(firstInvalid);
+    showToast(firstInvalid.status === 'draft'
+      ? `Bloco "${firstInvalid.section.label}" tem alterações não salvas.`
+      : `Bloco "${firstInvalid.section.label}" precisa de atenção.`);
+  });
+
+  el('btnCreate').addEventListener('click', () => {
+    const { results, firstInvalid } = validateAll();
+    if (firstInvalid) {
+      const invalidCount = results.filter((result) => result.status === 'invalid').length;
+      const unsavedCount = results.filter((result) => result.dirty).length;
+      const pendingCount = results.filter((result) => result.status !== 'valid').length;
+      focusFirstError(firstInvalid);
+      showToast(invalidCount === 0 && unsavedCount > 0
+        ? `${unsavedCount} ${unsavedCount === 1 ? 'bloco com alterações não salvas' : 'blocos com alterações não salvas'}. Salve antes de criar.`
+        : `${pendingCount} ${pendingCount === 1 ? 'bloco pendente' : 'blocos pendentes'}. Corrija antes de criar.`);
+      return;
+    }
+
+    requestStatus = 'created';
+    renderRequestStatus();
+    const events = eventsData();
+    const councilor = findCouncilor(AMENDMENT_CONTEXT.councilorId);
+    showToast(`Emenda criada (mock) — ${plural(events.length, 'evento planejado', 'eventos planejados')} do vereador ${councilor.name} vinculados ao contrato ${CONTRACT_CODE} de ${brl(contractValueAmount())}.`);
+  });
+
+  /* ---------------- toast ---------------- */
+  let toastTimer = null;
+  function showToast(message) {
+    const toastEl = el('toast');
+    toastEl.textContent = message;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toastEl.hidden = true; }, 4000);
+  }
+
+  /* ---------------- scroll spy ---------------- */
+  const navItems = Array.from(document.querySelectorAll('.nav__item'));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navItems.forEach((item) => {
+        const active = item.dataset.section === entry.target.id;
+        item.classList.toggle('is-active', active);
+        if (active) item.setAttribute('aria-current', 'true');
+        else item.removeAttribute('aria-current');
+      });
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+
+  navItems.forEach((item) => {
+    const sectionEl = el(item.dataset.section);
+    if (sectionEl) observer.observe(sectionEl);
+  });
+
+  /* ---------------- bootstrap ---------------- */
+  function renderRequestNumber() {
+    el('requestNumber').textContent = `Nº ${AMENDMENT_NUMBER}`;
+    document.title = `Emenda ${AMENDMENT_NUMBER} — Criação`;
+  }
+
+  function renderRequestCouncilor() {
+    el('requestCouncilor').textContent = `Vereador: ${findCouncilor(AMENDMENT_CONTEXT.councilorId).name}`;
+  }
+
+  function renderRequestStatus() {
+    const meta = REQUEST_STATUS_META[requestStatus];
+    const chipEl = el('requestStatus');
+    chipEl.dataset.status = meta.status;
+    chipEl.textContent = `${STATUS_META[meta.status].icon} ${meta.label}`;
+    document.querySelector('.sidenav__order')
+      .setAttribute('aria-label', `Emenda número ${AMENDMENT_NUMBER} — ${meta.label}`);
+  }
+
+  (function createEventsEmptyHint() {
+    const hint = document.createElement('p');
+    hint.className = 'hint-empty';
+    hint.id = 'eventsEmpty';
+    hint.style.marginTop = '0';
+    hint.textContent = 'Nenhum evento planejado. Adicione o primeiro — escolha o artista agenciado, a atração e defina o cronograma (datas, locais e cachês).';
+    el('eventsList').prepend(hint);
+  })();
+
+  renderRequestNumber();
+  renderRequestStatus();
+  renderRequestCouncilor();
+  renderEventoReadonly();
+  renderRelatedContracts();
+  addFiscalRow();
+  initRichTexts();
+  refresh();
+  snapshotAll();
+  refresh();
+</script>
+</body>
+</html>

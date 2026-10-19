@@ -85,6 +85,7 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
 .pe-tag--cyan{color:var(--pe-cyan);border-color:var(--pe-cyan-border);background:var(--pe-cyan-bg)}
 .pe-tag--ok{color:var(--pe-ok-text);border-color:var(--pe-ok-border);background:var(--pe-ok-bg)}
 .pe-tag--amend{color:#5CC8D9;border-color:var(--pe-amend);background:rgba(23,162,184,.12)}
+.pe-tag--danger{color:var(--pe-danger-text);border-color:#58181C;background:#2C1618}
 .pe-alert{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border:1px solid;border-radius:var(--pe-radius);color:var(--pe-text)}
 .pe-alert p{margin:0}
 .pe-alert__ico{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;color:#141414;margin-top:1px}
@@ -222,6 +223,29 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
 .pe-divider::after{content:"";flex:1;border-top:1px solid var(--pe-border)}
 .pe-toast{position:fixed;right:24px;bottom:24px;z-index:60;max-width:380px;padding:10px 16px;border-radius:var(--pe-radius);background:#3A3A42;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.45);font-size:13px}
 
+/* PBI 57330: pendências da SMC, envio da atualização e formulário do integrante */
+.pe-pend{white-space:pre-line;margin:6px 0 0}
+.pe-pend-meta{margin:8px 0 0;font-size:12px;color:var(--pe-text-2)}
+.pe-submit{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-top:16px;border-top:1px solid var(--pe-border-soft)}
+.pe-submit p{margin:0;color:var(--pe-text-2);font-size:13px}
+.pe-member-form{margin-top:14px;padding:14px;border:1px solid var(--pe-info-border);border-radius:var(--pe-radius);background:var(--pe-info-bg)}
+.pe-member-form .pe-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pe-field__error{margin:0;font-size:12px;color:var(--pe-danger-text)}
+.pe-field__error:empty{display:none}
+/* responsáveis da PJ e fotos de divulgação (mesmos blocos do Drawer do operador) */
+.pe-list{display:flex;flex-direction:column;gap:12px}
+.pe-hint-sm{margin:0;font-size:12px;color:var(--pe-text-3)}
+.pe-resp{border:1px solid var(--pe-border);border-radius:var(--pe-radius);padding:12px;background:var(--pe-surface-2)}
+.pe-resp__head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.pe-radio-inline{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.pe-radio-inline input{accent-color:var(--pe-primary)}
+.pe-form input[readonly]{background:rgba(255,255,255,.04);color:var(--pe-text-2)}
+.pe-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.pe-photo{margin:0;display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--pe-border);border-radius:var(--pe-radius);background:var(--pe-surface-2)}
+.pe-photo__thumb{display:block;width:100%;aspect-ratio:4/3;border-radius:6px;object-fit:cover}
+.pe-photo .pe-btn{align-self:flex-start}
+.pe-list > .pe-btn{align-self:flex-start}
+
 @media (max-width:900px){
   .pe-shell{grid-template-columns:minmax(0,1fr)}
   .pe-side{display:none}
@@ -343,6 +367,8 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
           <span class="pe-demo__group" role="group" aria-labelledby="pe-demo-fase">
             <button type="button" class="pe-btn" data-fase="assinatura" aria-pressed="true">Aguardando assinatura</button>
             <button type="button" class="pe-btn" data-fase="reaberto" aria-pressed="false">Pedido reaberto</button>
+            <button type="button" class="pe-btn" data-fase="aguardando" aria-pressed="false">Aguardando produtor</button>
+            <button type="button" class="pe-btn" data-fase="cancelado" aria-pressed="false">Cancelado</button>
           </span>
           <span id="pe-demo-prod">Produtor:</span>
           <span class="pe-demo__group" role="group" aria-labelledby="pe-demo-prod">
@@ -366,7 +392,7 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
           <div class="pe-tabs" role="tablist" aria-label="Seções do pedido">
             <button type="button" class="pe-tab" role="tab" id="tab-eventos" aria-controls="panel-eventos" aria-selected="true">Dados do evento</button>
             <button type="button" class="pe-tab" role="tab" id="tab-docs" aria-controls="panel-docs" aria-selected="false">Documentos</button>
-            <button type="button" class="pe-tab" role="tab" id="tab-atualizar" aria-controls="panel-atualizar" aria-selected="false">Atualizar dados do contrato</button>
+            <button type="button" class="pe-tab" role="tab" id="tab-atualizar" aria-controls="panel-atualizar" aria-selected="false">Atualizar informações</button>
           </div>
 
           <div class="pe-panel" role="tabpanel" id="panel-eventos" aria-labelledby="tab-eventos">
@@ -389,6 +415,15 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
           <div class="pe-panel" role="tabpanel" id="panel-atualizar" aria-labelledby="tab-atualizar" hidden>
             <div class="pe-alert pe-alert--warn" role="note">
               <span class="pe-alert__ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 4v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="1.1" fill="currentColor"/></svg></span>
+              <div>
+                <p class="pe-alert__title">Pendências apontadas pela SMC</p>
+                <p class="pe-pend" id="pe-pend-text"></p>
+                <p class="pe-pend-meta" id="pe-pend-meta"></p>
+              </div>
+            </div>
+
+            <div class="pe-alert pe-alert--info" role="note">
+              <span class="pe-alert__ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 7v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="4.2" r="1.1" fill="currentColor"/></svg></span>
               <div>
                 <p class="pe-alert__title">Atenção</p>
                 <p>As alterações afetarão apenas este pedido de contratação. Os seus cadastros originais de proponente e de artista não mudam.</p>
@@ -417,6 +452,11 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
               </div>
               <div id="pe-art-list"></div>
             </section>
+
+            <div class="pe-submit">
+              <p id="pe-submit-hint"></p>
+              <button type="button" class="pe-btn pe-btn--primary" id="pe-send-update">Enviar atualização</button>
+            </div>
           </div>
         </section>
       </div>
@@ -477,7 +517,10 @@ var OPT = {
 var ADDR_GRAJAU = { cep: '04843-120', logradouro: 'Rua Caiubi', numero: '215', complemento: '', bairro: 'Parque Grajaú', cidade: 'São Paulo', uf: 'SP' };
 var EMPRESA = {
   razao: 'Circulando Produções Culturais Ltda.', fantasia: 'Circulando Produções', cnpj: '41.827.306/0001-92', ccm: '5.482.110-7',
-  resp: { nome: 'Márcia Helena Toledo', social: '', cpf: '226.781.448-05', rg: '28.114.597-1', nasc: '02/09/1981' },
+  responsaveis: [
+    { nome: 'Márcia Helena Toledo', social: '', cpf: '226.781.448-05', rg: '28.114.597-1', nasc: '02/09/1981', email: 'marcia@circulando.art.br', telefone: '(11) 99812-4410', principal: true },
+    { nome: 'Rafael Brandão Lima', social: '', cpf: '301.556.218-40', rg: '33.180.442-9', nasc: '15/04/1984', email: 'rafael@circulando.art.br', telefone: '(11) 97730-2211', principal: false }
+  ],
   endereco: { cep: '04814-000', logradouro: 'Av. Dona Belmira Marin', numero: '1180', complemento: 'Sala 4', bairro: 'Jardim Ellus', cidade: 'São Paulo', uf: 'SP' },
   contato: { email: 'contato@circulando.art.br', telefone: '(11) 3456-7788' }
 };
@@ -494,7 +537,8 @@ var EVENTOS = [
     atracao: { tipo: 'Música', valorSugerido: 'R$ 7.000,00', categorias: 'Samba, Cultura popular', nomeEvento: 'Cortejo do Bloco do Beco', publico: 'Família', classificacao: 'Livre', duracao: '01:30', acessibilidade: 'Intérprete de Libras',
       sinopse: 'Cortejo de samba com bateria de 25 ritmistas que percorre o entorno do equipamento e termina em roda aberta ao público.',
       release: 'Fundado por moradores do Parque Grajaú, o Bloco do Beco mistura samba de terreiro e marchinhas autorais.',
-      repertorio: 'Sambas autorais do bloco; clássicos de Adoniran Barbosa e Geraldo Filme.' },
+      repertorio: 'Sambas autorais do bloco; clássicos de Adoniran Barbosa e Geraldo Filme.',
+      fotos: [{ src: 'grad:0', credito: 'Lia Moraes' }, { src: 'grad:1', credito: 'Lia Moraes' }, { src: 'grad:2', credito: '' }] },
     pf: pf({ nome: 'Josué Ramos da Silva', artistico: 'Mestre Josué', cpf: '318.442.908-17', rg: '34.551.209-3', nasc: '14/03/1979', genero: 'Masculino', raca: 'Preta', instrucao: 'Ensino médio completo', pis: '128.44591.33-2', contato: { email: 'josue.beco@email.com', telefone: '(11) 98451-2230' } }),
     empresa: copy(EMPRESA),
     membros: [
@@ -514,7 +558,8 @@ var EVENTOS = [
     atracao: { tipo: 'Música', valorSugerido: 'R$ 10.000,00', categorias: 'MPB, Samba', nomeEvento: 'Marina Feitosa canta Clementina', publico: 'Adulto', classificacao: '12 anos', duracao: '01:10', acessibilidade: 'Audiodescrição',
       sinopse: 'Show em homenagem a Clementina de Jesus, com arranjos para voz, violão de 7 cordas e percussão.',
       release: 'Marina Feitosa revisita o repertório de Clementina com leitura contemporânea.',
-      repertorio: 'Marinheiro Só; Benguelê; Taratá; Canto dos Escravos.' },
+      repertorio: 'Marinheiro Só; Benguelê; Taratá; Canto dos Escravos.',
+      fotos: [{ src: 'grad:3', credito: 'Rafa Okada' }, { src: 'grad:4', credito: 'Rafa Okada' }] },
     pf: pf({ nome: 'Marina Feitosa Albuquerque', artistico: 'Marina Feitosa', cpf: '389.552.017-44', rg: '37.660.214-8', nasc: '22/06/1988', genero: 'Feminino', raca: 'Parda', instrucao: 'Ensino superior completo', pis: '201.33817.45-0', contato: { email: 'marina@marinafeitosa.com.br', telefone: '(11) 97722-1180' } }),
     empresa: copy(EMPRESA),
     membros: [
@@ -532,7 +577,7 @@ var EVENTOS = [
     atracao: { tipo: 'Teatro', valorSugerido: 'R$ 4.500,00', categorias: 'Teatro infantil', nomeEvento: 'O Menino que Plantava Nuvens', publico: 'Infantil', classificacao: 'Livre', duracao: '00:50', acessibilidade: 'Intérprete de Libras, Audiodescrição',
       sinopse: 'Um menino decide plantar nuvens para acabar com a seca da sua rua e descobre que precisa da ajuda dos vizinhos.',
       release: 'Espetáculo com bonecos e música ao vivo, vencedor do Prêmio Zé Renato 2024.',
-      repertorio: '' },
+      repertorio: '', fotos: [{ src: 'grad:5', credito: 'Acervo da companhia' }] },
     pf: pf({ nome: 'Helena Vaz Moreira', cpf: '296.774.150-38', rg: '30.551.786-6', nasc: '09/11/1985', genero: 'Feminino', raca: 'Branca', instrucao: 'Pós-graduação', pis: '170.55620.18-3', contato: { email: 'producao@ciapedevento.org', telefone: '(11) 96033-4471' } }),
     empresa: copy(EMPRESA),
     membros: [
@@ -551,7 +596,8 @@ var EVENTOS = [
     id: 'a4', nome: 'DJ Kalunga', tipoArtista: 'Individual sem empresário',
     prof: { nome: 'DJ Kalunga', drt: '', omb: '', redes: 'https://soundcloud.com/djkalunga', experiencia: 'Residente de bailes black na zona sul desde 2012.' },
     atracao: { tipo: 'Discotecagem', valorSugerido: 'R$ 3.500,00', categorias: 'Black music, Música eletrônica', nomeEvento: 'Baile Kalunga', publico: 'Jovem', classificacao: '14 anos', duracao: '03:00', acessibilidade: '',
-      sinopse: 'Baile com discotecagem de soul, funk e música eletrônica afro-brasileira.', release: '', repertorio: '' },
+      sinopse: 'Baile com discotecagem de soul, funk e música eletrônica afro-brasileira.', release: '', repertorio: '',
+      fotos: [{ src: 'grad:2', credito: '' }] },
     pf: pf({ nome: 'Rodrigo Kalunga Ferreira', artistico: 'DJ Kalunga', cpf: '345.212.889-03', rg: '35.443.771-0', nasc: '30/01/1990', genero: 'Masculino', raca: 'Preta', instrucao: 'Ensino superior incompleto', pis: '190.44718.22-6', ccm: '6.001.554-2', contato: { email: 'djkalunga@email.com', telefone: '(11) 95510-6620' } }),
     empresa: null,
     membros: [
@@ -566,12 +612,21 @@ var EVENTOS = [
 var PRODUTOR_PF = pf({ nome: 'Márcia Helena Toledo', cpf: '226.781.448-05', rg: '28.114.597-1', nasc: '02/09/1981', genero: 'Feminino', raca: 'Branca', instrucao: 'Pós-graduação', pis: '123.88104.27-9', ccm: '4.910.233-0',
   endereco: copy(EMPRESA.endereco), contato: { email: 'marcia.toledo@email.com', telefone: '(11) 99812-4410' } });
 
-/* rótulos públicos do portal (PUBLIC_CONTRACTING_REQUEST_STATUS); docs = assináveis liberados; upd = atualização liberada */
+/* rótulos públicos do portal (PUBLIC_CONTRACTING_REQUEST_STATUS); docs = assináveis liberados;
+   upd = aba "Atualizar informações" liberada: só com o pedido aguardando o produtor (PBI 57330, RETP-03) */
 var FASES = {
   aprovacao: { label: 'Aguardando aprovação', tone: 'info', docs: false, upd: false },
   andamento: { label: 'Processo de contratação em andamento', tone: 'cyan', docs: false, upd: false },
   assinatura: { label: 'Aguardando assinatura', tone: 'warn', docs: true, upd: false },
-  reaberto: { label: 'Em planejamento', tone: 'neutral', docs: false, upd: true }
+  reaberto: { label: 'Em planejamento', tone: 'neutral', docs: false, upd: false },
+  aguardando: { label: 'Em planejamento', tone: 'neutral', docs: false, upd: true, extra: ['Atualização solicitada', 'warn'] },
+  cancelado: { label: 'Cancelado', tone: 'danger', docs: false, upd: false }
+};
+
+/* texto que o operador escreveu em "Solicitar atualização ao produtor" (visível ao produtor, A-27) */
+var PENDENCIAS = {
+  texto: '1) Dados da empresa: o CCM 5.482.110-7 não confere com a certidão de tributos municipais. Informe o CCM correto.\n2) Cia. Pé de Vento — ficha técnica: o integrante Tomás Ibarra está sem CPF/CIN. Informe o CPF ou o RNM dele.',
+  em: '18/10/2026 às 09:30'
 };
 
 var PEDIDOS = [
@@ -596,7 +651,10 @@ var totalEvento = function (e) {
   if (e.valorTotal != null) return e.valorTotal;
   return e.apresentacoes.reduce(function (s, a) { return s + a.valor; }, 0);
 };
-var statusTag = function (p) { return tag(FASES[p.fase].label, FASES[p.fase].tone); };
+var statusTag = function (p) {
+  var fase = FASES[p.fase];
+  return tag(fase.label, fase.tone) + (fase.extra ? ' ' + tag(fase.extra[0], fase.extra[1]) : '');
+};
 var produtor = function () {
   if (state.prod === 'PF') return { nome: PRODUTOR_PF.nome, doc: 'CPF ' + PRODUTOR_PF.cpf, tipo: 'PF' };
   return { nome: EMPRESA.razao, doc: 'CNPJ ' + EMPRESA.cnpj, tipo: 'PJ' };
@@ -639,9 +697,11 @@ function renderHeader() {
 /* ---------- aba 2: documentos (mesmo StepCard de Oportunidades) ---------- */
 function renderDocs() {
   var liberado = FASES[state.pedido.fase].docs;
+  var desc = 'Disponível quando a SMC enviar os documentos do pedido para assinatura';
+  if (liberado) desc = 'Clique aqui para baixar e enviar os documentos assinados solicitados';
+  if (state.pedido.fase === 'cancelado') desc = 'Pedido cancelado: não há documentos a enviar';
   var body = '<span class="pe-step__ico">' + SVG.edit + '</span><span class="pe-step__main"><span class="pe-step__title">Documentos assinados' +
-    (liberado ? tag('Aguardando envio', 'warn') : '') + '</span><span class="pe-step__desc">' +
-    (liberado ? 'Clique aqui para baixar e enviar os documentos assinados solicitados' : 'Disponível quando a SMC enviar os documentos do pedido para assinatura') +
+    (liberado ? tag('Aguardando envio', 'warn') : '') + '</span><span class="pe-step__desc">' + desc +
     '</span></span>' + SVG.go;
   $('#pe-steps-docs').innerHTML = liberado
     ? '<li><a class="pe-step" href="../documentos-assinaveis-produtor/index.html">' + body + '</a></li>'
@@ -695,22 +755,22 @@ function renderEventos() {
 var STEPS = {
   'Coletivo': [
     ['prof', 'Dados profissionais do coletivo', 'Nome do grupo, DRT, OMB, redes sociais e experiência'],
-    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release e repertório'],
+    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release, repertório e fotos'],
     ['membros', 'Integrantes e ficha técnica', 'Integrantes do coletivo, cargos e líder'],
     ['pf', 'Dados do líder do coletivo', 'Dados pessoais, endereço e contato do líder'],
-    ['empresa', 'Dados da empresa (empresário)', 'Razão social, CNPJ, representante legal, endereço e contato']
+    ['empresa', 'Dados da empresa (empresário)', 'Razão social, CNPJ, responsáveis, endereço e contato']
   ],
   'Individual com empresário': [
     ['prof', 'Dados profissionais do artista', 'Nome artístico, DRT, OMB, redes sociais e experiência'],
-    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release e repertório'],
+    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release, repertório e fotos'],
     ['membros', 'Ficha técnica', 'Integrantes, cargos e líder'],
     ['pf', 'Dados do artista (PF)', 'Dados pessoais, endereço e contato do artista'],
-    ['empresa', 'Dados da empresa (empresário)', 'Razão social, CNPJ, representante legal, endereço e contato']
+    ['empresa', 'Dados da empresa (empresário)', 'Razão social, CNPJ, responsáveis, endereço e contato']
   ],
   'Individual sem empresário': [
     ['pf', 'Dados do artista (PF)', 'Dados pessoais, endereço e contato do artista'],
     ['prof', 'Dados profissionais do artista', 'Nome artístico, DRT, OMB, redes sociais e experiência'],
-    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release e repertório'],
+    ['atracao', 'Atração (tipo de evento)', 'Tipo, categorias, público, classificação, sinopse, release, repertório e fotos'],
     ['membros', 'Ficha técnica', 'Integrantes, cargos e líder']
   ]
 };
@@ -726,7 +786,7 @@ function step(key, title, description) {
 function renderAtualizar() {
   $('#pe-steps-prod').innerHTML = state.prod === 'PF'
     ? step('produtor:pf', 'Dados do produtor (PF)', 'Dados pessoais, documentos, endereço e contato')
-    : step('produtor:empresa', 'Dados da empresa', 'Razão social, CNPJ, CCM, representante legal, endereço e contato');
+    : step('produtor:empresa', 'Dados da empresa', 'Razão social, CNPJ, CCM, responsáveis, endereço e contato');
 
   var q = norm($('#pe-q-art').value.trim());
   var all = state.pedido.eventos;
@@ -771,7 +831,7 @@ var FORMS = {
   empresa: function (o) {
     return [
       { t: 'Dados da empresa', o: o, f: [['Razão social', 'razao', null, 'full'], ['Nome fantasia', 'fantasia'], ['CNPJ', 'cnpj'], ['CCM', 'ccm']] },
-      { t: 'Representante legal', o: o.resp, f: [['Nome completo', 'nome'], ['Nome social', 'social'], ['CPF/CIN', 'cpf'], ['RG', 'rg'], ['Data de nascimento', 'nasc']] },
+      { t: 'Responsáveis', o: o, list: 'responsaveis' },
       endereco(o.endereco), contato(o.contato)
     ];
   },
@@ -782,9 +842,103 @@ var FORMS = {
     return [{ o: o, f: [
       ['Tipo de evento', 'tipo', OPT.tipo], ['Categoria do evento', 'categorias'], ['Nome do evento', 'nomeEvento', null, 'full'],
       ['Público alvo', 'publico', OPT.publico], ['Classificação indicativa', 'classificacao', OPT.classif], ['Duração', 'duracao'],
-      ['Medidas de acessibilidade', 'acessibilidade'], ['Valor sugerido para contratação', 'valorSugerido'], ['Sinopse', 'sinopse', null, 'area'], ['Release', 'release', null, 'area'], ['Repertório', 'repertorio', null, 'area']] }];
+      ['Medidas de acessibilidade', 'acessibilidade'], ['Valor sugerido para contratação', 'valorSugerido'], ['Sinopse', 'sinopse', null, 'area'], ['Release', 'release', null, 'area'], ['Repertório', 'repertorio', null, 'area']] },
+      { t: 'Fotos para divulgação', o: o, list: 'fotos' }];
   }
 };
+
+/* ---------- listas dos blocos de PJ e atração (mesmas regras do Drawer do operador) ---------- */
+var PE_GRADIENTS = ['#ffd591,#ff9c6e', '#b7eb8f,#95de64', '#91caff,#69b1ff', '#d3adf7,#b37feb', '#ffadd2,#ff85c0', '#87e8de,#5cdbd3'];
+var peUid = 0;
+
+function respRowHtml(r, isNew) {
+  var uid = 'pr' + (++peUid);
+  var f = function (key, label, value, opts) {
+    opts = opts || {};
+    return '<div class="pe-field"><label for="' + uid + '-' + key + '">' + esc(label) + (opts.req ? ' *' : '') + '</label>' +
+      '<input type="text" id="' + uid + '-' + key + '" data-resp="' + key + '" value="' + esc(value) + '"' + (opts.readonly ? ' readonly' : '') + '>' +
+      (opts.hint ? '<p class="pe-hint-sm">' + esc(opts.hint) + '</p>' : '') +
+      '<p class="pe-field__error" data-resp-error="' + key + '"></p></div>';
+  };
+  return '<div class="pe-resp" data-resp-row data-new="' + (isNew ? 1 : 0) + '">' +
+    '<div class="pe-resp__head"><label class="pe-radio-inline"><input type="radio" name="pe-resp-principal"' + (r.principal ? ' checked' : '') + '> Representante principal</label>' +
+    '<button type="button" class="pe-btn pe-btn--ghost pe-btn--sm" data-resp-remove aria-label="Remover responsável ' + esc(r.nome || 'novo') + '">Remover</button></div>' +
+    '<div class="pe-form">' + f('nome', 'Nome completo', r.nome, { req: true }) + f('social', 'Nome social', r.social) +
+      f('cpf', 'CPF/CIN', r.cpf, isNew ? { req: true } : { readonly: true, hint: 'Para trocar a pessoa, remova e cadastre outra.' }) +
+      f('rg', 'RG', r.rg) + f('nasc', 'Data de nascimento', r.nasc) +
+      f('email', 'E-mail', r.email, { req: isNew }) + f('telefone', 'Telefone', r.telefone, { req: isNew }) + '</div></div>';
+}
+
+function photoHtml(p) {
+  var id = 'pp' + (++peUid);
+  var thumb = p.src.indexOf('grad:') === 0
+    ? '<span class="pe-photo__thumb" role="img" aria-label="Foto de divulgação" style="background:linear-gradient(135deg,' + PE_GRADIENTS[Number(p.src.slice(5)) % PE_GRADIENTS.length] + ')"></span>'
+    : '<img class="pe-photo__thumb" src="' + esc(p.src) + '" alt="' + esc(p.nome || 'Foto enviada') + '">';
+  return '<figure class="pe-photo" data-photo-row data-src="' + esc(p.src) + '">' + thumb +
+    '<div class="pe-field"><label for="' + id + '">Crédito</label><input type="text" id="' + id + '" data-photo-credit value="' + esc(p.credito) + '" placeholder="Opcional"></div>' +
+    '<button type="button" class="pe-btn pe-btn--ghost pe-btn--sm" data-photo-remove aria-label="Remover foto">Remover</button></figure>';
+}
+
+var LISTS = {
+  responsaveis: {
+    html: function (o) {
+      return '<div class="pe-field--full pe-list"><p class="pe-hint-sm">Marque o representante principal. O CPF de quem já está cadastrado não muda; para trocar a pessoa, remova e cadastre outra.</p>' +
+        '<div class="pe-list" id="pe-resp-rows">' + o.responsaveis.map(function (r) { return respRowHtml(r, false); }).join('') + '</div>' +
+        '<button type="button" class="pe-btn pe-btn--sm" id="pe-resp-add">+ Adicionar responsável</button></div>';
+    },
+    read: function () {
+      return Array.prototype.map.call(document.querySelectorAll('#pe-resp-rows [data-resp-row]'), function (row) {
+        var get = function (k) { return row.querySelector('[data-resp="' + k + '"]').value.trim(); };
+        return { nome: get('nome'), social: get('social'), cpf: get('cpf'), rg: get('rg'), nasc: get('nasc'), email: get('email'), telefone: get('telefone'), principal: row.querySelector('input[type="radio"]').checked };
+      });
+    },
+    validate: function () {
+      var first = null;
+      document.querySelectorAll('#pe-resp-rows [data-resp-row]').forEach(function (row) {
+        var val = function (k) { return row.querySelector('[data-resp="' + k + '"]').value.trim(); };
+        var errors = {};
+        if (!val('nome')) errors.nome = 'Informe o nome.';
+        if (row.dataset.new === '1') {
+          if (!val('cpf')) errors.cpf = 'Informe o CPF/CIN.';
+          if (!val('email')) errors.email = 'Informe o e-mail.';
+          if (val('email') && val('email').indexOf('@') === -1) errors.email = 'E-mail inválido.';
+          if (!val('telefone')) errors.telefone = 'Informe o telefone.';
+        }
+        row.querySelectorAll('[data-resp-error]').forEach(function (p) { p.textContent = errors[p.dataset.respError] || ''; });
+        Object.keys(errors).forEach(function (k) { if (!first) first = row.querySelector('[data-resp="' + k + '"]'); });
+      });
+      return first;
+    }
+  },
+  fotos: {
+    html: function (o) {
+      return '<div class="pe-field--full pe-list"><p class="pe-hint-sm">Pelo menos uma foto é obrigatória; o crédito é opcional.</p>' +
+        '<div class="pe-photos" id="pe-photo-list">' + (o.fotos || []).map(photoHtml).join('') + '</div>' +
+        '<p class="pe-field__error" id="pe-photo-error"></p>' +
+        '<input type="file" id="pe-photo-input" accept="image/*" multiple hidden>' +
+        '<button type="button" class="pe-btn pe-btn--sm" id="pe-photo-add">Enviar foto</button></div>';
+    },
+    read: function () {
+      return Array.prototype.map.call(document.querySelectorAll('#pe-photo-list [data-photo-row]'), function (fig) {
+        return { src: fig.dataset.src, credito: fig.querySelector('[data-photo-credit]').value.trim() };
+      });
+    },
+    validate: function () {
+      var none = !document.querySelector('#pe-photo-list [data-photo-row]');
+      $('#pe-photo-error').textContent = none ? 'É necessário ter pelo menos uma foto de divulgação.' : '';
+      return none ? $('#pe-photo-add') : null;
+    }
+  }
+};
+
+// um e só um principal; o último responsável não sai (a PJ precisa de representante)
+function syncResponsibles() {
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#pe-resp-rows [data-resp-row]'));
+  if (!rows.length) return;
+  var hasPrincipal = rows.some(function (row) { return row.querySelector('input[type="radio"]').checked; });
+  if (!hasPrincipal) rows[0].querySelector('input[type="radio"]').checked = true;
+  rows.forEach(function (row) { row.querySelector('[data-resp-remove]').hidden = rows.length < 2; });
+}
 
 var modal = { key: null, sections: null };
 
@@ -818,14 +972,17 @@ function openModal(key) {
 
   if (kind === 'membros') {
     modal.sections = null;
-    $('#pe-modal-body').innerHTML = renderMembros(evento);
-    $('#pe-modal-foot').innerHTML = '<button type="button" class="pe-btn" id="pe-add-membro">+ Novo membro</button><button type="submit" class="pe-btn pe-btn--primary" value="cancel">Fechar</button>';
+    memberEdit = null;
+    $('#pe-modal-body').innerHTML = '<div id="pe-members-table">' + renderMembros(evento) + '</div><div id="pe-mf-slot"></div>';
+    $('#pe-modal-foot').innerHTML = '<button type="button" class="pe-btn" id="pe-add-membro">+ Novo integrante</button><button type="submit" class="pe-btn pe-btn--primary" value="cancel">Fechar</button>';
   } else {
     var src = evento ? evento[kind] : { pf: PRODUTOR_PF, empresa: EMPRESA }[kind];
     modal.sections = FORMS[kind](src);
     $('#pe-modal-body').innerHTML = '<div class="pe-form">' + modal.sections.map(function (s, i) {
-      return (s.t ? '<p class="pe-divider">' + esc(s.t) + '</p>' : '') + s.f.map(function (f) { return field(i, f); }).join('');
+      return (s.t ? '<p class="pe-divider">' + esc(s.t) + '</p>' : '') +
+        (s.list ? LISTS[s.list].html(s.o) : s.f.map(function (f) { return field(i, f); }).join(''));
     }).join('') + '</div>';
+    syncResponsibles();
     $('#pe-modal-foot').innerHTML = '<button type="submit" class="pe-btn" value="cancel">Cancelar</button><button type="submit" class="pe-btn pe-btn--primary" value="ok">Salvar</button>';
   }
   $('#pe-modal').returnValue = '';
@@ -837,10 +994,72 @@ function renderMembros(evento) {
     '<thead><tr><th>Nome</th><th>CPF/CIN</th><th>RG</th><th>Passaporte</th><th class="num">Idade</th><th>Nacionalidade</th><th>Posição / Cargo</th><th class="act">Ações</th></tr></thead><tbody>' +
     evento.membros.map(function (m, i) {
       return '<tr><td>' + esc(m.nome) + (m.lider ? ' ' + tag('Líder do grupo', 'info') : '') + '</td><td class="pe-nowrap">' + orDash(m.cpf) + '</td><td class="pe-nowrap">' + orDash(m.rg) +
-        '</td><td>' + orDash(m.passaporte) + '</td><td class="num">' + m.idade + '</td><td>' + esc(m.nac) + '</td><td>' + esc(m.cargo) + '</td>' +
+        '</td><td>' + orDash(m.passaporte) + '</td><td class="num">' + orDash(m.idade) + '</td><td>' + esc(m.nac) + '</td><td>' + esc(m.cargo) + '</td>' +
         '<td class="act"><button type="button" class="pe-icon-btn" data-edit-membro="' + i + '" aria-label="Alterar ' + esc(m.nome) + '">' + SVG.edit + '</button>' +
         (m.lider ? '' : '<button type="button" class="pe-icon-btn" data-del-membro="' + i + '" aria-label="Remover ' + esc(m.nome) + '">' + SVG.trash + '</button>') + '</td></tr>';
     }).join('') + '</tbody></table></div>';
+}
+
+/* integrante: mesmo formulário do Drawer do operador (AD-024) */
+var memberEdit = null;
+function currentEvento() {
+  return state.pedido.eventos.filter(function (e) { return e.id === modal.key.split(':')[0]; })[0];
+}
+function memberField(key, label, value, options) {
+  var id = 'pe-mf-' + key;
+  var control = options
+    ? '<select id="' + id + '">' + options.map(function (op) { return '<option' + (op === value ? ' selected' : '') + '>' + esc(op) + '</option>'; }).join('') + '</select>'
+    : '<input type="text" id="' + id + '" value="' + esc(value) + '">';
+  return '<div class="pe-field"><label for="' + id + '">' + esc(label) + '</label>' + control + '<p class="pe-field__error" id="' + id + '-error"></p></div>';
+}
+function openMemberForm(index) {
+  var m = index === -1 ? { nome: '', artistico: '', cpf: '', rg: '', passaporte: '', nac: 'Brasileira', cargo: '' } : currentEvento().membros[index];
+  memberEdit = index;
+  $('#pe-mf-slot').innerHTML = '<div class="pe-member-form" role="group" aria-labelledby="pe-mf-title"><p class="pe-divider" id="pe-mf-title">' + (index === -1 ? 'Novo integrante' : 'Alterar integrante') + '</p>' +
+    '<div class="pe-form">' + memberField('nome', 'Nome completo *', m.nome) + memberField('artistico', 'Nome artístico', m.artistico || '') +
+      memberField('cpf', 'CPF/CIN', m.cpf || '') + memberField('rg', 'RG', m.rg || '') + memberField('passaporte', 'Passaporte', m.passaporte || '') +
+      memberField('nac', 'Nacionalidade', m.nac, OPT.nac) + memberField('cargo', 'Posição / Cargo *', m.cargo) + '</div>' +
+    '<div class="pe-actions"><button type="button" class="pe-btn pe-btn--primary" id="pe-mf-save">Salvar integrante</button><button type="button" class="pe-btn" id="pe-mf-cancel">Cancelar</button></div></div>';
+  $('#pe-mf-nome').focus();
+}
+function saveMemberForm() {
+  var get = function (k) { return $('#pe-mf-' + k).value.trim(); };
+  var missingField = null;
+  ['nome', 'cargo'].forEach(function (k) {
+    $('#pe-mf-' + k + '-error').textContent = get(k) ? '' : 'Campo obrigatório.';
+    if (!get(k) && !missingField) missingField = k;
+  });
+  if (missingField) { $('#pe-mf-' + missingField).focus(); return; }
+  var evento = currentEvento();
+  var data = { nome: get('nome'), artistico: get('artistico'), cpf: get('cpf'), rg: get('rg'), passaporte: get('passaporte'), nac: get('nac'), cargo: get('cargo') };
+  if (memberEdit === -1) evento.membros.push(Object.assign({ idade: '', lider: false }, data));
+  if (memberEdit !== -1) evento.membros[memberEdit] = Object.assign({}, evento.membros[memberEdit], data);
+  state.done[modal.key] = true;
+  memberEdit = null;
+  $('#pe-mf-slot').innerHTML = '';
+  $('#pe-members-table').innerHTML = renderMembros(evento);
+  render();
+  $('#pe-add-membro').focus();
+}
+
+/* enviar a atualização (RETP-05): a marca "aguardando produtor" sai e a aba volta a ficar desabilitada */
+function openSendConfirm() {
+  modal.key = 'send';
+  modal.sections = null;
+  $('#pe-modal-title').textContent = 'Enviar atualização?';
+  $('#pe-modal-sub').textContent = 'Pedido - ' + state.pedido.code;
+  $('#pe-modal-body').innerHTML = '<p style="margin:0">A SMC recebe os dados atualizados e revisa o pedido. Depois de enviar, você só consegue alterar de novo se a SMC fizer uma nova solicitação.</p>';
+  $('#pe-modal-foot').innerHTML = '<button type="submit" class="pe-btn" value="cancel">Cancelar</button><button type="submit" class="pe-btn pe-btn--primary" value="send">Enviar atualização</button>';
+  $('#pe-modal').returnValue = '';
+  $('#pe-modal').showModal();
+}
+function submitUpdate() {
+  state.pedido.fase = 'reaberto';
+  state.done = {};
+  render();
+  setTab('eventos');
+  $('#tab-eventos').focus();
+  toast('Atualização enviada. A SMC foi avisada e vai revisar os dados.');
 }
 
 function saveModal() {
@@ -848,6 +1067,7 @@ function saveModal() {
     if (el.type === 'radio' && !el.checked) return;
     modal.sections[el.dataset.sec].o[el.dataset.key] = el.value;
   });
+  modal.sections.forEach(function (s) { if (s.list) s.o[s.list] = LISTS[s.list].read(); });
   state.done[modal.key] = true;
   render();
   toast('Dados atualizados neste pedido de contratação.');
@@ -880,8 +1100,13 @@ function render() {
   renderAtualizar();
   var tabUpd = $('#tab-atualizar');
   tabUpd.disabled = !upd;
-  tabUpd.title = upd ? '' : 'Disponível somente quando o pedido for reaberto para correção';
+  tabUpd.title = upd ? '' : 'Disponível somente quando a SMC solicitar a atualização dos dados';
   if (!upd && state.tab === 'atualizar') setTab('eventos');
+  var changed = Object.keys(state.done).length;
+  $('#pe-pend-text').textContent = PENDENCIAS.texto;
+  $('#pe-pend-meta').textContent = 'Solicitado pela SMC em ' + PENDENCIAS.em + '.';
+  $('#pe-submit-hint').textContent = (changed ? plural(changed, 'item alterado', 'itens alterados') + ' neste pedido. ' : 'Nenhum item alterado ainda. ') +
+    'Ao enviar, a SMC é avisada e revisa os dados.';
   document.querySelectorAll('[data-fase]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.fase === state.pedido.fase)); });
   document.querySelectorAll('[data-prod]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.prod === state.prod)); });
 }
@@ -931,19 +1156,77 @@ document.addEventListener('click', function (ev) {
   if (stepBtn) { openModal(stepBtn.dataset.modal); return; }
   var del = ev.target.closest('[data-del-membro]');
   if (del) {
-    var evento = state.pedido.eventos.filter(function (e) { return e.id === modal.key.split(':')[0]; })[0];
+    var evento = currentEvento();
     evento.membros.splice(Number(del.dataset.delMembro), 1);
-    $('#pe-modal-body').innerHTML = renderMembros(evento);
+    memberEdit = null;
+    $('#pe-mf-slot').innerHTML = '';
+    $('#pe-members-table').innerHTML = renderMembros(evento);
     state.done[modal.key] = true;
     render();
+    $('#pe-add-membro').focus();
     return;
   }
-  if (ev.target.closest('[data-edit-membro]') || ev.target.closest('#pe-add-membro')) {
-    toast('No sistema, abre o formulário do integrante (fora do escopo deste protótipo).');
+  var editMember = ev.target.closest('[data-edit-membro]');
+  if (editMember) { openMemberForm(Number(editMember.dataset.editMembro)); return; }
+  if (ev.target.closest('#pe-add-membro')) { openMemberForm(-1); return; }
+  if (ev.target.closest('#pe-mf-save')) { saveMemberForm(); return; }
+  if (ev.target.closest('#pe-mf-cancel')) { memberEdit = null; $('#pe-mf-slot').innerHTML = ''; $('#pe-add-membro').focus(); return; }
+  if (ev.target.closest('#pe-send-update')) { openSendConfirm(); return; }
+  if (ev.target.closest('#pe-resp-add')) {
+    $('#pe-resp-rows').insertAdjacentHTML('beforeend', respRowHtml({ nome: '', social: '', cpf: '', rg: '', nasc: '', email: '', telefone: '', principal: false }, true));
+    syncResponsibles();
+    var rows = document.querySelectorAll('#pe-resp-rows [data-resp-row]');
+    rows[rows.length - 1].querySelector('[data-resp="nome"]').focus();
+    return;
+  }
+  var removeResp = ev.target.closest('[data-resp-remove]');
+  if (removeResp) {
+    removeResp.closest('[data-resp-row]').remove();
+    syncResponsibles();
+    $('#pe-resp-add').focus();
+    return;
+  }
+  if (ev.target.closest('#pe-photo-add')) { $('#pe-photo-input').click(); return; }
+  var removePhoto = ev.target.closest('[data-photo-remove]');
+  if (removePhoto) {
+    removePhoto.closest('[data-photo-row]').remove();
+    $('#pe-photo-add').focus();
   }
 });
 
+// "Salvar" só fecha o modal se as listas (responsáveis, fotos) estiverem válidas
+$('#pe-modal form').addEventListener('submit', function (ev) {
+  if (!ev.submitter || ev.submitter.value !== 'ok' || !modal.sections) return;
+  var invalid = null;
+  modal.sections.forEach(function (s) {
+    if (!s.list) return;
+    var first = LISTS[s.list].validate();
+    if (!invalid) invalid = first;
+  });
+  if (!invalid) return;
+  ev.preventDefault();
+  invalid.focus();
+});
+
+$('#pe-modal').addEventListener('change', function (ev) {
+  if (ev.target.id !== 'pe-photo-input') return;
+  Array.prototype.forEach.call(ev.target.files, function (file) {
+    $('#pe-photo-list').insertAdjacentHTML('beforeend', photoHtml({ src: URL.createObjectURL(file), credito: '', nome: file.name }));
+  });
+  ev.target.value = '';
+  $('#pe-photo-error').textContent = '';
+  var credits = document.querySelectorAll('#pe-photo-list [data-photo-credit]');
+  if (credits.length) credits[credits.length - 1].focus();
+});
+
+$('#pe-modal').addEventListener('keydown', function (ev) {
+  if (ev.key !== 'Enter' || !ev.target.closest('#pe-mf-slot') || ev.target.tagName === 'BUTTON') return;
+  ev.preventDefault();
+  saveMemberForm();
+});
+
 $('#pe-modal').addEventListener('close', function () {
+  if ($('#pe-modal').returnValue === 'send') { submitUpdate(); return; }
   if ($('#pe-modal').returnValue === 'ok' && modal.sections) saveModal();
 });
 

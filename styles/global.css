@@ -633,9 +633,48 @@ body[data-page="detalhe-evento"] .modal__error{margin:12px 0 0;font-size:12px;co
 
 body[data-page="detalhe-evento"] .toast{bottom:24px}
 
+/* filtro de status dos pedidos (PBI 57330, CANC-16) */
+body[data-page="detalhe-evento"] #sec-pedidos .card__head{flex-wrap:wrap}
+body[data-page="detalhe-evento"] .pedidos__filter-label{font-size:12px;color:var(--c-text-3)}
+body[data-page="detalhe-evento"] select.pedidos__filter{width:auto;min-width:190px;padding:4px 8px;font-size:13px}
+body[data-page="detalhe-evento"] .pedidos__hint{margin:10px 18px 4px;font-size:12px;color:var(--c-text-3)}
+body[data-page="detalhe-evento"] .tbl .act .rowmenu__btn{margin:-4px 0}
+
 @media (max-width:760px){
   body[data-page="detalhe-evento"] .kv{grid-template-columns:1fr}
   body[data-page="detalhe-evento"] .evt__title{font-size:21px}
   body[data-page="detalhe-evento"] .reserva__row{flex-wrap:wrap}
   body[data-page="detalhe-evento"] .reserva__meter{flex-basis:100%;margin-left:40px}
 }
+
+/* ==========================================================================
+   PBI 57330 — reabertura e cancelamento do pedido de emenda.
+   Padrões novos com nomes únicos (seguros sem escopo de página).
+   ========================================================================== */
+
+/* faixa de demonstração do protótipo (era inline no acompanhamento) */
+.demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:8px 12px;margin-bottom:14px;border:1px dashed var(--st-draft-border);background:var(--st-draft-bg);color:var(--st-draft-text);border-radius:var(--radius);font-size:12px}
+.demo label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+
+/* tag laranja (antd orange): "Pedido reaberto" */
+.pill--orange{background:#fff7e6;color:#d46b08;border-color:#ffd591}
+
+/* menu de ações da linha (antd Dropdown): flutua fora da tabela para não ser cortado */
+.rowmenu__btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:26px;padding:0;border:1px solid var(--c-border);border-radius:6px;background:#fff;color:var(--c-text);font:inherit;font-size:16px;line-height:1;cursor:pointer}
+.rowmenu__btn:hover,.rowmenu__btn[aria-expanded="true"]{border-color:var(--c-primary);color:var(--c-primary)}
+.rowmenu__btn:focus-visible{outline:2px solid var(--c-primary);outline-offset:2px}
+.rowmenu__list{position:fixed;z-index:65;min-width:180px;margin:0;padding:4px;list-style:none;background:#fff;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,.08),0 3px 6px -4px rgba(0,0,0,.12),0 9px 28px 8px rgba(0,0,0,.05)}
+.rowmenu__item{display:flex;align-items:center;gap:8px;width:100%;padding:5px 12px;border:0;border-radius:4px;background:none;font:inherit;font-size:14px;line-height:22px;color:var(--c-text);text-align:left;text-decoration:none;white-space:nowrap;cursor:pointer}
+.rowmenu__item:hover,.rowmenu__item:focus-visible{background:rgba(0,0,0,.04);outline:none}
+.rowmenu__item--danger{color:var(--c-danger)}
+.rowmenu__item--danger:hover,.rowmenu__item--danger:focus-visible{background:var(--c-danger-bg);color:var(--c-danger)}
+.rowmenu__item svg{width:14px;height:14px;flex:none}
+.rowmenu__sep{height:1px;margin:4px 0;background:var(--c-border-2)}
+
+/* contador de caracteres do textarea (antd showCount) */
+.field__count{margin-top:4px;font-size:12px;color:var(--c-text-3);text-align:right;font-variant-numeric:tabular-nums}
+
+/* botão danger primário (antd Button type="primary" danger) */
+body[data-page] .btn--danger-solid,
+body[data-page] .btn--danger-solid:hover{background:var(--c-danger);border-color:var(--c-danger);color:#fff}
+body[data-page] .btn--danger-solid:hover{background:#ff7875;border-color:#ff7875}

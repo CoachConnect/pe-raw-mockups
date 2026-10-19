@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V3 · Card do artista — Acompanhamento</title>
+<link rel="stylesheet" href="../../styles/global.css">
+<style>
+.page-wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
+.intro{margin:0 0 16px}
+.intro h1{font-size:20px;margin-bottom:4px}
+.intro p{margin:0;color:var(--c-text-2);font-size:13px}
+
+/* ---------- card do artista ---------- */
+.ac{border:1px solid var(--c-border-2);border-radius:var(--radius);background:#fff}
+.ac+.ac{margin-top:12px}
+.ac--warn{border-left:3px solid var(--c-warn)}
+.ac--danger{border-left:3px solid var(--c-danger)}
+.ac__head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:14px 16px;cursor:pointer}
+.ac__head:hover{background:#fafafa}
+.ac__head:focus-visible{outline:2px solid var(--c-primary);outline-offset:-2px}
+.ac[data-open="true"] .ac__head{border-bottom:1px solid var(--c-border-2)}
+.ac[data-open="false"] .card__chev{transform:rotate(-90deg)}
+.ac[data-open="false"] .ac__body{display:none}
+.ac__title{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.ac__title h2{font-size:15px}
+.ac__sub{color:var(--c-text-2);font-size:13px}
+.ac__facts{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:12px;color:var(--c-text-2)}
+.ac__facts b{color:var(--c-text);font-weight:600}
+.ac__status{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.ac__body{padding:16px}
+.ac__alerts{display:grid;gap:6px;margin-bottom:14px}
+.ac__foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 16px;border-top:1px solid var(--c-border-2);background:#fcfcfc;border-radius:0 0 var(--radius) var(--radius)}
+
+/* abas (proposta A) */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--c-border-2);margin:-4px 0 16px;overflow-x:auto}
+.tabs button{border:0;background:none;padding:8px 12px;font:inherit;font-size:13px;color:var(--c-text-2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.tabs button:hover{color:var(--c-primary)}
+.tabs button[aria-selected="true"]{color:var(--c-primary);border-bottom-color:var(--c-primary);font-weight:600}
+.tabs button:focus-visible{outline:2px solid var(--c-primary);outline-offset:-2px}
+.tabs .count{font-size:11px;padding:0 6px;border-radius:999px;background:#f0f0f0;color:var(--c-text-2);font-weight:600}
+.tabs .count--warn{background:var(--c-warn-bg);color:var(--c-warn-text)}
+
+/* peças */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px 20px;margin:0}
+.facts div{min-width:0}
+.facts dt{font-size:12px;color:var(--c-text-3);margin:0 0 1px}
+.facts dd{margin:0;font-size:13.5px}
+.season{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#0958d9;font-weight:600}
+.season small{font-weight:400;color:var(--c-text-2)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.gallery figure{margin:0}
+.gallery span{display:block;aspect-ratio:4/3;border-radius:6px}
+.gallery figcaption{font-size:11px;color:var(--c-text-3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty-line{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px dashed var(--c-border);border-radius:6px;color:var(--c-text-2);font-size:13px}
+.empty-line .pill{margin-left:auto}
+.files{border:1px solid var(--c-border-2);border-radius:6px}
+.files .file:last-child{border-bottom:0}
+.subhead .pill{margin-left:6px;text-transform:none;letter-spacing:0}
+.row-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.row-head .subhead{margin:0}
+</style>
+</head>
+<body data-page="acompanhamento">
+<a class="skip" href="#main-content">Ir para o conteúdo</a>
+
+<header class="appbar">
+  <a class="appbar__back" href="../../index.html" aria-label="Voltar para a galeria">&larr;</a>
+  <span class="appbar__title">Card do artista · Acompanhamento</span>
+  <span class="appbar__spacer"></span>
+  <span class="appbar__updated">Atualizado em 13/10/2026 16:30</span>
+</header>
+
+<main class="page-wrap" id="main-content">
+  <div class="intro">
+    <h1>Card do artista — proposta de melhoria</h1>
+    <p>Versão escolhida: abas dentro do card, sem foto no cabeçalho. Seção “Artistas” do acompanhamento do pedido de emenda. Junta no card o que hoje fica no modal “Ver dados da atração” e o que faltava: fotos para divulgação, necessidades técnicas e notas fiscais da atração.</p>
+  </div>
+
+  <section class="card">
+    <div class="card__head">
+      <h2>Artistas</h2>
+      <span class="pill pill--neutral">2 artistas</span>
+    </div>
+    <div class="card__body" id="artists"></div>
+  </section>
+</main>
+
+<script>
+var GRADIENTS = ['#ffd591,#ff9c6e', '#b7eb8f,#95de64', '#91caff,#69b1ff', '#d3adf7,#b37feb', '#ffadd2,#ff85c0', '#87e8de,#5cdbd3'];
+var CHEV = '<svg class="card__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+
+var ARTISTS = [
+  {
+    id: 'a1', name: 'Cia. Suspiros e Burbujas', kind: 'Coletivo', attraction: 'Suspiros e Burbujas',
+    eventType: 'Espetáculo', language: 'Circo, Palhaçaria', audience: 'Livre / Famílias', rating: 'Livre', duration: '50 min',
+    accessibility: 'Libras, audiodescrição', fee: 11000, docs: ['ok', '2 aprovados'],
+    synopsis: 'Os palhaços Burbuja e Suspiro chegam carregando malas, sotaques e uma paixão pelo circo que contagia. Malabares viram dança, bolhas de sabão se tornam poesia e o público vira parte da brincadeira. Espetáculo que celebra a capacidade do circo de unir pessoas através do riso, com passagens por festivais no Brasil e na Argentina desde 2015.',
+    release: 'Fundada em 2014 em Buenos Aires e radicada em São Paulo desde 2019, a Cia. Suspiros e Burbujas pesquisa a linguagem do palhaço e do circo de rua. Circulou por 40 cidades, com apresentações no Circuito SESC de Artes e na Virada Cultural.',
+    photos: [['Freddy Costa', 'Cena de abertura'], ['Freddy Costa', 'Malabares'], ['Freddy Costa', 'Bolhas'], ['Freddy Costa', 'Elenco']],
+    schedules: [
+      { season: true, period: '17/10 a 08/11/2026', days: 'sáb e dom', count: 8, time: '14:00 – 15:00', place: 'Centro Cultural Grajaú', value: 8800 },
+      { date: '12/10/2026', time: '11:00 – 12:00', place: 'CEU Três Lagos', value: 2200 }
+    ],
+    members: [['Romina Noelia Sanchez', 'Burbuja', '622.759.073-86', 'Palhaça, acordeonista'], ['Felipe Abreu Pereira', 'Suspiro', '035.469.383-21', 'Palhaço, malabarista']],
+    rider: [['Rider técnico — Suspiros e Burbujas.pdf', 'enviado 22/09/2026']],
+    invoices: [['NF 0231 — setembro 2026.pdf', 'emitida 05/09/2026']],
+    alerts: []
+  },
+  {
+    id: 'a2', name: 'Mestre Zé do Pife', kind: 'Solo', attraction: 'Pife, Zabumba e Memória',
+    eventType: 'Show', language: 'Música popular', audience: 'Livre', rating: 'Livre', duration: '60 min',
+    accessibility: '—', fee: 3500, docs: ['danger', '1 reprovado'],
+    synopsis: 'Mestre Zé apresenta o repertório tradicional das bandas de pífanos do sertão pernambucano, intercalando música e causos sobre as festas de santo e a vida no interior. Apresentação intimista, voltada a toda a família.',
+    release: '',
+    photos: [],
+    schedules: [{ date: '18/10/2026', time: '16:00 – 17:00', place: 'Centro Cultural Grajaú', value: 3500 }],
+    members: [['José Aparecido dos Santos', 'Mestre Zé do Pife', '214.908.335-10', 'Pifeiro, compositor']],
+    rider: [],
+    invoices: [],
+    alerts: ['Atração sem fotos para divulgação', 'Necessidades técnicas não enviadas']
+  }
+];
+
+var openIds = { a1: true, a2: true };
+var activeTab = { a1: 'shows', a2: 'shows' };
+
+function money(v) { return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
+function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+function initials(name) { return name.split(' ').filter(function (w) { return w.length > 2; }).slice(0, 2).map(function (w) { return w[0]; }).join('').toUpperCase(); }
+function occurrences(a) { return a.schedules.reduce(function (t, s) { return t + (s.season ? s.count : 1); }, 0); }
+
+function head(a) {
+  var tone = a.docs[0] === 'danger' ? 'pill--danger' : 'pill--ok';
+  return '<div class="ac__head" role="button" tabindex="0" aria-expanded="' + !!openIds[a.id] + '" data-toggle="' + a.id + '">' +
+    CHEV +
+    '<div style="min-width:0">' +
+      '<div class="ac__title"><h2>' + a.name + '</h2><span class="pill pill--neutral">' + a.kind + '</span></div>' +
+      '<div class="ac__sub">' + a.attraction + ' · ' + a.eventType + ' · ' + a.language + '</div>' +
+      '<div class="ac__facts">' +
+        '<span><b>' + plural(occurrences(a), 'apresentação', 'apresentações') + '</b> em ' + plural(a.schedules.length, 'data', 'datas') + '</span>' +
+        '<span>Cachê <b>' + money(a.fee) + '</b></span>' +
+        '<span>a partir de <b>' + firstDate(a) + '</b></span>' +
+        '<span>' + plural(a.members.length, 'integrante', 'integrantes') + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="ac__status"><span class="pill ' + tone + '">Docs: ' + a.docs[1] + '</span>' +
+      (a.alerts.length ? '<span class="pill pill--warn">' + plural(a.alerts.length, 'pendência', 'pendências') + '</span>' : '') +
+    '</div>' +
+  '</div>';
+}
+
+function firstDate(a) {
+  var dates = a.schedules.map(function (s) { return s.season ? s.period.split(' a ')[0] + '/2026' : s.date; });
+  return dates.sort(function (x, y) { return x.split('/').reverse().join('').localeCompare(y.split('/').reverse().join('')); })[0];
+}
+
+function showsTable(a) {
+  var rows = a.schedules.map(function (s) {
+    var when = s.season
+      ? '<span class="season">↻ Temporada <small>' + s.days + ' · ' + plural(s.count, 'apresentação', 'apresentações') + '</small></span><div>' + s.period + '</div>'
+      : s.date;
+    return '<tr><td>' + when + '</td><td>' + s.time + '</td><td>' + s.place + '</td><td class="num">' + money(s.value) + '</td></tr>';
+  }).join('');
+  return '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Data</th><th>Horário</th><th>Local</th><th class="num">Valor</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+function attractionFacts(a) {
+  return '<dl class="facts">' +
+    '<div><dt>Tipo de evento</dt><dd>' + a.eventType + '</dd></div>' +
+    '<div><dt>Linguagem</dt><dd>' + a.language + '</dd></div>' +
+    '<div><dt>Público-alvo</dt><dd>' + a.audience + '</dd></div>' +
+    '<div><dt>Classificação</dt><dd>' + a.rating + '</dd></div>' +
+    '<div><dt>Duração</dt><dd>' + a.duration + '</dd></div>' +
+    '<div><dt>Acessibilidade</dt><dd>' + a.accessibility + '</dd></div>' +
+  '</dl>';
+}
+
+function longText(id, title, text) {
+  if (!text) return '<h3 class="subhead">' + title + '</h3><div class="empty-line">Não informado.</div>';
+  return '<h3 class="subhead">' + title + '</h3>' +
+    '<div class="longtext" data-clamped="true" id="' + id + '"><p>' + text + '</p></div>' +
+    '<button class="btn btn--sm btn--ghost longtext__toggle" type="button" data-expand="' + id + '">Ler tudo ▾</button>';
+}
+
+function membersTable(a) {
+  var rows = a.members.map(function (m) { return '<tr><td>' + m[0] + '</td><td>' + m[1] + '</td><td class="mono">' + m[2] + '</td><td>' + m[3] + '</td></tr>'; }).join('');
+  return '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Integrante</th><th>Nome artístico</th><th>CPF/CIN</th><th>Função</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+function gallery(a) {
+  if (!a.photos.length) return '<div class="empty-line">Nenhuma foto para divulgação enviada.<span class="pill pill--warn">Pendente</span></div>';
+  var items = a.photos.map(function (p, i) {
+    return '<figure><span role="img" aria-label="' + p[1] + '" style="background:linear-gradient(135deg,' + GRADIENTS[i % GRADIENTS.length] + ')"></span><figcaption>© ' + p[0] + '</figcaption></figure>';
+  }).join('');
+  return '<div class="gallery">' + items + '</div>';
+}
+
+function fileList(files, emptyText, pending) {
+  if (!files.length) return '<div class="empty-line">' + emptyText + (pending ? '<span class="pill pill--warn">Pendente</span>' : '') + '</div>';
+  return '<div class="files">' + files.map(function (f) {
+    return '<div class="file"><span class="file__ico">PDF</span><span class="file__name">' + f[0] + '</span><span class="file__meta">' + f[1] + '</span><span class="file__actions"><button class="btn btn--sm" type="button">Ver</button><button class="btn btn--sm" type="button">Baixar</button></span></div>';
+  }).join('') + '</div>';
+}
+
+function photosHead(a) {
+  return '<div class="row-head"><h3 class="subhead">Fotos para divulgação' + (a.photos.length ? ' <span class="pill pill--neutral">' + a.photos.length + '</span>' : '') + '</h3>' +
+    (a.photos.length ? '<button class="btn btn--sm" type="button">Baixar todas</button>' : '') + '</div>';
+}
+
+function filesBlock(a) {
+  return '<div class="block"><h3 class="subhead">Necessidades técnicas</h3>' + fileList(a.rider, 'Rider técnico não enviado.', true) + '</div>' +
+    '<div class="block"><h3 class="subhead">Notas fiscais</h3>' + fileList(a.invoices, 'Nenhuma nota fiscal anexada.', false) + '</div>';
+}
+
+function tabsBody(a) {
+  var filesCount = a.rider.length + a.invoices.length;
+  var tabs = [
+    ['shows', 'Apresentações', occurrences(a), false],
+    ['attraction', 'Atração', null, false],
+    ['members', 'Ficha técnica', a.members.length, false],
+    ['photos', 'Fotos', a.photos.length, !a.photos.length],
+    ['files', 'Técnico e fiscal', filesCount, !a.rider.length]
+  ];
+  var current = activeTab[a.id];
+  var bar = '<div class="tabs" role="tablist" aria-label="Dados de ' + a.name + '">' + tabs.map(function (t) {
+    var count = t[2] === null ? '' : ' <span class="count' + (t[3] ? ' count--warn' : '') + '">' + (t[3] ? '!' : t[2]) + '</span>';
+    return '<button type="button" role="tab" id="tab-' + a.id + '-' + t[0] + '" aria-controls="panel-' + a.id + '" aria-selected="' + (t[0] === current) + '" tabindex="' + (t[0] === current ? 0 : -1) + '" data-tab="' + a.id + ':' + t[0] + '">' + t[1] + count + '</button>';
+  }).join('') + '</div>';
+  var panels = {
+    shows: showsTable(a),
+    attraction: attractionFacts(a) + '<div class="block" style="margin-top:20px">' + longText('syn-' + a.id, 'Sinopse', a.synopsis) + '</div><div class="block">' + longText('rel-' + a.id, 'Release', a.release) + '</div>',
+    members: membersTable(a),
+    photos: photosHead(a) + gallery(a),
+    files: filesBlock(a)
+  };
+  return bar + '<div role="tabpanel" id="panel-' + a.id + '" aria-labelledby="tab-' + a.id + '-' + current + '">' + panels[current] + '</div>';
+}
+
+function card(a) {
+  var tone = a.docs[0] === 'danger' ? ' ac--danger' : (a.alerts.length ? ' ac--warn' : '');
+  var alerts = a.alerts.length
+    ? '<div class="ac__alerts">' + a.alerts.map(function (t) { return '<div class="alert alert--warn" role="status">' + t + '</div>'; }).join('') + '</div>'
+    : '';
+  return '<article class="ac' + tone + '" data-open="' + !!openIds[a.id] + '" aria-label="' + a.name + '">' +
+    head(a) +
+    '<div class="ac__body">' + alerts + tabsBody(a) + '</div>' +
+    '<div class="ac__foot" ' + (openIds[a.id] ? '' : 'hidden') + '>' +
+      '<button class="btn btn--sm" type="button">Ver cadastro completo da atração</button>' +
+      '<button class="btn btn--sm btn--primary" type="button">Ver documentos para assinatura deste artista →</button>' +
+    '</div>' +
+  '</article>';
+}
+
+function render() {
+  document.getElementById('artists').innerHTML = ARTISTS.map(card).join('');
+}
+
+document.getElementById('artists').addEventListener('click', function (e) {
+  var toggle = e.target.closest('[data-toggle]');
+  if (toggle) { var id = toggle.getAttribute('data-toggle'); openIds[id] = !openIds[id]; render(); return; }
+  var tab = e.target.closest('[data-tab]');
+  if (tab) {
+    var parts = tab.getAttribute('data-tab').split(':');
+    activeTab[parts[0]] = parts[1];
+    render();
+    document.getElementById('tab-' + parts[0] + '-' + parts[1]).focus();
+    return;
+  }
+  var expand = e.target.closest('[data-expand]');
+  if (expand) {
+    var el = document.getElementById(expand.getAttribute('data-expand'));
+    var clamped = el.getAttribute('data-clamped') === 'true';
+    el.setAttribute('data-clamped', String(!clamped));
+    expand.textContent = clamped ? 'Recolher ▴' : 'Ler tudo ▾';
+  }
+});
+
+document.getElementById('artists').addEventListener('keydown', function (e) {
+  var toggle = e.target.closest('[data-toggle]');
+  if (toggle && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle.click(); return; }
+  var tab = e.target.closest('[role="tab"]');
+  if (!tab || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+  var tabs = Array.prototype.slice.call(tab.parentNode.querySelectorAll('[role="tab"]'));
+  var next = tabs[(tabs.indexOf(tab) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+  next.click();
+});
+
+render();
+</script>
+</body>
+</html>
