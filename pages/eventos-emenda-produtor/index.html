@@ -268,6 +268,43 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
   .pe-grp__pills{margin-left:28px}
   .pe-dialog__head,.pe-dialog__body,.pe-dialog__foot{padding-left:16px;padding-right:16px}
 }
+
+/* Bug 58269 — celular (< 768 px): tabelas viram um card por linha; abas numa linha só */
+.pe-only-mobile{display:none}
+.pe-cards{list-style:none;margin:0;padding:0;flex-direction:column;gap:10px}
+.pe-mcard{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:1px solid var(--pe-border);border-radius:12px;background:var(--pe-surface-2)}
+.pe-mcard__head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
+.pe-mcard__title{font-family:var(--pe-head);font-size:16px;letter-spacing:.8px;color:var(--pe-strong)}
+.pe-mcard__meta{color:var(--pe-text-2)}
+.pe-mcard__name{margin:0;color:var(--pe-text)}
+.pe-mcard__facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;margin:0}
+.pe-mcard__facts dt{font-size:12px;color:var(--pe-text-3)}
+.pe-mcard__facts dd{margin:2px 0 0;color:var(--pe-text);overflow-wrap:anywhere}
+.pe-mcard__full{grid-column:1/-1}
+.pe-mcard__action{width:100%;min-height:40px}
+.pe-mcard__actions{display:flex;gap:8px}
+.pe-mcard__actions .pe-btn{flex:1;min-height:40px}
+.pe-mtotal{flex-wrap:wrap;justify-content:space-between;gap:4px 12px;margin:10px 0 0;padding:12px 16px;border-radius:12px;background:#303036;color:var(--pe-strong)}
+.pe-mtotal b{font-weight:500;white-space:nowrap}
+@media (max-width:767px){
+  .pe-only-desktop{display:none}
+  .pe-only-mobile{display:block}
+  .pe-cards.pe-only-mobile{display:flex}
+  .pe-mtotal.pe-only-mobile{display:flex}
+  .pe-tabs{flex-wrap:nowrap;gap:0 24px;overflow-x:auto;scrollbar-width:none}
+  .pe-tabs::-webkit-scrollbar{display:none}
+  .pe-tab{flex:none;white-space:nowrap}
+  .pe-grp__body .pe-cards{margin-top:4px}
+}
+@media (max-width:600px){
+  .pe-desc{grid-template-columns:minmax(0,1fr)}
+  .pe-desc dt{padding-bottom:4px}
+  .pe-desc dd{padding-top:4px}
+  .pe-dialog{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;inset:0;border:0;border-radius:0}
+  .pe-dialog form{height:100%;max-height:100dvh}
+  .pe-dialog__body{flex:1}
+  .pe-dialog__foot .pe-btn{flex:1 1 0}
+}
 </style>
 </head>
 <body class="pe" data-page="eventos-emenda-produtor">
@@ -347,7 +384,7 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
         <section class="pe-card" aria-labelledby="pe-list-title">
           <h1 class="pe-title" id="pe-list-title">Emendas</h1>
           <p class="pe-hint">Eventos de emenda parlamentar em que você é o produtor (proponente) do pedido de contratação.</p>
-          <div class="pe-table-wrap" style="margin-top:20px">
+          <div class="pe-table-wrap pe-only-desktop" style="margin-top:20px">
             <table class="pe-table">
               <caption class="sr-only">Seus pedidos de emenda parlamentar</caption>
               <thead>
@@ -356,6 +393,7 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
               <tbody id="pe-list-body"></tbody>
             </table>
           </div>
+          <ul class="pe-cards pe-only-mobile" id="pe-list-cards" aria-label="Seus pedidos de emenda parlamentar" style="margin-top:20px"></ul>
         </section>
       </div>
 
@@ -672,6 +710,17 @@ function renderList() {
       '<td class="act"><a class="pe-btn pe-btn--sm" href="#emenda/' + esc(p.code) + '">Visualizar<span class="sr-only"> pedido ' + esc(p.code) + '</span></a></td>' +
       '</tr>';
   }).join('');
+  $('#pe-list-cards').innerHTML = PEDIDOS.map(function (p) {
+    return '<li class="pe-mcard">' +
+      '<div class="pe-mcard__head"><span class="pe-mcard__title">Pedido - ' + esc(p.code) + '</span>' + statusTag(p) + '</div>' +
+      '<p class="pe-mcard__name">' + esc(p.evento) + '</p>' +
+      '<dl class="pe-mcard__facts">' +
+        '<div><dt>Período</dt><dd>' + esc(p.periodo) + '</dd></div>' +
+        '<div><dt>Eventos planejados</dt><dd>' + p.eventos.length + '</dd></div>' +
+      '</dl>' +
+      '<a class="pe-btn pe-mcard__action" href="#emenda/' + esc(p.code) + '">Visualizar<span class="sr-only"> pedido ' + esc(p.code) + '</span></a>' +
+      '</li>';
+  }).join('');
 }
 
 /* ---------- detalhe: cabeçalho do evento ---------- */
@@ -739,7 +788,7 @@ function renderEventos() {
         ]) +
         (textos.length ? '<dl class="pe-text">' + textos.map(function (t) { return '<div><dt>' + t[0] + '</dt><dd>' + esc(t[1]) + '</dd></div>'; }).join('') + '</dl>' : '') +
         '<h3 class="pe-sub">Apresentações (' + n + ')</h3>' +
-        '<div class="pe-table-wrap"><table class="pe-table"><caption class="sr-only">Apresentações de ' + esc(e.nome) + '</caption>' +
+        '<div class="pe-table-wrap pe-only-desktop"><table class="pe-table"><caption class="sr-only">Apresentações de ' + esc(e.nome) + '</caption>' +
           '<thead><tr><th>Dia</th><th>Horário</th><th>Duração</th><th>Local</th><th>Observação</th>' + (porApresentacao ? '<th class="num">Valor da apresentação</th>' : '') + '</tr></thead><tbody>' +
           e.apresentacoes.map(function (ap) {
             return '<tr><td class="pe-nowrap">' + esc(ap.dia) + '</td><td class="pe-nowrap">' + esc(ap.horario) + '</td><td>' + esc(ap.duracao) +
@@ -747,6 +796,20 @@ function renderEventos() {
           }).join('') +
         '</tbody><tfoot><tr><td colspan="' + (porApresentacao ? 5 : 4) + '">' + (porApresentacao ? 'Total do evento planejado' : 'Valor total do evento planejado (não dividido por apresentação)') +
           '</td><td class="num">' + brl(totalEvento(e)) + '</td></tr></tfoot></table></div>' +
+        '<ul class="pe-cards pe-only-mobile" aria-label="Apresentações de ' + esc(e.nome) + '">' +
+          e.apresentacoes.map(function (ap) {
+            return '<li class="pe-mcard">' +
+              '<div class="pe-mcard__head"><span class="pe-mcard__title">' + esc(ap.dia) + '</span><span class="pe-mcard__meta">' + esc(ap.horario) + '</span></div>' +
+              '<dl class="pe-mcard__facts">' +
+                '<div><dt>Duração</dt><dd>' + esc(ap.duracao) + '</dd></div>' +
+                (porApresentacao ? '<div><dt>Valor</dt><dd>' + brl(ap.valor) + '</dd></div>' : '') +
+                '<div class="pe-mcard__full"><dt>Local</dt><dd>' + esc(ap.local) + '</dd></div>' +
+                '<div class="pe-mcard__full"><dt>Observação</dt><dd>' + orDash(ap.obs) + '</dd></div>' +
+              '</dl></li>';
+          }).join('') +
+        '</ul>' +
+        '<p class="pe-mtotal pe-only-mobile"><span>' + (porApresentacao ? 'Total do evento planejado' : 'Valor total do evento planejado (não dividido por apresentação)') +
+          '</span><b>' + brl(totalEvento(e)) + '</b></p>' +
       '</div></details>';
   }).join('');
 }
@@ -990,7 +1053,24 @@ function openModal(key) {
 }
 
 function renderMembros(evento) {
-  return '<div class="pe-table-wrap"><table class="pe-table"><caption class="sr-only">Integrantes de ' + esc(evento.nome) + '</caption>' +
+  var cards = '<ul class="pe-cards pe-only-mobile" aria-label="Integrantes de ' + esc(evento.nome) + '">' +
+    evento.membros.map(function (m, i) {
+      return '<li class="pe-mcard">' +
+        '<div class="pe-mcard__head"><span class="pe-mcard__title">' + esc(m.nome) + '</span>' + (m.lider ? tag('Líder do grupo', 'info') : '') + '</div>' +
+        '<dl class="pe-mcard__facts">' +
+          '<div><dt>CPF/CIN</dt><dd>' + orDash(m.cpf) + '</dd></div>' +
+          '<div><dt>RG</dt><dd>' + orDash(m.rg) + '</dd></div>' +
+          '<div><dt>Passaporte</dt><dd>' + orDash(m.passaporte) + '</dd></div>' +
+          '<div><dt>Idade</dt><dd>' + orDash(m.idade) + '</dd></div>' +
+          '<div><dt>Nacionalidade</dt><dd>' + esc(m.nac) + '</dd></div>' +
+          '<div><dt>Posição / Cargo</dt><dd>' + esc(m.cargo) + '</dd></div>' +
+        '</dl>' +
+        '<div class="pe-mcard__actions">' +
+          '<button type="button" class="pe-btn" data-edit-membro="' + i + '">' + SVG.edit + 'Alterar<span class="sr-only"> ' + esc(m.nome) + '</span></button>' +
+          (m.lider ? '' : '<button type="button" class="pe-btn" data-del-membro="' + i + '">' + SVG.trash + 'Remover<span class="sr-only"> ' + esc(m.nome) + '</span></button>') +
+        '</div></li>';
+    }).join('') + '</ul>';
+  return cards + '<div class="pe-table-wrap pe-only-desktop"><table class="pe-table"><caption class="sr-only">Integrantes de ' + esc(evento.nome) + '</caption>' +
     '<thead><tr><th>Nome</th><th>CPF/CIN</th><th>RG</th><th>Passaporte</th><th class="num">Idade</th><th>Nacionalidade</th><th>Posição / Cargo</th><th class="act">Ações</th></tr></thead><tbody>' +
     evento.membros.map(function (m, i) {
       return '<tr><td>' + esc(m.nome) + (m.lider ? ' ' + tag('Líder do grupo', 'info') : '') + '</td><td class="pe-nowrap">' + orDash(m.cpf) + '</td><td class="pe-nowrap">' + orDash(m.rg) +

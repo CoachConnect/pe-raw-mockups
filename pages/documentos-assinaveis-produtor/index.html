@@ -255,6 +255,14 @@ body.pe{margin:0;font-family:var(--pe-font);font-size:14px;line-height:1.5;color
   .pe-grp__pills{margin-left:28px}
   .pe-attention{padding:16px}
 }
+/* Bug 58269 — celular (< 768 px): filtros numa linha só, com rolagem própria (antd Segmented não quebra) */
+@media (max-width:767px){
+  .pe-seg{flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .pe-seg::-webkit-scrollbar{display:none}
+  .pe-seg button{flex:none;white-space:nowrap;min-height:36px}
+  .pe-tools__row .pe-count{flex:1 1 100%}
+  .pe-tools__row .pe-btn{min-height:36px}
+}
 </style>
 </head>
 <body class="pe" data-page="documentos-assinaveis-produtor">
